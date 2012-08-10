@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby -w
+
+if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
+  railties_path = File.expand_path('../../lib', __FILE__)
+  $:.unshift(railties_path)
+end
+
+require 'optparse'
+
+require 'cryptobox/config'
+require 'cryptobox/db'
+
+options = {}
+options[:verbose] = false
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: cbcreate [options]"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    options[:verbose] = v
+  end
+  opts.on("-c", "--config PATH", String, "Configuration file path") do |path|
+    options[:config] = path
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+  opts.on_tail("--version", "Show version") do
+    puts "Cryptobox #{Cryptobox::Config::VERSION}"
+    exit
+  end
+end.parse!
+
+config = Cryptobox::Config.new options[:config]
+db = Cryptobox::Db.new config['path.db_cipher'], config['path.db_conf']
+db.load
+db.change_password
+db.save
