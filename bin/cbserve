@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby -w
+
+if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
+  railties_path = File.expand_path('../../lib', __FILE__)
+  $:.unshift(railties_path)
+end
+
+require 'optparse'
+require 'cryptobox'
+
+$verbose = false
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
+
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    $verbose = v
+  end
+  opts.on("-c", "--config PATH", "Configuration file path") do |path|
+    options[:config] = path
+  end
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+  opts.on_tail("--version", "Show version") do
+    puts "Cryptobox #{Cryptobox::VERSION}"
+    exit
+  end
+end.parse!

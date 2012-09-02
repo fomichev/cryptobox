@@ -1,0 +1,17 @@
+{
+	"type":"login",
+	"name": "LWN.net",
+	"address": "https://lwn.net/login",
+	"form":
+	{
+		"action": "https://lwn.net/login",
+		"method": "post",
+		"fields":
+		{
+			"Username": "@name@",
+			"Password": "@password@",
+			"target": "/",
+			"submit": "Log in"
+		}
+	}
+}

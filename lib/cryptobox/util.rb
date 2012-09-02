@@ -1,0 +1,45 @@
+module Cryptobox
+  def self.symbolize(obj)
+    return obj.inject({}){|memo,(k,v)| memo[k.to_sym] =  symbolize(v); memo} if obj.is_a? Hash
+    return obj.inject([]){|memo,v    | memo           << symbolize(v); memo} if obj.is_a? Array
+    obj
+  end
+
+  def self.stringify(obj)
+    return obj.inject({}){|memo,(k,v)| memo[k.to_s] =  stringify(v); memo} if obj.is_a? Hash
+    return obj.inject([]){|memo,v    | memo         << stringify(v); memo} if obj.is_a? Array
+    obj
+  end
+
+  def self.yn(prompt)
+    loop do
+      print "#{prompt} [y/n]: "
+      case gets.strip.downcase
+      when 'y', 'yes'
+        return true
+      when 'n', 'no'
+        return false
+      end
+    end
+  end
+end
+
+class Hash
+  def symbolize_keys
+    Cryptobox::symbolize self
+  end
+
+  def stringify_keys
+    Cryptobox::stringify self
+  end
+end
+
+class Array
+  def symbolize_keys
+    Cryptobox::symbolize self
+  end
+
+  def stringify_keys
+    Cryptobox::stringify self
+  end
+end

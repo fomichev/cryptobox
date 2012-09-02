@@ -3,85 +3,76 @@ require 'date'
 
 module Cryptobox
   class Config
-    VERSION = "0.5"
-
-    attr_accessor :defines
-
     def initialize(path)
-      paths = path ? [ path ] : [ '.cryptoboxrc.yml', '~/.cryptoboxrc.yml' ]
+      paths = path ? [ path ] : [ '.cryptoboxrc.yml', File.join(ENV['HOME'], '.cryptoboxrc.yml') ]
       paths = paths.select {|f| File.exist? f }
 
-      @defines = load_config(paths.first)
-#      pp @defines
+      load_config(paths.first)
     end
 
-    def config_value(d, c, var, default='')
-      group, variable = var.split(/\./)
-
-      if c.has_key? group and c[group].has_key? variable
-        d[var] = c[group][variable]
+    def set_value(user_config, group, variable, default='')
+      if user_config.has_key? group and user_config[group].has_key? variable
+        @config[group][variable] = user_config[group][variable]
       else
-        d[var] = default
+        @config[group][variable] = default
       end
     end
 
     def [](var)
-      return defines[var]
+      return @config[var]
     end
 
     def load_config(path)
-#      puts "load config #{path}"
+      @config = { ui: {}, cryptobox: {}, path: {}, text: {} }
 
-      d = {}
-      c = path ? YAML.load_file(path) : {}
+      user_config = path ? YAML.load_file(path).symbolize_keys : {}
 
-      config_value d, c, 'ui.jquery_ui_theme', 'flick'
-      config_value d, c, 'ui.default_password_length', '16'
-      config_value d, c, 'ui.lock_timeout_minutes', '5'
-      config_value d, c, 'ui.editor', 'gvim -n -f'
-      config_value d, c, 'ui.lang', 'en'
-
-      config_value d, c, 'cryptobox.version', VERSION
-      config_value d, c, 'cryptobox.date_format', '%H:%M %d.%m.%Y'
-      config_value d, c, 'cryptobox.date', DateTime.now.strftime(d['cryptobox.date_format'])
-
-      config_value d, c, 'path.root', Dir.pwd
-      config_value d, c, 'path.db', d['path.root'] + '/private'
-      config_value d, c, 'path.db_cipher', d['path.db'] + '/cryptobox'
-      config_value d, c, 'path.db_conf', d['path.db_cipher'] + '.yml'
-      config_value d, c, 'path.db_json', d['path.db_cipher'] + '.json'
-      config_value d, c, 'path.db_html', d['path.db'] + '/html/cryptobox.html'
-      config_value d, c, 'path.db_mobile_html', d['path.db'] + '/html/m.cryptobox.html'
-      config_value d, c, 'path.db_chrome', d['path.db'] + '/chrome'
-      config_value d, c, 'path.db_chrome_cfg', d['path.db'] + '/chrome/cfg.js'
-      config_value d, c, 'path.db_include', d['path.db'] + '/include'
-      config_value d, c, 'path.tmp', d['path.db'] + '/tmp'
-      config_value d, c, 'path.include', d['path.root'] + '/include'
-      config_value d, c, 'path.html', d['path.root'] + '/html'
-      config_value d, c, 'path.bookmarklet', d['path.root'] + '/bookmarklet'
-      config_value d, c, 'path.chrome', d['path.root'] + '/chrome'
-      config_value d, c, 'path.clippy', d['path.html'] + '/extern/clippy/build/clippy.swf'
+      set_value user_config, :ui, :jquery_ui_theme, 'flick'
+      set_value user_config, :ui, :default_password_length, 16
+      set_value user_config, :ui, :lock_timeout_minutes, 5
 
 
-      config_value d, c, 'path.jquery_ui_css_images', d['path.html'] + '/extern/jquery-ui/css/' + d['ui.jquery_ui_theme']
-      config_value d, c, 'path.jquery_mobile_css_images', d['path.html'] + '/extern/jquery-mobile/'
+      set_value user_config, :ui, :editor, 'vim -n -f'
+#      set_value user_config, :ui, :editor, 'mvim -n -f'
+#      set_value user_config, :ui, :editor, 'gvim -n -f'
+#editor=ENV['EDITOR']
+#editor='gvim -n -f'
+#editor='mvim -n -f'
+#editor='vim -n'
+#      set_value user_config, :ui, :lang, :en
+      set_value user_config, :ui, :lang, :ru
 
-      config_value d, c, 'path.db_bookmarklet_form', d['path.db'] + '/bookmarklet/form.js'
-      config_value d, c, 'path.db_bookmarklet_fill', d['path.db'] + '/bookmarklet/fill.js'
+      set_value user_config, :cryptobox, :version, VERSION
+      set_value user_config, :cryptobox, :date_format, '%H:%M %d.%m.%Y'
+      set_value user_config, :cryptobox, :date, DateTime.now.strftime(@config[:cryptobox][:date_format])
 
-      config_value d, c, 'backup.path', d['path.db'] + '/cryptobox.tar'
-      config_value d, c, 'backup.files', [
-                   d['path.db_cipher'],
-                   d['path.db_hmac'],
-                   d['path.db_html'],
-                   d['path.db_conf'],
-                   d['path.db_json'],
-                   d['path.db_html'],
-                   d['path.clippy'] ]
+      set_value user_config, :path, :root, Dir.pwd
+
+      set_value user_config, :path, :db, File.expand_path(File.join(@config[:path][:root], 'private'))
+      set_value user_config, :path, :db_cipher, File.expand_path(File.join(@config[:path][:db], 'cryptobox'))
+      set_value user_config, :path, :db_json, File.expand_path(@config[:path][:db_cipher] + '.json')
+      set_value user_config, :path, :db_html, File.expand_path(File.join(@config[:path][:db], 'html/cryptobox.html'))
+      set_value user_config, :path, :db_clippy, File.expand_path(File.join(@config[:path][:db], 'html/clippy.swf'))
+      set_value user_config, :path, :db_mobile_html, File.expand_path(File.join(@config[:path][:db], 'html/m.cryptobox.html'))
+      set_value user_config, :path, :db_chrome, File.expand_path(File.join(@config[:path][:db], 'chrome'))
+      set_value user_config, :path, :db_chrome_cfg, File.expand_path(File.join(@config[:path][:db], 'chrome/cfg.js'))
+      set_value user_config, :path, :db_include, File.expand_path(File.join(@config[:path][:db], 'include'))
+      set_value user_config, :path, :db_backup, File.expand_path(File.join(@config[:path][:db], 'backup'))
+      set_value user_config, :path, :db_bookmarklet_form, File.expand_path(File.join(@config[:path][:db], 'bookmarket/form.js'))
+      set_value user_config, :path, :db_bookmarklet_fill, File.expand_path(File.join(@config[:path][:db], 'bookmarket/fill.js'))
+      set_value user_config, :path, :tmp, File.expand_path(File.join(@config[:path][:db], 'tmp'))
+
+      set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
+      set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
+      set_value user_config, :path, :html, File.expand_path(File.join(@config[:path][:templates], 'html'))
+      set_value user_config, :path, :bookmarklet, File.expand_path(File.join(@config[:path][:templates], 'bookmarklet'))
+      set_value user_config, :path, :chrome, File.expand_path(File.join(@config[:path][:templates], 'chrome'))
+      set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:html], '/extern/clippy/build/clippy.swf'))
+
+      set_value user_config, :path, :jquery_ui_css_images, File.expand_path(File.join(@config[:path][:html], '/extern/jquery-ui/css/', @config[:ui][:jquery_ui_theme]))
+      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:html], '/extern/jquery-mobile/'))
 
       # todo: add text (lang)
-
-      return d
     end
   end
 end

@@ -1,0 +1,18 @@
+<%
+text = ''
+text += "<p><strong>Cardholder:</strong> #{@vars[:cardholder]}</p>" if @vars.has_key? :cardholder
+text += "<p><strong>Number:</strong> #{@vars[:number]}</p>" if @vars.has_key? :number
+text += "<p><strong>Type:</strong> #{@vars[:type]}</p>" if @vars.has_key? :type
+text += "<p><strong>CVV:</strong> #{@vars[:cvv]}</p>" if @vars.has_key? :cvv
+text += "<p><strong>PIN:</strong> #{@vars[:pin]}</p>" if @vars.has_key? :pin
+text += "<p><strong>Secret word:</strong> #{@vars[:secret]}</p>" if @vars.has_key? :secret
+text += "<p><strong>Issue date:</strong> #{@vars[:issue]}</p>" if @vars.has_key? :issue
+text += "<p><strong>Expiry date:</strong> #{@vars[:expiry]}</p>" if @vars.has_key? :expiry
+text += "<p><strong>Website:</strong> <a href='#{@vars[:url]}'>#{@vars[:url]}</a></p>" if @vars.has_key? :url
+text += "<p><strong>Phone:</strong> #{@vars[:phone]}</p>" if @vars.has_key? :phone
+%>
+
+{
+	"name": "<%= @vars[:name] %>",
+	"text": "<%= text %>"
+}

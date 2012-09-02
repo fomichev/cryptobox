@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Cryptobox</title>
+		<style>
+			body {
+				min-width:357px;
+				overflow-x:hidden;
+			}
+
+			img {
+				margin:5px;
+				border:2px solid black;
+				vertical-align:middle;
+				width:75px;
+				height:75px;
+			}
+		</style>
+
+		<script src="jquery-1.7.2.min.js"></script>
+
+		<script type="text/javascript" src="core-min.js"></script>
+		<script type="text/javascript" src="enc-base64-min.js"></script>
+		<script type="text/javascript" src="cipher-core-min.js"></script>
+		<script type="text/javascript" src="aes-min.js"></script>
+		<script type="text/javascript" src="sha1-min.js"></script>
+		<script type="text/javascript" src="hmac-min.js"></script>
+		<script type="text/javascript" src="pbkdf2-min.js"></script>
+
+		<script src="cfg.js"></script>
+		<script src="crypto.js"></script>
+		<script src="login.js"></script>
+		<script src="lock.js"></script>
+		<script src="fill.js"></script>
+
+		<script src="popup.js"></script>
+	</head>
+	<body>
+		<div id="div-locked">
+			<form id="form-unlock">
+				<h1>@text.enter_password@</h1>
+				<p><input id="input-password" type="password" /></p>
+				<p><button type="submit" id="button-unlock">@text.button_unlock@</button></p>
+			</form>
+		</div>
+
+		<div id="div-login-error">
+			@text.login_not_found@
+		</div>
+
+		<div id="div-unlocked">
+			<div id="div-matched">
+				<ul>
+					<li><a href="#">lalalal</a></li>
+				</ul>
+			</div>
+
+			<div id="div-other">
+				<ul>
+					<li><a href="#">lalalal1</a></li>
+					<li><a href="#">lalalal2</a></li>
+					<li><a href="#">lalalal3</a></li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>

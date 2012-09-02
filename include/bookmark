@@ -1,0 +1,10 @@
+<%
+html_comment = ''
+html_comment += "<p>#{@vars[:comment]}</p>" if @vars.has_key? :comment
+%>
+
+{
+	"name": "<%= @vars[:name] %>",
+	"text": "<a class=\"button-goto\" href=\"<%= @vars[:url] %>\" target=\"_blank\">Go to site</a><%= html_comment %>",
+	"mtext": "<a href=\"<%= @vars[:url] %>\" data-role=\"button\">Go to site</a><%= html_comment %>"
+}

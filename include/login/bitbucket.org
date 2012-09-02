@@ -1,0 +1,20 @@
+{
+	"type":"login",
+	"name": "Bitbucket",
+	"address": "https://bitbucket.org/account/signin/?next=/",
+	"form":
+	{
+		"broken": true,
+		"action": "https://bitbucket.org/account/signin/",
+		"method": "post",
+		"fields":
+		{
+			"csrfmiddlewaretoken": "__token__",
+			"next": "/",
+			"username": "@name@",
+			"password": "@password@",
+			"submit": "Log in"
+		}
+	}
+}
+

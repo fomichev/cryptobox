@@ -1,0 +1,21 @@
+# this is a comment
+login/dropbox.com:
+  user: s@fomichev.me
+  pass: who knows
+
+login/gmail.com:
+  user: s@fomichev.me
+  pass: really don''t know
+
+# this is a comment
+identity:
+  name: test
+  firstname: my name
+  passport: qwer
+            blah blah blah
+
+            blah blah
+
+note:
+  name: test
+  text: test

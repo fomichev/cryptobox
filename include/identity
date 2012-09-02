@@ -1,0 +1,38 @@
+<%
+#Supported variables:
+#- firstname
+#- initial
+#- lastname
+#- birth
+#- company
+#- job
+#- country
+#- state
+#- address1
+#- address2
+#- city
+#- zip
+#- phone
+#- passport
+
+text = ''
+text += "<p><strong>First name:</strong> #{@vars[:firstname]}</p>" if @vars.has_key? :firstname
+text += "<p><strong>Initial:</strong> #{@vars[:initial]}</p>" if @vars.has_key? :initial
+text += "<p><strong>Last name:</strong> #{@vars[:lastname]}</p>" if @vars.has_key? :lastname
+text += "<p><strong>Birth date:</strong> #{@vars[:birth]}</p>" if @vars.has_key? :birth
+text += "<p><strong>Company:</strong> #{@vars[:company]}</p>" if @vars.has_key? :company
+text += "<p><strong>Job title:</strong> #{@vars[:job]}</p>" if @vars.has_key? :job
+text += "<p><strong>Country:</strong> #{@vars[:country]}</p>" if @vars.has_key? :country
+text += "<p><strong>State/Province:</strong> #{@vars[:state]}</p>" if @vars.has_key? :state
+text += "<p><strong>Address line 1:</strong> #{@vars[:address1]}</p>" if @vars.has_key? :address1
+text += "<p><strong>Address line 2:</strong> #{@vars[:address2]}</p>" if @vars.has_key? :address2
+text += "<p><strong>City:</strong> #{@vars[:city]}</p>" if @vars.has_key? :city
+text += "<p><strong>Zip/postal code:</strong> #{@vars[:zip]}</p>" if @vars.has_key? :zip
+text += "<p><strong>Phone:</strong> #{@vars[:phone]}</p>" if @vars.has_key? :phone
+text += "<p><strong>Passport:</strong> #{@vars[:passport]}</p>" if @vars.has_key? :passport
+%>
+
+{
+	"name": "<%= @vars[:name] %>",
+	"text": "<%= text %>"
+}

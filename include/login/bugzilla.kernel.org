@@ -1,0 +1,17 @@
+{
+	"type":"login",
+	"name": "Kernel Bug Tracker",
+	"address": "https://bugzilla.kernel.org/",
+	"form":
+	{
+		"action": "https://bugzilla.kernel.org/index.cgi",
+		"method": "post",
+		"fields":
+		{
+			"Bugzilla_login": "@name@",
+			"Bugzilla_password": "@password@",
+			"Bugzilla_restrictlogin": "on",
+			"GoAheadAndLogIn": "Login"
+		}
+	}
+}

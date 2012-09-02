@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+		<title><%= @text[:title] %></title>
+		<style media="screen" type="text/css">
+<%= incl_plain(File.join(@config[:path][:html], 'desktop/style.css')) %>
+<%= incl_plain(File.join(@config[:path][:html], "extern/jquery-ui/css/#{@config[:ui][:jquery_ui_theme]}/jquery-ui-1.8.21.custom.css")) %>
+		</style>
+		<script type="text/javascript">
+<%= incl_plain(File.join(@config[:path][:html], 'extern/jquery/jquery-1.7.2.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/jquery-ui/js/jquery-ui-1.8.21.custom.min.js')) %>
+
+var cfg = <%= incl(@config[:path][:db_json]) %>;
+
+<%= incl(File.join(@config[:path][:html], 'js/login.js')) %>
+<%= incl(File.join(@config[:path][:html], 'js/view.js')) %>
+<%= incl(File.join(@config[:path][:html], 'js/password.js')) %>
+<%= incl(File.join(@config[:path][:html], 'js/crypto.js')) %>
+<%= incl(File.join(@config[:path][:html], 'js/lock.js')) %>
+<%= incl(File.join(@config[:path][:html], 'desktop/jquery-ui.js')) %>
+
+<%= incl_plain(File.join(@config[:path][:html], 'extern/seedrandom.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/enc-base64-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/cipher-core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/aes-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/sha1-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/hmac-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
+		</script>
+	</head>
+	<body>
+		<noscript><%= @text[:noscript] %></noscript>
+
+		<div id="div-locked">
+			<form id="form-unlock">
+				<h1><%= @text[:enter_password] %></h1>
+				<p><input id="input-password" type="password" /></p>
+				<p><button type="submit" id="button-unlock"><%= @text[:button_unlock] %></button></p>
+			</form>
+		</div>
+
+		<div id="div-unlocked">
+			<div id="div-header">
+				<span><input type="text" id="input-filter" /></span>
+				<button id="button-generate-show"><%= @text[:button_generate] %></button>
+				<button id="button-lock"><%= @text[:button_lock] %></button>
+			</div>
+
+			<div id="div-tabs"></div>
+
+			<div id="div-generate" title="<%= @text[:title_generate] %>">
+				<form>
+					<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" /><%= @text[:generate_length] %><br />
+					<input type="checkbox" id="input-include-num" checked /><%= @text[:generate_numbers] %><br />
+					<input type="checkbox" id="input-include-punc" checked /><%= @text[:generate_punctuation] %><br />
+					<input type="checkbox" id="input-include-uc" checked /><%= @text[:generate_upper_case] %><br />
+					<input type="checkbox" id="input-pronounceable" /><%= @text[:generate_pronounceable] %><br />
+					<p><%= @text[:generated] %></p>
+					<p><input type="text" id="intput-generated-password" size="30" /></p>
+				</form>
+			</div>
+
+			<div id="div-token" title="<%= @text[:title_token] %>">
+				<input type="text" id="input-json" size="32" />
+			</div>
+		</div>
+		<div id="div-copyright" class="ui-widget">
+			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
+		</div>
+	</body>
+</html>

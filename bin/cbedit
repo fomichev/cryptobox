@@ -6,21 +6,20 @@ if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
 end
 
 require 'optparse'
+require 'cryptobox'
 
-require 'cryptobox/config'
-require 'cryptobox/db'
-require 'cryptobox/editor'
-
-options = {}
-options[:update] = true
-options[:edit] = true
-options[:verbose] = false
+$verbose = false
+options = {
+  update: true,
+  edit: true,
+  stdout: false
+}
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: cbcreate [options]"
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-    options[:verbose] = v
+    $verbose = v
   end
   opts.on("-e", "--[no-]edit", "Run editor (default)") do |v|
     options[:edit] = v
@@ -28,7 +27,10 @@ OptionParser.new do |opts|
   opts.on("-u", "--[no-]update", "Generate HTML (default)") do |v|
     options[:update] = v
   end
-  opts.on("-c", "--config PATH", String, "Configuration file path") do |path|
+  opts.on("--stdout", "Print decrypted data to standard output") do |v|
+    options[:stdout] = v
+  end
+  opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
   end
   opts.on_tail("-h", "--help", "Show this message") do
@@ -36,17 +38,22 @@ OptionParser.new do |opts|
     exit
   end
   opts.on_tail("--version", "Show version") do
-    puts "Cryptobox #{Cryptobox::Config::VERSION}"
+    puts "Cryptobox #{Cryptobox::VERSION}"
     exit
   end
 end.parse!
 
 config = Cryptobox::Config.new options[:config]
-db = Cryptobox::Db.new config['path.db_cipher'], config['path.db_conf']
+db = Cryptobox::Db.new config[:path][:db_cipher], config[:path][:db_backup]
 db.load
 
+if options[:stdout]
+  STDOUT.puts db.plaintext
+  exit 0
+end
+
 if options[:edit]
-  new_plaintext = edit db.plaintext
+  new_plaintext = edit config[:ui][:editor], db.plaintext
   exit(0) if new_plaintext == db.plaintext
 
   db.plaintext = new_plaintext
@@ -54,5 +61,8 @@ if options[:edit]
 end
 
 if options[:update]
-  # FIXME todo
+  generate_json config, db
+  generate_html config
+  generate_bookmarklet config
+#  generate_chrome config
 end

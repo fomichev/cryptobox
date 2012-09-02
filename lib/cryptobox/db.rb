@@ -2,86 +2,78 @@ require 'yaml'
 require 'openssl'
 require 'base64'
 require 'securerandom'
+require 'fileutils'
+require 'date'
 require 'io/console'
 
 module Cryptobox
   class Db
-    attr_accessor :config_path, :plaintext
-    @@format_version = 3
+    FORMAT_VERSION = 4
+    PBKDF2_SALT_LEN = 8
+    PBKDF2_ITERATIONS = 4096
+    AES_IV_LEN = 16
 
-    def initialize(db_path, config_path)
+    attr_accessor :plaintext
+    attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :hmac
+
+    public
+
+    # @db_path - path to cryptobox database
+    # @backup_path - use given path as backup directory
+    def initialize(db_path, backup_path)
       @db_path = db_path
-      @config_path = config_path
+      @backup_path = backup_path
       @password = ask_password
     end
 
-    def initialize_cipher_params
-      @pbkdf2_salt = SecureRandom.random_bytes 8
-      @pbkdf2_iter = 1000
-      @aes_iv = SecureRandom.random_bytes 16
-      @hmac = nil
-    end
-
-    def ask_password(prompt='Password: ')
-      print prompt
-      password = STDIN.noecho(&:gets).sub(/\n$/, '')
-      puts
-      return password
-    end
-
+    # Create empty database, ask user to confirm if it already exists
     def create
       password2 = ask_password 'Confirm password: '
       raise "Passwords don't match!" if @password != password2
 
-      dirname = File.dirname @config_path
+      dirname = File.dirname @db_path
       Dir.mkdir dirname unless Dir.exist? dirname
 
       initialize_cipher_params
       derive_key
     end
 
-    def load_config
-      config = YAML.load_file @config_path
+    # Load database from @db_path
+    def load
+      db = YAML::load(File.read(@db_path))
 
-      @pbkdf2_salt = from_base64 config['pbkdf2']['salt']
-      @pbkdf2_iter = config['pbkdf2']['iter'].to_i
-      @aes_iv = from_base64 config['aes']['iv']
-      @hmac = from_base64 config['cryptobox']['hmac']
+      @pbkdf2_salt = from_base64 db['pbkdf2_salt']
+      @pbkdf2_iter = db['pbkdf2_iter'].to_i
+      @aes_iv = from_base64 db['aes_iv']
+      @hmac = from_base64 db['hmac']
+      @ciphertext = from_base64 db['ciphertext']
 
-      raise 'Unsupported format version' if config['cryptobox']['format_version'] != @@format_version
+      raise 'Unsupported format version' if db['format_version'] != FORMAT_VERSION
 
       derive_key
+      @plaintext = decrypt @ciphertext
+      verify_hmac
     end
 
-    def to_base64(v)
-      return Base64.encode64(v).gsub(/\n/, '')
-    end
-
-    def from_base64(v)
-      return Base64.decode64(v)
-    end
-
-    def save_config
-      config = {}
-      config['pbkdf2'] = { 'salt' => to_base64(@pbkdf2_salt), 'iter' => @pbkdf2_iter }
-      config['aes'] = { 'iv' => to_base64(@aes_iv) }
-      config['cryptobox'] = { 'hmac' => to_base64(calculate_hmac), 'format_version' => @@format_version }
-
-      File.open(@config_path, 'w') {|f| f.write config.to_yaml }
-    end
-
-    def load
-      load_config
-      @encrypted = from_base64 IO.read(@db_path)
-      decrypt
-      verify
-    end
-
+    # Save database to @db_path
     def save
-      save_config
-      encrypt
+      backup
+      @ciphertext = encrypt @plaintext
+
+      db = {}
+      db['pbkdf2_salt'] = to_base64(@pbkdf2_salt)
+      db['pbkdf2_iter'] = @pbkdf2_iter
+      db['aes_iv'] = to_base64(@aes_iv)
+      db['hmac'] = to_base64(calculate_hmac)
+      db['format_version'] = FORMAT_VERSION
+      db['version'] = VERSION
+      db['timestamp'] = DateTime.now.to_s
+      db['ciphertext'] = @ciphertext
+
+      File.open(@db_path, 'w') {|f| f.write YAML.dump(db) }
     end
 
+    # Ask user for password and generate new encryption key
     def change_password
       password = ask_password 'New password: '
       password2 = ask_password 'Confirm password: '
@@ -91,38 +83,76 @@ module Cryptobox
       derive_key
     end
 
-    def derive_key
-      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, 32)
-    end
-
-    def calculate_hmac()
-      digest = OpenSSL::Digest::Digest.new('sha1')
-      return OpenSSL::HMAC.digest(digest, @key, @plaintext)
-    end
-
-    def decrypt
+    # Decrypt given ciphertext
+    def decrypt(ciphertext)
       cipher = OpenSSL::Cipher::AES256.new(:CBC)
       cipher.decrypt
       cipher.key = @key
       cipher.iv = @aes_iv
 
       # try
-      @plaintext = cipher.update(@encrypted) + cipher.final
+      return cipher.update(ciphertext) + cipher.final
       # catch => Invalid password
     end
 
-    def encrypt
+    # Encrypt given plaintext
+    def encrypt(plaintext)
       cipher = OpenSSL::Cipher::AES256.new(:CBC)
       cipher.encrypt
       cipher.key = @key
       cipher.iv = @aes_iv
 
-      @encrypted = cipher.update(@plaintext) + cipher.final
-
-      File.open(@db_path, 'w') {|f| f.write to_base64(@encrypted) }
+      return to_base64(cipher.update(plaintext) + cipher.final)
     end
 
-    def verify
+    private
+
+    # Generate default cipher parameters (salf, iv, etc)
+    def initialize_cipher_params
+      @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
+      @pbkdf2_iter = PBKDF2_ITERATIONS
+      @aes_iv = SecureRandom.random_bytes AES_IV_LEN
+      @hmac = nil
+    end
+
+    # Ask user password and return it
+    def ask_password(prompt='Password: ')
+      print prompt
+      password = STDIN.noecho(&:gets).sub(/\n$/, '')
+      puts
+
+      return password
+    end
+
+    # Convert given argument to base64 encoding and strip newlines
+    def to_base64(v)
+      return Base64.encode64(v).gsub(/\n/, '')
+    end
+
+    # Wrapper for Base64.decode64 (for consistency with to_base64)
+    def from_base64(v)
+      return Base64.decode64(v)
+    end
+
+    # Backup previous version of database
+    def backup
+      return unless File.exist? @db_path
+      Dir.mkdir @backup_path unless Dir.exist? @backup_path
+      FileUtils.cp @db_path, @backup_path + '/' + File.basename(@db_path)
+    end
+
+    # Get encryption key from password and store it in @key
+    def derive_key
+      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, 32)
+    end
+
+    # Calculate and return HMAC for @plaintext and @key
+    def calculate_hmac()
+      digest = OpenSSL::Digest::Digest.new('sha1')
+      return OpenSSL::HMAC.digest(digest, @key, @plaintext)
+    end
+
+    def verify_hmac
       raise 'Invalid password' if @hmac != calculate_hmac
     end
   end

@@ -6,20 +6,18 @@ if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
 end
 
 require 'optparse'
+require 'cryptobox'
 
-require 'cryptobox/config'
-require 'cryptobox/db'
-
+$verbose = false
 options = {}
-options[:verbose] = false
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: cbcreate [options]"
+  opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-    options[:verbose] = v
+    $verbose = v
   end
-  opts.on("-c", "--config PATH", String, "Configuration file path") do |path|
+  opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
   end
   opts.on_tail("-h", "--help", "Show this message") do
@@ -27,16 +25,18 @@ OptionParser.new do |opts|
     exit
   end
   opts.on_tail("--version", "Show version") do
-    puts "Cryptobox #{Cryptobox::Config::VERSION}"
+    puts "Cryptobox #{Cryptobox::VERSION}"
     exit
   end
 end.parse!
 
 config = Cryptobox::Config.new options[:config]
 
-# FIXME check if db already exist
+if File.exist? config[:path][:db_cipher]
+  exit(0) unless Cryptobox::yn "Database already exists, do you want to overwrite it?"
+end
 
-db = Cryptobox::Db.new config['path.db_cipher'], config['path.db_conf']
+db = Cryptobox::Db.new config[:path][:db_cipher], config[:path][:db_backup]
 db.create
 db.plaintext = '# Lines started with # are comments'
 db.save

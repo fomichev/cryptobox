@@ -1,0 +1,17 @@
+{
+	"type":"login",
+	"name": "Launchpad",
+	"address": "https://login.launchpad.net/7QQl4P9gVfsDFLTG/+login",
+	"form":
+	{
+		"action": "https://login.launchpad.net/7QQl4P9gVfsDFLTG/+login",
+		"method": "post",
+		"fields":
+		{
+			"csrfmiddlewaretoken": "__token__",
+			"email": "@name@",
+			"password": "@password@",
+			"continue": ""
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"type":"login",
+	"name": "Coursera",
+	"address": "https://www.coursera.org/account/signin",
+	"form":
+	{
+		"action": "",
+		"method": "post",
+		"fields":
+		{
+			"signin-email": "@name@",
+			"signin-password": "@password@"
+		}
+	}
+}

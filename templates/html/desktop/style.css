@@ -1,0 +1,16 @@
+body {
+	font-size: 12px;
+
+}
+
+#div-copyright {
+	text-align: center;
+}
+
+#div-header {
+	text-align: right;
+}
+
+#div-locked {
+	text-align: center;
+}

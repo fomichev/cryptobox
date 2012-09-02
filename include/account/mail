@@ -1,0 +1,9 @@
+<%
+html_smtp = ''
+html_smtp = "<strong>SMTP:</strong>#{@vars[:smtp]}" if @vars.has_key? [:hostname]
+%>
+
+{
+	"name": "<%= @vars[:name] %>",
+	"text": "<strong>Hostname:</strong> <%= @vars[:hostname] %>\n<%= html_smtp %><strong>Username:</strong> <%= @vars[:user] %>\n<strong>Password:</strong> <%= @vars[:pass] %>"
+}

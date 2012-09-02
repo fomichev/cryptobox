@@ -1,0 +1,4 @@
+{
+	"name": "<%= @vars[:name] %>",
+	"text": "<strong>Hostname:</strong> <%= @vars[:hostname] %>\n<strong>Username:</strong> <%= @vars[:user] %>\n<strong>Password:</strong> <%= @vars[:pass] %>"
+}
