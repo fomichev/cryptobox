@@ -213,7 +213,7 @@ Each file in the `include/` directory is a JSON file which describes the
 format and layout of entry. Variables from the entry will be substituted with
 `@variableN@` inside the JSON file and will form particular login/bookmark/etc.
 There is some special handling for the login entries, where it's expected to
-have `form` information with `@name@` and `@password@` variables.
+have `form` information with `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` variables.
 For the other entries, there will be probably only `text` variable that will
 somehow format other variables from the entry.
 
@@ -238,10 +238,10 @@ I think it's pretty straightforward. You can use aforesaid `form` bookmarklet
 on your target site. The only caveat is that it can have multiple forms on one
 page, so watch out and select the one you need (don't copy leading `[` and
 trailing `]`, JSON data should start with `{` and end with `}`). Afterwards,
-look through the JSON and place `@name@` and `@password@` into appropriate
+look through the JSON and place `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` into appropriate
 form fields (look for other logins JSON data in `include/login`, it will
 become clear from the example what to do). Better yet, you can fill in the
-form in the browser with `@name@` and `@password@` and run the bookmarklet;
+form in the browser with `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` and run the bookmarklet;
 this way, you don't need to dig into the JSON and find out were to put
 these marks, they will already be in place.
 

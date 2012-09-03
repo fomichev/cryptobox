@@ -31,6 +31,8 @@ def generate_json(config, db)
           JSON.parse(Template.new(config, path, vars).generate)
         else
           # we allow nil path only for login entries
+          puts "WARNING! didn't find include for #{type_path}"
+
           {
             'type' => 'login',
             'name' => type_path.sub(/login\//, ''),
