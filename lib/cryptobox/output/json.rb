@@ -6,8 +6,14 @@ def generate_json(config, db)
   result = [ { "type" => "magic", "value" => "270389" } ]
 
   y = YAML::load(db.plaintext)
-  y.each do |type_path, _vars|
+
+  y.each do |_type, _vars|
     # FIXME: use path separator from File?
+
+    raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/ 
+    type_path = $1
+    _vars['name'] = _vars['user'] = $2
+
     type = type_path.split('/')[0]
     path = if File.exist? File.join(config[:path][:db_include], type_path)
              File.join(config[:path][:db_include], type_path)

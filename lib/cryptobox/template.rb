@@ -11,19 +11,19 @@ class Template
   def incl_plain(path)
     verbose "Include plain #{path}"
 
-    "/* #{path} */\n" + IO.read(path)
+    "/* #{path} */\n" + IO.read(path).encode('utf-8')
   end
 
   def incl(path)
     verbose "Include #{path}"
 
-    "/* #{path} */\n" + ERB.new(File.read(path)).result(binding)
+    "/* #{path} */\n" + ERB.new(File.read(path).encode('utf-8')).result(binding)
   end
 
   def generate
     verbose "Process template #{@path}"
 
-    template = File.read(@path)
-    ERB.new(template).result(binding)
+
+    ERB.new(File.read(@path).encode 'utf-8').result(binding)
   end
 end

@@ -1,21 +1,28 @@
 # this is a comment
-login/dropbox.com:
-  user: s@fomichev.me
+login/dropbox.com s@fomichev.me:
   pass: who knows
 
-login/gmail.com:
-  user: s@fomichev.me
+login/gmail.com s@fomichev.me:
   pass: really don''t know
 
-# this is a comment
-identity:
-  name: test
+login/gmail.com 2s@fomichev.me:
+  pass: 2really don''t know
+
+identity test:
   firstname: my name
   passport: qwer
             blah blah blah
 
             blah blah
 
-note:
-  name: test
+note test:
   text: test
+
+note test test test:
+  text: test
+
+app Abc:
+  key: 123
+
+app Def:
+  key: 456
