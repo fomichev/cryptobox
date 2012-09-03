@@ -7,8 +7,8 @@
 		"method": "post",
 		"fields":
 		{
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"referrer": "https://www.xmarks.com/",
 			"append": "",
 			"token": "__token__",

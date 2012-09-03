@@ -8,8 +8,8 @@
 		"fields":
 		{
 			"utf8": "✓",
-			"user[un_or_email]": "@name@",
-			"user[password]": "@password@",
+			"user[un_or_email]": "<%= @vars[:name] %>",
+			"user[password]": "<%= @vars[:pass] %>",
 			"user[form_type]": "login",
 			"user[referrer_url]": "",
 			"invitecode": "",

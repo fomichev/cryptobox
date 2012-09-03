@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"referer": "http://ffclub.ru/forum/",
-			"UserName": "@name@",
-			"PassWord": "@password@",
+			"UserName": "<%= @vars[:name] %>",
+			"PassWord": "<%= @vars[:pass] %>",
 			"submit": "Войти",
 			"CookieDate": "1",
 			"Privacy": "1"

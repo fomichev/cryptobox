@@ -11,8 +11,8 @@
 			"session-start": "1341161889776",
 			"Domain": "",
 			"user_locale": "en_US",
-			"LoginName": "@name@",
-			"Password": "@password@"
+			"LoginName": "<%= @vars[:name] %>",
+			"Password": "<%= @vars[:pass] %>"
 		}
 	}
 }

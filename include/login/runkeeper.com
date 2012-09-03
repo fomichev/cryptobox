@@ -11,8 +11,8 @@
 			"_eventName": "login",
 			"redirectUrl": "",
 			"submit": "",
-			"email": "@name@",
-			"password": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"_sourcePage": "DX14I7Mj-C1PS4-gnBkDvGIAWFUlYF9h",
 			"__fp": "-TIeVk-xuOU="
 		}

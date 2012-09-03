@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"suno093354860576801": "@name@",
-			"sdue093354860576801": "@password@",
+			"suno093354860576801": "<%= @vars[:name] %>",
+			"sdue093354860576801": "<%= @vars[:pass] %>",
 			"stacCheck": "on"
 		}
 	}

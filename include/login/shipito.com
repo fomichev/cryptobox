@@ -11,8 +11,8 @@
 			"id_language": "eng",
 			"referer": "",
 			"id_shipito_present": "",
-			"email": "@name@",
-			"password": "@password@"
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
 		}
 	}
 }

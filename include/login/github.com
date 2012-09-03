@@ -8,8 +8,8 @@
 		"fields":
 		{
 			"authenticity_token": "__token__",
-			"login": "@name@",
-			"password": "@password@",
+			"login": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"commit": "Log in"
 		}
 	}

@@ -10,8 +10,8 @@
 		{
 			"utf8": "✓",
 			"authenticity_token": "__token__",
-			"user[login]": "@name@",
-			"user[password]": "@password@",
+			"user[login]": "<%= @vars[:name] %>",
+			"user[password]": "<%= @vars[:pass] %>",
 			"commit": "Log in"
 		}
 	}

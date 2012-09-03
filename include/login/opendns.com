@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"dont_expire": "on",
 			"sign-in": "Sign in",
 			"return_to": "http://dashboard.opendns.com/",

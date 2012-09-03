@@ -10,9 +10,9 @@ def generate_json(config, db)
   y.each do |_type, _vars|
     # FIXME: use path separator from File?
 
-    raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/ 
+    raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/
     type_path = $1
-    _vars['name'] = _vars['user'] = $2
+    _vars['name'] = $2
 
     type = type_path.split('/')[0]
     path = if File.exist? File.join(config[:path][:db_include], type_path)
@@ -46,7 +46,7 @@ def generate_json(config, db)
 
     case type
     when 'login'
-      j['vars'] = { 'user' => vars[:user], 'pass' => vars[:pass] }
+      j['vars'] = { 'user' => vars[:name], 'pass' => vars[:pass] }
       j['vars']['secret'] = vars[:secret] if vars.has_key? :secret
       j['vars']['note'] = vars[:note] if vars.has_key? :note
     end

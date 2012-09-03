@@ -11,8 +11,8 @@
 			"__EVENTARGUMENT": "",
 			"__VIEWSTATE": "__token__",
 			"__VIEWSTATEENCRYPTED": "",
-			"ctl00$right$RightPanelLogin$vtcUserName": "@name@",
-			"ctl00$right$RightPanelLogin$vtcPassword": "@password@",
+			"ctl00$right$RightPanelLogin$vtcUserName": "<%= @vars[:name] %>",
+			"ctl00$right$RightPanelLogin$vtcPassword": "<%= @vars[:pass] %>",
 			"ctl00$right$RightPanelLogin$btnLogin": "Войти"
 		}
 	}

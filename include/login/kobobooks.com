@@ -11,8 +11,8 @@
 			"SignInCreateMode": "1",
 			"SignInCreateMode": "2",
 			"UseKoboAuthentication": "True",
-			"UserIdentifier": "@name@",
-			"Password": "@password@",
+			"UserIdentifier": "<%= @vars[:name] %>",
+			"Password": "<%= @vars[:pass] %>",
 			"createSubmit": "Continue"
 		}
 	}

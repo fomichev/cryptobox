@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"ref": "",
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"remember_me": "1",
 			"action": "Login"
 		}

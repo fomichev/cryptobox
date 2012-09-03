@@ -12,8 +12,8 @@
 			"CHANNEL": "WWW",
 			"P_ISOC_ID": "",
 			"PREFIX": "",
-			"LOGIN": "@name@",
-			"PASSWD": "@password@"
+			"LOGIN": "<%= @vars[:name] %>",
+			"PASSWD": "<%= @vars[:pass] %>"
 		}
 	}
 }

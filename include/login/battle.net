@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"accountName": "@name@",
-			"password": "@password@",
+			"accountName": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"persistLogin": "off"
 		}
 	}

@@ -33,8 +33,8 @@
 			"rtmData": "__token__",
 			"bUrlPrfx": "__token__",
 			"kgct": "",
-			"userid": "@name@",
-			"pass": "@password@",
+			"userid": "<%= @vars[:name] %>",
+			"pass": "<%= @vars[:pass] %>",
 			"keepMeSignInOption": "1"
 		}
 	}

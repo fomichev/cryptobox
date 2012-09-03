@@ -9,8 +9,8 @@
 		"method": "post",
 		"fields":
 		{
-			"LoginForm[email]": "@name@",
-			"LoginForm[password]": "@password@",
+			"LoginForm[email]": "<%= @vars[:name] %>",
+			"LoginForm[password]": "<%= @vars[:pass] %>",
 			"LoginForm[rememberMe]": "0"
 		}
 	}

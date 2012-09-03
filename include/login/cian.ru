@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"remember": "0",
-			"id_user": "@name@",
-			"password": "@password@"
+			"id_user": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
 		}
 	}
 }

@@ -10,8 +10,8 @@
 		{
 			"op": "login",
 			"tmpl": "profile/home",
-			"username": "@name@",
-			"password": "@password@"
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
 		}
 	}
 }

@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"fromForm": "true",
-			"email": "@name@",
-			"password": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"keep": "on"
 		}
 	}

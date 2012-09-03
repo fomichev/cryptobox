@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"formid": "__token__",
-			"email_address": "@name@",
-			"password": "@password@"
+			"email_address": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
 		}
 	}
 }

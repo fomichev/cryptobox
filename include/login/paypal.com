@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"login_email": "@name@",
-			"login_password": "@password@",
+			"login_email": "<%= @vars[:name] %>",
+			"login_password": "<%= @vars[:pass] %>",
 			"target_page": "0",
 			"submit.x": "Log In",
 			"form_charset": "UTF-8",

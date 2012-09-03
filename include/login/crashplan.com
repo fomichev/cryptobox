@@ -12,8 +12,8 @@
 			"onSuccess": "/loginSuccess.vtl",
 			"onFailure": "/account/login.vtl",
 			"onCancel": "",
-			"loginForm.username": "@name@",
-			"loginForm.password": "@password@",
+			"loginForm.username": "<%= @vars[:name] %>",
+			"loginForm.password": "<%= @vars[:pass] %>",
 			"loginForm.remember": "false"
 		}
 	}

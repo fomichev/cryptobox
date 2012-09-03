@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"frmIndex": "frmIndex6b22881762ec8568b70acd458ea32014",
-			"eldanh": "@name@",
-			"pwrd": "@password@",
+			"eldanh": "<%= @vars[:name] %>",
+			"pwrd": "<%= @vars[:pass] %>",
 			"public_pc__orig": "Y",
 			"public_pc": "Y",
 			"public_pc": "N",

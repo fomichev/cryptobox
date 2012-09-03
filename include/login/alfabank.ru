@@ -10,8 +10,8 @@
 		{
 			"submitted": "true",
 			"auth.logon": "do",
-			"auth.name": "@name@",
-			"auth.passwd": "@password@",
+			"auth.name": "<%= @vars[:name] %>",
+			"auth.passwd": "<%= @vars[:pass] %>",
 			"auth.persistent": "1"
 		}
 	}

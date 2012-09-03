@@ -10,8 +10,8 @@
 		{
 			"st.redirect": "",
 			"st.posted": "set",
-			"st.email": "@name@",
-			"st.password": "@password@",
+			"st.email": "<%= @vars[:name] %>",
+			"st.password": "<%= @vars[:pass] %>",
 			"st.remember": "on",
 			"st.fJS": "enabled",
 			"st.st.screenSize": "1366 x 768",

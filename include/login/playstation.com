@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"loginName": "@name@",
-			"password": "@password@"
+			"loginName": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
 		}
 	}
 }

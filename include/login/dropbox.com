@@ -7,7 +7,7 @@
 		"method": "post",
 		"fields":
 		{
-			"login_email": "<%= @vars[:user] %>",
+			"login_email": "<%= @vars[:name] %>",
 			"login_password": "<%= @vars[:pass] %>",
 			"remember_me": "on",
 			"cont": "/home"

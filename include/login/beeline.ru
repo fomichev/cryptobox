@@ -12,8 +12,8 @@
 			"_forwardName": "",
 			"_resetBreadCrumbs": "",
 			"_expandStatus": "",
-			"userName": "@name@",
-			"password": "@password@",
+			"userName": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"ecareAction": "login"
 		}
 	}

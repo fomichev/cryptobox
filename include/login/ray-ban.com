@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"login[username]": "@name@",
-			"login[password]": "@password@",
+			"login[username]": "<%= @vars[:name] %>",
+			"login[password]": "<%= @vars[:pass] %>",
 			"send": ""
 		}
 	}

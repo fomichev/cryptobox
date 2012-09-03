@@ -18,8 +18,8 @@
 			"checkedDomains": "youtube",
 			"timeStmp": "",
 			"secTok": "",
-			"Email": "@name@",
-			"Passwd": "@password@",
+			"Email": "<%= @vars[:name] %>",
+			"Passwd": "<%= @vars[:pass] %>",
 			"signIn": "Войти",
 			"PersistentCookie": "yes",
 			"rmShown": "1"

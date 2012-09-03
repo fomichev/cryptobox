@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"feed_id": "@name@",
-			"password": "@password@",
+			"feed_id": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"form_check": "__token__"
 		}
 	}

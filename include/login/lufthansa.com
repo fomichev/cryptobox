@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"userid": "@name@",
-			"password": "@password@",
+			"userid": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"loginType": "loginLayer",
 			"portalId": "LH",
 			"siteId": "RU",

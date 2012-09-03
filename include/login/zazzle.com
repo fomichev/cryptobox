@@ -11,8 +11,8 @@
 			"process": "login",
 			"lru": "http://www.zazzle.com/",
 			"tosmsg": "True",
-			"login_username": "@name@",
-			"login_password": "@password@"
+			"login_username": "<%= @vars[:name] %>",
+			"login_password": "<%= @vars[:pass] %>"
 		}
 	}
 }

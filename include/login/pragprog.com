@@ -10,8 +10,8 @@
 		{
 			"utf8": "✓",
 			"authenticity_token": "__token__",
-			"email": "@name@",
-			"password": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"identity_url": "Click to Sign In",
 			"remember_me": "1"
 		}

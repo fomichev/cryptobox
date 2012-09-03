@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"LoginGroup": "HasAccountRadio",
-			"Login": "@name@",
-			"Password": "@password@",
+			"Login": "<%= @vars[:name] %>",
+			"Password": "<%= @vars[:pass] %>",
 			"CapabilityAgree": "on",
 			"LoginGroup": "NewUserRadio"
 		}

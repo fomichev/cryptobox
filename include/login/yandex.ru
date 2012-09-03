@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"retpath": "http%3A%2F%2Fmail.yandex.ru%2F",
-			"login": "@name@",
-			"passwd": "@password@",
+			"login": "<%= @vars[:name] %>",
+			"passwd": "<%= @vars[:pass] %>",
 			"twoweeks": "yes",
 			"timestamp": ""
 		}

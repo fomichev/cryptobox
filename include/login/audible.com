@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"email": "@name@",
-			"password": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"appActionToken": "__token__",
 			"appAction": "audibleAction",
 			"rdpath": "",

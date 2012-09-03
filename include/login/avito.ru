@@ -9,8 +9,8 @@
 		"method": "post",
 		"fields":
 		{
-			"login": "@name@",
-			"password": "@password@",
+			"login": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"quick_expire": "on",
 			"submit": "logon"
 		}

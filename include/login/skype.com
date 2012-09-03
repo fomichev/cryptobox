@@ -12,8 +12,8 @@
 			"etm": "__token__",
 			"js_time": "",
 			"timezone_field": "__token__",
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"blackbox": "__token__",
 			"session_token": "__token__"
 		}

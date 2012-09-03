@@ -11,8 +11,8 @@
 		{
 			"csrfmiddlewaretoken": "__token__",
 			"next": "/",
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"submit": "Log in"
 		}
 	}

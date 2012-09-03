@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"session[email]": "@name@",
-			"session[password]": "@password@",
+			"session[email]": "<%= @vars[:name] %>",
+			"session[password]": "<%= @vars[:pass] %>",
 			"session[remember_token]": "0",
 			"commit": "Sign In"
 		}

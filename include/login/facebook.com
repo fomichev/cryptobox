@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"lsd": "AVpaXg_I",
-			"email": "@name@",
-			"pass": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"pass": "<%= @vars[:pass] %>",
 			"persistent": "1",
 			"default_persistent": "0",
 			"charset_test": "€,´,€,´,水,Д,Є",

@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"UserGroupsUser[username]": "@name@",
-			"UserGroupsUser[password]": "@password@",
+			"UserGroupsUser[username]": "<%= @vars[:name] %>",
+			"UserGroupsUser[password]": "<%= @vars[:pass] %>",
 			"UserGroupsUser[rememberMe]": "0",
 			"UserGroupsUser[rememberMe]": "1",
 			"yt0": "Войти"

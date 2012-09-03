@@ -8,8 +8,8 @@
 		"method": "post",
 		"fields":
 		{
-			"Bugzilla_login": "@name@",
-			"Bugzilla_password": "@password@",
+			"Bugzilla_login": "<%= @vars[:name] %>",
+			"Bugzilla_password": "<%= @vars[:pass] %>",
 			"Bugzilla_restrictlogin": "on",
 			"GoAheadAndLogIn": "Login"
 		}

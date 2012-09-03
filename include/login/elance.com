@@ -13,8 +13,8 @@
 			"redirect": "",
 			"login_type": "",
 			"token": "__token__",
-			"lnm": "@name@",
-			"pwd": "@password@",
+			"lnm": "<%= @vars[:name] %>",
+			"pwd": "<%= @vars[:pass] %>",
 			"keepmesignin": "on"
 		}
 	}

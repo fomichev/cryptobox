@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"op": "login-main",
-			"user": "@name@",
-			"passwd": "@password@",
+			"user": "<%= @vars[:name] %>",
+			"passwd": "<%= @vars[:pass] %>",
 			"rem": "on"
 		}
 	}

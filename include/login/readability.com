@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"csrfmiddlewaretoken": "__token__",
-			"username": "@name@",
-			"password": "@password@",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"remember-me": "on",
 			"next": ""
 		}

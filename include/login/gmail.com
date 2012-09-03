@@ -21,7 +21,7 @@
 			"checkedDomains": "youtube",
 			"timeStmp": "",
 			"secTok": "",
-			"Email": "<%= @vars[:user] %>",
+			"Email": "<%= @vars[:name] %>",
 			"Passwd": "<%= @vars[:pass] %>",
 			"signIn": "Sign in",
 			"PersistentCookie": "yes",

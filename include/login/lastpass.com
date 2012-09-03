@@ -20,8 +20,8 @@
 			"uuid": "",
 			"sesameotp": "",
 			"iterations": "1",
-			"email": "@name@",
-			"password": "@password@",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
 			"rememberemail": "off"
 		}
 	}

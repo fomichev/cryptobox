@@ -9,8 +9,8 @@
 		"method": "get",
 		"fields":
 		{
-			"username": "@name@",
-			"passphrase": "@password@"
+			"username": "<%= @vars[:name] %>",
+			"passphrase": "<%= @vars[:pass] %>"
 		}
 	}
 }

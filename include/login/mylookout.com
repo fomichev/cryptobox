@@ -10,8 +10,8 @@
 		{
 			"authenticity_token": "__token__",
 			"redirect": "",
-			"user[email]": "@name@",
-			"user[password]": "@password@",
+			"user[email]": "<%= @vars[:name] %>",
+			"user[password]": "<%= @vars[:pass] %>",
 			"login": "Log In"
 		}
 	}

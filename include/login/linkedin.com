@@ -9,8 +9,8 @@
 		"fields":
 		{
 			"source_app": "",
-			"session_key": "@name@",
-			"session_password": "@password@",
+			"session_key": "<%= @vars[:name] %>",
+			"session_password": "<%= @vars[:pass] %>",
 			"signin": "Sign In",
 			"session_redirect": "",
 			"csrfToken": "__token__",
