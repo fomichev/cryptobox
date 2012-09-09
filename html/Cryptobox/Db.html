@@ -71,6 +71,10 @@
           
           <li><a href="#method-i-create">#create</a></li>
           
+          <li><a href="#method-i-decrypt">#decrypt</a></li>
+          
+          <li><a href="#method-i-encrypt">#encrypt</a></li>
+          
           <li><a href="#method-i-load">#load</a></li>
           
           <li><a href="#method-i-save">#save</a></li>
@@ -122,6 +126,8 @@
         
           <li><a href="../Object.html">Object</a></li>
         
+          <li><a href="../Template.html">Template</a></li>
+        
         </ul>
         <div id="no-class-search-results" style="display: none;">No matching classes.</div>
       </div>
@@ -151,7 +157,22 @@
         <h3 class="section-header">Constants</h3>
         <dl>
         
+          <dt><a name="AES_IV_LEN">AES_IV_LEN</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
           <dt><a name="FORMAT_VERSION">FORMAT_VERSION</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="PBKDF2_ITERATIONS">PBKDF2_ITERATIONS</a></dt>
+          
+          <dd class="description"></dd>
+          
+        
+          <dt><a name="PBKDF2_SALT_LEN">PBKDF2_SALT_LEN</a></dt>
           
           <dd class="description"></dd>
           
@@ -165,6 +186,66 @@
       <div id="attribute-method-details" class="method-section section">
         <h3 class="section-header">Attributes</h3>
 
+        
+        <div id="aes_iv-attribute-method" class="method-detail">
+          <a name="aes_iv"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">aes_iv</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="hmac-attribute-method" class="method-detail">
+          <a name="hmac"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">hmac</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="pbkdf2_iter-attribute-method" class="method-detail">
+          <a name="pbkdf2_iter"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">pbkdf2_iter</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
+        
+        <div id="pbkdf2_salt-attribute-method" class="method-detail">
+          <a name="pbkdf2_salt"></a>
+          
+          <div class="method-heading attribute-method-heading">
+            <span class="method-name">pbkdf2_salt</span><span
+              class="attribute-access-type">[R]</span>
+          </div>
+
+          <div class="method-description">
+          
+          
+          
+          </div>
+        </div>
         
         <div id="plaintext-attribute-method" class="method-detail">
           <a name="plaintext"></a>
@@ -212,7 +293,7 @@ backup directory</p>
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/db.rb, line 18</span>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 23</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">db_path</span>, <span class="ruby-identifier">backup_path</span>)
   <span class="ruby-ivar">@db_path</span> = <span class="ruby-identifier">db_path</span>
   <span class="ruby-ivar">@backup_path</span> = <span class="ruby-identifier">backup_path</span>
@@ -253,7 +334,7 @@ backup directory</p>
             
             <div class="method-source-code" id="change_password-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/db.rb, line 72</span>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 77</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">change_password</span>
   <span class="ruby-identifier">password</span> = <span class="ruby-identifier">ask_password</span> <span class="ruby-string">'New password: '</span>
   <span class="ruby-identifier">password2</span> = <span class="ruby-identifier">ask_password</span> <span class="ruby-string">'Confirm password: '</span>
@@ -291,7 +372,7 @@ backup directory</p>
             
             <div class="method-source-code" id="create-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/db.rb, line 25</span>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 30</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">create</span>
   <span class="ruby-identifier">password2</span> = <span class="ruby-identifier">ask_password</span> <span class="ruby-string">'Confirm password: '</span>
   <span class="ruby-identifier">raise</span> <span class="ruby-string">&quot;Passwords don't match!&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@password</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">password2</span>
@@ -310,6 +391,84 @@ backup directory</p>
 
           
         </div><!-- create-method -->
+
+      
+        <div id="decrypt-method" class="method-detail ">
+          <a name="method-i-decrypt"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">decrypt</span><span
+              class="method-args">(ciphertext)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Decrypt given ciphertext</p>
+            
+
+            
+            <div class="method-source-code" id="decrypt-source">
+<pre>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 87</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">decrypt</span>(<span class="ruby-identifier">ciphertext</span>)
+  <span class="ruby-identifier">cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span><span class="ruby-operator">::</span><span class="ruby-constant">AES256</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:CBC</span>)
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">decrypt</span>
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-ivar">@key</span>
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-ivar">@aes_iv</span>
+
+  <span class="ruby-comment"># try</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">ciphertext</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>
+  <span class="ruby-comment"># catch =&gt; Invalid password</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- decrypt-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- decrypt-method -->
+
+      
+        <div id="encrypt-method" class="method-detail ">
+          <a name="method-i-encrypt"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">encrypt</span><span
+              class="method-args">(plaintext)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            <p>Encrypt given plaintext</p>
+            
+
+            
+            <div class="method-source-code" id="encrypt-source">
+<pre>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 99</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">encrypt</span>(<span class="ruby-identifier">plaintext</span>)
+  <span class="ruby-identifier">cipher</span> = <span class="ruby-constant">OpenSSL</span><span class="ruby-operator">::</span><span class="ruby-constant">Cipher</span><span class="ruby-operator">::</span><span class="ruby-constant">AES256</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value">:CBC</span>)
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">encrypt</span>
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">key</span> = <span class="ruby-ivar">@key</span>
+  <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">iv</span> = <span class="ruby-ivar">@aes_iv</span>
+
+  <span class="ruby-keyword">return</span> <span class="ruby-identifier">to_base64</span>(<span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">plaintext</span>) <span class="ruby-operator">+</span> <span class="ruby-identifier">cipher</span>.<span class="ruby-identifier">final</span>)
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- encrypt-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- encrypt-method -->
 
       
         <div id="load-method" class="method-detail ">
@@ -331,9 +490,9 @@ backup directory</p>
             
             <div class="method-source-code" id="load-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/db.rb, line 37</span>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 42</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">load</span>
-  <span class="ruby-identifier">db</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@db_path</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">load</span>(<span class="ruby-identifier">f</span>) }
+  <span class="ruby-identifier">db</span> = <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">load</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-ivar">@db_path</span>))
 
   <span class="ruby-ivar">@pbkdf2_salt</span> = <span class="ruby-identifier">from_base64</span> <span class="ruby-identifier">db</span>[<span class="ruby-string">'pbkdf2_salt'</span>]
   <span class="ruby-ivar">@pbkdf2_iter</span> = <span class="ruby-identifier">db</span>[<span class="ruby-string">'pbkdf2_iter'</span>].<span class="ruby-identifier">to_i</span>
@@ -344,7 +503,7 @@ backup directory</p>
   <span class="ruby-identifier">raise</span> <span class="ruby-string">'Unsupported format version'</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">db</span>[<span class="ruby-string">'format_version'</span>] <span class="ruby-operator">!=</span> <span class="ruby-constant">FORMAT_VERSION</span>
 
   <span class="ruby-identifier">derive_key</span>
-  <span class="ruby-identifier">decrypt</span>
+  <span class="ruby-ivar">@plaintext</span> = <span class="ruby-identifier">decrypt</span> <span class="ruby-ivar">@ciphertext</span>
   <span class="ruby-identifier">verify_hmac</span>
 <span class="ruby-keyword">end</span></pre>
             </div><!-- load-source -->
@@ -376,10 +535,10 @@ backup directory</p>
             
             <div class="method-source-code" id="save-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/db.rb, line 54</span>
+<span class="ruby-comment"># File lib/cryptobox/db.rb, line 59</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">save</span>
   <span class="ruby-identifier">backup</span>
-  <span class="ruby-identifier">encrypt</span>
+  <span class="ruby-ivar">@ciphertext</span> = <span class="ruby-identifier">encrypt</span> <span class="ruby-ivar">@plaintext</span>
 
   <span class="ruby-identifier">db</span> = {}
   <span class="ruby-identifier">db</span>[<span class="ruby-string">'pbkdf2_salt'</span>] = <span class="ruby-identifier">to_base64</span>(<span class="ruby-ivar">@pbkdf2_salt</span>)
@@ -391,7 +550,7 @@ backup directory</p>
   <span class="ruby-identifier">db</span>[<span class="ruby-string">'timestamp'</span>] = <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">to_s</span>
   <span class="ruby-identifier">db</span>[<span class="ruby-string">'ciphertext'</span>] = <span class="ruby-ivar">@ciphertext</span>
 
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@db_path</span>, <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">pretty_generate</span>(<span class="ruby-identifier">db</span>) }
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@db_path</span>, <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">dump</span>(<span class="ruby-identifier">db</span>) }
 <span class="ruby-keyword">end</span></pre>
             </div><!-- save-source -->
             

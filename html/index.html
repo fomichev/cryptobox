@@ -32,25 +32,490 @@
 <p>Copyright © 2012 by Stanislav Fomichev</p>
 </td></tr><tr><td class="rdoc-term"><p>License</p></td>
 <td>
-<p>FIXME</p>
+<p>MIT</p>
 </td></tr></table>
 
-<p>FIXME:OVERVIEW</p>
+<h2>Overview</h2>
+
+<p><a href="Cryptobox.html">Cryptobox</a> is a bunch of Ruby scripts that help
+you manage your passwords database and other sensitive data. The idea is
+simple: there is some encrypted file (<tt>private/cryptobox</tt>) where
+sensitive information is stored. To edit it you use special executable
+(<tt>cbedit</tt>) which will open editor and let you update
+passwords/bookmarks/notes/etc. When the editor is closed, <tt>cbedit</tt>
+will create beautiful and easy to navigate HTML page with all your
+sensitive information (encrypted). This HTML page will also contain
+Javascript code which can decrypt attached encrypted data on the fly when
+you provide the correct password.</p>
+
+<p>Your sensitive information is never exposed; it’s never stored on the disk
+in the plain text and exists in the HTML page only in the encrypted form.</p>
 
 <h2>Install</h2>
 
+<p>There’s no gem distribution so far, thus the only possible solution is to
+make a git clone. So to install cryptobox, make git clone of this
+repository and add <tt>&lt;path to your clone&gt;/bin</tt> directory to the
+PATH environment variable.</p>
+
+<p>Please note, that the required version of Ruby is 1.9! 1.8 will not work
+because of the threading model (and who knows what other issues are). You
+can get Ruby for Windows from <a
+href="http://www.ruby-lang.org">www.ruby-lang.org</a>; for Max OS X you can
+use <tt>brew</tt> to get Ruby; and on Linux system use the whatever package
+manager is installed on your system to install it.</p>
+
 <h2>Use</h2>
+<ul><li>
+<p>Create database (creates empty <tt>private/cryptobox</tt>)</p>
+
+<pre>$ cbcreate</pre>
+</li></ul>
+
+<p>Upon database creation, PBKDB2 salt and AES IV will be generated. That
+guarantees that even two databases with equal content will be encrypted to
+different cipher text.</p>
+<ul><li>
+<p>Edit your database (it will also update html page at
+<tt>private/html/cryptobox.html</tt> and at
+<tt>private/html/m.cryptobox.html</tt>)</p>
+
+<pre>$ cbedit</pre>
+</li></ul>
+
+<p>Whenever you edit cryptobox database, the backup file
+(<tt>private/backup/cryptobox</tt>) is created with the previous version of
+your database. So if some unexpected error happens, you can always restore
+your previous database contents.</p>
+<ul><li>
+<p>Change password (every couple of months)</p>
+
+<pre>$ cbpasswd</pre>
+</li></ul>
+
+<p>As in <tt>cbedit</tt> command, backup file will be created (or updated)
+whenever you change the password.</p>
+
+<h2>Features</h2>
+<ul><li>
+<p>Secure storage of sensitive information</p>
+</li><li>
+<p>Desktop and mobile HTML pages for ease of use</p>
+</li><li>
+<p>One-click login for sites without authenticity tokens (read more below)</p>
+</li><li>
+<p>More-than-one-click login for sites with authenticity tokens (that still
+saves you from manually copy-pasting your passwords)</p>
+</li><li>
+<p>Really small amount of code. You can get through it probably within an hour
+or two (to ensure that your data is safe)</p>
+</li><li>
+<p>Works on every platform with modern browser (everywhere)</p>
+</li><li>
+<p>Chrome extension (planned) or browser bookmarklet to login to currently
+displayed page</p>
+</li></ul>
+
+<h3>Guts</h3>
+
+<p>All information is stored in the <tt>private/cryptobox</tt> file, encrypted
+via <a
+href="http://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES</a>;
+key length is 256 bits and it is derived from your master password
+(recommend way to generate it - <a
+href="http://world.std.com/~reinhold/diceware.html">Diceware</a>) using <a
+href="http://en.wikipedia.org/wiki/Pbkdf2">PBKDF2</a> (consult your lawyer
+about whether it’s considered crime in your country). To check the
+integrity of the database, Ruby code uses <a
+href="http://en.wikipedia.org/wiki/HMAC">HMAC-MD5</a>, while HTML page
+relies on specific magic field value in the JSON data.</p>
+
+<p>When <tt>cbedit</tt> generates HTML, it asks your password, decrypts
+<tt>private/cryptbox</tt> file and merges it with JSON patterns from
+<tt>include/</tt> directory (more on this later), encrypts it using AES and
+puts this information into HTML page. Later on, when you open it in the
+browser, it will ask your password and decrypt attached database on the
+fly. So, your sensitive information is never exposed in plain text.</p>
+
+<p>The steps <tt>cbedit</tt> does are:</p>
+<ul><li>
+<p>TODO: describe how it uses pipes to run editor and what it does instead on
+Windows</p>
+</li><li>
+<p>Reads <tt>private/cryptobox</tt> and decrypts it in memory</p>
+</li><li>
+<p>For each type of entry in this file, reads appropriate JSON file from
+<tt>include/</tt> and merges it with entry’s variables (username, password,
+etc)</p>
+</li><li>
+<p>Merges all JSON entries into one string and encrypts it with AES</p>
+</li><li>
+<p>Embeds this encrypted data into pre-baked HTML page (look at
+<tt>templates/html/</tt> for</p>
+</li></ul>
+
+<p>more details)</p>
+<ul><li>
+<p>Embeds JavaScript and CSS (along with images) into HTML page and stores it</p>
+</li></ul>
+
+<p>under <tt>private/html</tt> directory (cryptobox.html - is a desktop
+version; m.cryptobox.html - is a mobile one)</p>
+
+<h3>Form bookmarklet</h3>
+
+<p>Some sites use authenticity token which they place into the HTML you get;
+the login form along with username and password fields contains hidden
+field with authenticity token. So it’s no longer possible to use one-click
+login feature with such sites (where one-click login feature is simple post
+request with known username and password). But there is a solution!</p>
+
+<p>There is a bookmarklet that you can run on a login page; it will parse the
+form data and will let you copy it in JSON format. Then, when you press
+‘Log in’ button for token based sites, you’ll be asked for this data. After
+you paste it and press ‘OK’ you’ll be automatically logged in (using
+provided authenticity token and your username/password).</p>
+
+<p>When you’re adding such form to the logins storage
+(<tt>include/login</tt>), you should set token field value to +__token__+;
+that will lead to pop-up dialog box on login asking you to provide form
+data (you may have multiple tokens within forms).</p>
+
+<p>TODO: Describe how to get this bookmark; also describe login bookmark.</p>
+
+<pre>javascript:(function(){s=document.createElement('SCRIPT');s.type='text/javascript';s.src='https://&lt;BOOKMARKLET_PATH&gt;';document.getElementsByTagName('head')[0].appendChild(s);})();</pre>
+
+<h3>Fill bookmarklet</h3>
+
+<p>TODO: describe what and why</p>
+
+<h2>Database format</h2>
+
+<p>YAML format is used for database. More information with examples can be
+found at the [appropriate page](<a href="http://yaml.org">yaml.org</a>).</p>
+
+<p>Your sensitive information is stored in the form of entries; there may be a
+number of entries, each describing particular login, bookmark, secure note
+or other information.</p>
+
+<p>Entry has the following structure (fields in square brackets are optional):</p>
+
+<pre>&lt;entry type&gt;  &lt;entry name&gt;:
+  [tag: &lt;tag&gt;]
+  [fisible: false]
+  &lt;variable1&gt;: &lt;value1&gt;
+  &lt;variableN&gt;: &lt;valueN&gt;
+  &lt;multiline&gt;: &lt;line1&gt;
+               &lt;line2&gt;</pre>
+
+<p>You don’t need to quote anything; just put variable name on the left side
+of colon and variable value on the right side of color without any quotes.</p>
+
+<p>Entry type is a relative path to a file inside the <tt>include/</tt>
+directory. And the first component in this path (until the first / of end
+of string) will form a tab in the HTML page. So, for example, if you have
+<tt>login/google.com</tt> and <tt>login/yahoo.com</tt>, there will be a
+<tt>login</tt> page (or <tt>Logins</tt> because of pre-defined
+translations) in the HTML document containing two entries. If you have
+several <tt>note</tt> entries, they will be located on anther tab. Be aware
+that you can’t have two entries with the same <tt>entry type</tt> and
+<tt>entry name</tt>!</p>
+
+<p>Each file in the <tt>include/</tt> directory is a JSON file which describes
+the format and layout of entry. Variables from the entry will be
+substituted with <tt>&lt;%= @vars[:name] %&gt;</tt> inside the JSON file
+and will form particular login/bookmark/etc. There is some special handling
+for the login entries, where it’s expected to have <tt>form</tt>
+information with <tt>&lt;%= @vars[:name] %&gt;</tt> and <tt>&lt;%=
+@vars[:pass] %&gt;</tt> variables. For the other entries, there will be
+probably only <tt>text</tt> variable that will somehow format other
+variables from the entry.</p>
+
+<p>Entry name has special meaning for login entry type: it should contain your
+username. For the other entry types, entry name is just the caption of the
+entry.</p>
+
+<p>Tag variable will let you ‘merge’ several entries into a block (they will
+be placed close to each other on the HTML page). You don’t have to use tag
+variable, it’s usage is optional (and intended to help you with the
+clutter).</p>
+
+<p>You can use <tt>visible :false</tt> to remove some entries from the final
+HTML page (this is handy for the entries you want to keep and be able to
+access at some point but don’t want it to clutter your HTML).</p>
+
+<p>Comments are started with # and ended at the end of the line.</p>
+
+<h3>Is it possible to import database from other password managers?</h3>
+
+<p>No, there is probably no easy way to automate it (taking into account the
+number of existing formats); you have to create (or use pre-created) JSON
+form layout in the <tt>include/login</tt> directory (via provided
+bookmarklet) and then add entry with your username/password to
+<tt>private/cryptobox</tt> manually.</p>
+
+<p>I’m not telling its impossible; I just see no need to implement it myself.</p>
+
+<h3>Is is possible to export database to other password managers?</h3>
+
+<p>No, there are no reasons to switch from cryptobox :-) But if you have
+strong reasons, you can always implement <tt>private/cryptobox</tt> parser
+yourself; the format is YAML, so probably all languages have some support
+of it and <tt>cbedit</tt> tool have useful <tt>--stdout</tt> argument which
+you can use to pipe your plain text database to other tools safely.</p>
+
+<h2>Extending / Adding new login (includes)</h2>
+
+<p>I think it’s pretty straightforward. You can use aforesaid <tt>form</tt>
+bookmarklet on your target site. The only caveat is that it can have
+multiple forms on one page, so watch out and select the one you need (don’t
+copy leading [ and trailing ], JSON data should start with { and end with
+}). Afterwards, look through the JSON and place <tt>&amp;lg;%= @vars[:name]
+%&amp;gt;</tt> and <tt>&lt;%= @vars[:pass] %&gt;</tt> into appropriate form
+fields (look for other logins JSON data in <tt>include/login</tt>, it will
+become clear from the example what to do). Better yet, you can fill in the
+form in the browser with the mentioned values and run the bookmarklet; this
+way, you don’t need to dig into the JSON and find out were to put these
+marks, they will already be in place.</p>
+
+<h2>Database example</h2>
+
+<pre># this is a comment
+login/dropbox.com s@fomichev.me:
+  pass: who knows
+
+login/gmail.com s@fomichev.me:
+  pass: really don''t know
+
+login/gmail.com 2s@fomichev.me:
+  pass: 2really don''t know
+
+identity test:
+  firstname: my name
+  passport: qwer
+            blah blah blah
+
+            blah blah
+
+note test:
+  text: test
+
+note test test test:
+  text: test
+        multiline
+
+app Abc:
+  key: 123
+
+app Def:
+  key: 456
+
+card bank name:
+  cardholder: Jonh Smith
+  number: 1234 5678 9012 3456
+  pin: 1234
+  cvv: 123
+
+bookmark Google:
+  url: http://google.com
+  comment: Google search</pre>
+
+<h2>Configuration</h2>
+
+<p>You can configure cryptobox via configuration file called
+<tt>.cryptoboxrc</tt>. When you run any of the cryptobox commands, it first
+searches for the <tt>.cryptoboxrc</tt> file in the current directory, then
+it tries to find this file in your home directory, and if it didn’t find
+any configuration, it will use the default one. You can also pass
+configuration file path to the tools via <tt>-c</tt> command line option.</p>
+
+<p>Configuration file is simple YAML file with the following possible
+variables:</p>
+
+<pre>path:
+  db: &lt;path to cryptobox database directory&gt;
+  db_bookmarklet_login: &lt;where to store login bookmarklet&gt;
+  db_bookmarklet_form: &lt;where to store form bookmarklet&gt;
+
+ui:
+  jquery_ui_theme: &lt;use different jquery-ui theme&gt;
+  editor: &lt;full path to your editor&gt;
+  lang: &lt;select language; currently supported are en and ru&gt;
+
+security:
+  lock_timeout_minutes: &lt;web site lock timeout in minutes&gt;
+  default_password_length: &lt;default password length in generate dialog&gt;</pre>
+
+<p>TODO: describe all possible configuration options!</p>
+
+<p>All the options are optional. You can dig default values in the
+<tt>lib/cryptobox/config.rb</tt> file.</p>
+
+<h2>Used components</h2>
+
+<h3>Ruby</h3>
+<ul><li>
+<p>On Ruby only standard bindings to OpenSSL are used to manage database</p>
+</li></ul>
+
+<h3>JavaScript</h3>
+<ul><li>
+<p>[CryptoJS 3.0.2](<a
+href="https://code.google.com/p/crypto-js/">code.google.com/p/crypto-js/</a>)
+- New BSD License</p>
+
+<pre>html/extern/CryptoJS</pre>
+</li><li>
+<p>[Random Seed 2.0](<a
+href="http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html">davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html</a>)
+- BSD</p>
+
+<pre>html/extern/seedrandom.js
+
+html/extern/seedrandom.min.js (via http://closure-compiler.appspot.com/home)</pre>
+</li><li>
+<p>[jQuery 1.7.2](<a href="http://jquery.com">jquery.com</a>) - MIT</p>
+
+<pre>html/extern/jquery</pre>
+</li><li>
+<p>[jQuery UI 1.8.21](<a
+href="http://jqueryui.com/download">jqueryui.com/download</a>) - MIT</p>
+
+<pre>html/extern/jquery-ui (Dialog, Tabs, Accordion, Button, Flick theme)</pre>
+</li><li>
+<p>[jQuery Mobile 1.1.0](<a
+href="http://jquerymobile.com">jquerymobile.com</a>) - MIT</p>
+
+<pre>html/extern/jquery-mobile</pre>
+</li><li>
+<p>[Clippy 7329b72360](<a
+href="https://github.com/mojombo/clippy">github.com/mojombo/clippy</a>) -
+MIT</p>
+
+<pre>html/extern/clippy
+
+private/html/clippy.swf</pre>
+</li></ul>
+
+<h2>Decrypt data without cryptobox</h2>
+
+<p>TODO: update! This is out of date and should be adapted to new database
+format!</p>
+
+<p>Even if you don’t have cryptobox available, you may still fairly easy
+decrypt your data.</p>
+
+<p>Lets suppose, you have the following data encrypted:</p>
+
+<pre>[login/dropbox.com your_username]
+password=your_password</pre>
+
+<p>With the following contents of `cryptobox.conf` file:</p>
+
+<pre>[pbkdf2]
+salt_len = 8
+salt = vyvhYAqR0Os=
+iterations = 1000
+
+[aes]
+iv_len = 16
+bs = 32
+iv = O/fqt3VeY4laxfn1B7OyHQ==
+
+[cryptobox]
+format_version = 2</pre>
+
+<p>You get the following cipher text:</p>
+
+<pre>$ cat cryptobox
+JhDP/N2YSG54jHmJgqPqVcWRCh6VoRMqaxq3SzEoFdUwdwm9wIm9ec8DSzTf7NiNEeHTEYZsNjAp
+wSuPGIiTkA==</pre>
+
+<p>Now, let’s try to decrypt it (instruction provided for Linux)!</p>
+
+<p>Before you proceed, I want to warn you that the following commands are not
+safe! You will pass your AES key to the `openssl` utility via command line
+(and will also store your plaintext password in the file). So make it if
+you really need to get your data no matter what consequences may be. The
+following text is used just to demonstrate that your data could be easily
+decrypted using standard tools.</p>
+
+<h3>Give me the key!</h3>
+
+<p>You have to take out the value of pbkdf2.salt field of config and convert
+it to hex enconding:</p>
+
+<pre>$ echo &quot;vyvhYAqR0Os=&quot; | base64 -d | xxd -ps
+bf2be1600a91d0eb</pre>
+
+<p>Next, go and download a Perl script which implements PBKDF2 using OpenSSL:</p>
+
+<pre>$ wget http://www.ict.griffith.edu.au/anthony/software/pbkdf2.pl</pre>
+
+<p>Store your password in `pwd` file and execute Perl script (where 1000 is
+the pbkdf2.iterations from config):</p>
+
+<pre>$ cat pwd
+hi
+
+$ perl pbkdf2.pl bf2be1600a91d0eb 1000 &lt; pwd &gt; result
+
+$ cat result
+0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9df7f3405ab410f4bf431e0bb560495e87</pre>
+
+<p>And because we are interested only if first 32 bytes, we need to cut the
+rest (the number 64 in the following command is 32 * 2 because each byte in
+hex encoding is represented by two characters)</p>
+
+<pre>$ cat result | cut -b1-64 &gt; secret
+$ cat secret
+0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9d</pre>
+
+<h3>Decrypt my data</h3>
+
+<p>Now, we have a key, the only thing we need to do is to convert
+initialization vector (aes.iv) to hex and call openssl, let’s do it:</p>
+
+<pre>$ echo &quot;O/fqt3VeY4laxfn1B7OyHQ==&quot; | base64 -d | xxd -ps
+3bf7eab7755e63895ac5f9f507b3b21d
+
+$ openssl enc -d -aes-256-cbc -K 0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9d -iv 3bf7eab7755e63895ac5f9f507b3b21d -base64 -in cryptobox -out plaintext
+
+$ cat plaintext
+[login/dropbox.com your_username]
+password=your_password$</pre>
+
+<p>Congratulations, plaintext contains decrypted content of your cryptobox.
+Now, it’s better to remove all temporary files and clean `bash` history.</p>
+
+<h2>TODO: describe the following features</h2>
+<ul><li>
+<p>broken logins</p>
+</li><li>
+<p>comments in include/ JSON</p>
+</li><li>
+<p>cryptobox.json</p>
+</li></ul>
+
+<h2>MENTION SOMEWHERE</h2>
+<ul><li>
+<p>Supported fields for login entry are: user, pass, secret, note</p>
+</li><li>
+<p>hidden = yes -&gt; visible: false</p>
+</li></ul>
 
 <h2>Todo</h2>
 <ul><li>
-<p>Chrome plugin which tells to small Ruby server to get decrypted data (it
+<p>add RDoc and GEM support</p>
+</li><li>
+<p>fix includes (for ERB)</p>
+</li><li>
+<p>Chrome plugin which talks to small Ruby server to get decrypted data (it
 tells it password, server decrypts data and passes JSON back)</p>
 </li><li>
 <p>Cucumber/Aruba tests</p>
 </li><li>
 <p>? .cryptoboxrc.yml -&gt; .cryptobox.yml</p>
-</li><li>
-<p>Add –stdout option to cbedit to print output to stdout</p>
 </li><li>
 <p>Add unit tests</p>
 </li><li>
@@ -58,7 +523,50 @@ tells it password, server decrypts data and passes JSON back)</p>
 </li><li>
 <p>__default__ tag -&gt; ”</p>
 </li><li>
-<p>clean clipboard when locking</p>
+<p>clean clipboard when locking HTML page</p>
+</li><li>
+<p>use external repositories when possible (jQuery, CryproJS) to keep up with
+updates</p>
+</li><li>
+<p>use <a
+href="https://developers.google.com/closure/compiler/">developers.google.com/closure/compiler/</a>
+to compress js (should not yield much space because amount of internal js
+compared to external is reaaaaly small) - try POST request to compress JS
+and if failed, use non-optimized</p>
+</li><li>
+<p>improve autolock feature (don’t use mouse move event)</p>
+</li><li>
+<p>eval -&gt; jQuery.parseJSON</p>
+</li><li>
+<p>generate new salt and iv on password change (or even on every `cbedit`
+update; in this case may even save hmac in cryptobox.conf)?</p>
+</li><li>
+<p>add chrome extension (<a
+href="https://code.google.com/chrome/extensions/getstarted.html">code.google.com/chrome/extensions/getstarted.html</a>)
+which may be used in the developer mode</p>
+</li><li>
+<p>add some validation for DB and include/</p>
+</li><li>
+<p>add support for aliases (alias=login/xyz login/qwe login/asd - will
+generate 3 additional entries in HTML)</p>
+</li><li>
+<p>revise README.md and add other missing information</p>
+</li><li>
+<p>fix form bookmarklet for deviantart.com, lastpass.com</p>
+</li><li>
+<p>add support for __token__ in form.action</p>
+</li><li>
+<p>add comments to all items under include/ describing required variables</p>
+</li><li>
+<p>remove versions from jquery and jquery-ui files to ease version change</p>
+</li><li>
+<p>consider switching to <a
+href="https://github.com/bitwiseshiftleft/sjcl">github.com/bitwiseshiftleft/sjcl</a>
+(can we save some space? does it work faster?)</p>
+</li><li>
+<p>add some kind of checkbox which will show visible=false entries</p>
+</li><li>
+<p>keep more backups (add save time to the backup name)</p>
 </li></ul>
 
   </div>
@@ -89,12 +597,16 @@ tells it password, server decrypts data and passes JSON back)</p>
     
     <li class="class"><a href="Object.html">Object</a></li>
     
+    <li class="class"><a href="Template.html">Template</a></li>
+    
   </ul>
 
   <h2 id="methods">Methods</h2>
   <ul>
     
       <li><a href="Cryptobox/Config.html#method-c-new">::new &mdash; Cryptobox::Config</a></li>
+    
+      <li><a href="Template.html#method-c-new">::new &mdash; Template</a></li>
     
       <li><a href="Cryptobox/Db.html#method-c-new">::new &mdash; Cryptobox::Db</a></li>
     
@@ -112,9 +624,27 @@ tells it password, server decrypts data and passes JSON back)</p>
     
       <li><a href="Cryptobox/Db.html#method-i-create">#create &mdash; Cryptobox::Db</a></li>
     
+      <li><a href="Cryptobox/Db.html#method-i-decrypt">#decrypt &mdash; Cryptobox::Db</a></li>
+    
       <li><a href="Object.html#method-i-done">#done &mdash; Object</a></li>
     
       <li><a href="Object.html#method-i-edit">#edit &mdash; Object</a></li>
+    
+      <li><a href="Object.html#method-i-embed_images">#embed_images &mdash; Object</a></li>
+    
+      <li><a href="Cryptobox/Db.html#method-i-encrypt">#encrypt &mdash; Cryptobox::Db</a></li>
+    
+      <li><a href="Template.html#method-i-generate">#generate &mdash; Template</a></li>
+    
+      <li><a href="Object.html#method-i-generate_bookmarklet">#generate_bookmarklet &mdash; Object</a></li>
+    
+      <li><a href="Object.html#method-i-generate_html">#generate_html &mdash; Object</a></li>
+    
+      <li><a href="Object.html#method-i-generate_json">#generate_json &mdash; Object</a></li>
+    
+      <li><a href="Template.html#method-i-incl">#incl &mdash; Template</a></li>
+    
+      <li><a href="Template.html#method-i-incl_plain">#incl_plain &mdash; Template</a></li>
     
       <li><a href="Cryptobox/Db.html#method-i-load">#load &mdash; Cryptobox::Db</a></li>
     
@@ -132,13 +662,15 @@ tells it password, server decrypts data and passes JSON back)</p>
     
       <li><a href="Cryptobox/Config.html#method-i-set_value">#set_value &mdash; Cryptobox::Config</a></li>
     
+      <li><a href="Hash.html#method-i-stringify_keys">#stringify_keys &mdash; Hash</a></li>
+    
       <li><a href="Array.html#method-i-stringify_keys">#stringify_keys &mdash; Array</a></li>
     
-      <li><a href="Hash.html#method-i-stringify_keys">#stringify_keys &mdash; Hash</a></li>
+      <li><a href="Array.html#method-i-symbolize_keys">#symbolize_keys &mdash; Array</a></li>
     
       <li><a href="Hash.html#method-i-symbolize_keys">#symbolize_keys &mdash; Hash</a></li>
     
-      <li><a href="Array.html#method-i-symbolize_keys">#symbolize_keys &mdash; Array</a></li>
+      <li><a href="Object.html#method-i-verbose">#verbose &mdash; Object</a></li>
     
       <li><a href="Object.html#method-i-write_initial">#write_initial &mdash; Object</a></li>
     

@@ -1,84 +1,110 @@
-= `cryptobox` - Blah blah blah
+= Cryptobox - Passwords storage solution
 
 Author:: Stanislav Fomichev (mailto:s@fomichev.me)
 Copyright:: Copyright (c) 2012 by Stanislav Fomichev
-License:: FIXME
+License:: MIT
 
-FIXME:OVERVIEW
+== Overview
 
-== Install
-
-== Use
-
-
-
-
-
-Overview
-========
-Cryptobox is a bunch of python scripts that will help you manage your
+Cryptobox is a bunch of Ruby scripts that help you manage your
 passwords database and other sensitive data. The idea is simple: there is
-some encrypted file (`private/cryptobox`) where sensitive information is
-stored. To edit it you use special script (`cbedit`) which will open editor
+some encrypted file (<tt>private/cryptobox</tt>) where sensitive information is
+stored. To edit it you use special executable (+cbedit+) which will open editor
 and let you update passwords/bookmarks/notes/etc. When the editor is
-closed, `cbedit` will create beautiful and easy to navigate HTML page with
+closed, +cbedit+ will create beautiful and easy to navigate HTML page with
 all your sensitive information (encrypted). This HTML page will also
-contain JavaScript code which can decrypt attached encrypted data on the fly
-when given correct password.
+contain Javascript code which can decrypt attached encrypted data on the fly
+when you provide the correct password.
 
 Your sensitive information is never exposed; it's never stored on the disk
 in the plain text and exists in the HTML page only in the encrypted form.
 
-Features
---------
+== Install
+
+There's no gem distribution so far, thus the only possible solution is to make
+a git clone.
+So to install cryptobox, make git clone of this repository and add
+<tt><path to your clone>/bin</tt> directory to the PATH environment
+variable.
+
+Please note, that the required version of Ruby is 1.9! 1.8 will not work
+because of the threading model (and who knows what other issues are).
+You can get Ruby for Windows from http://www.ruby-lang.org; for Max OS X you
+can use +brew+ to get Ruby; and on Linux system use the whatever package
+manager is installed on your system to install it.
+
+== Use
+
+* Create database (creates empty <tt>private/cryptobox</tt>)
+
+	$ cbcreate
+
+Upon database creation, PBKDB2 salt and AES IV will be generated. That
+guarantees that even two databases with equal content will be encrypted to
+different cipher text.
+
+* Edit your database (it will also update html page at
+  <tt>private/html/cryptobox.html</tt> and at
+  <tt>private/html/m.cryptobox.html</tt>)
+
+	$ cbedit
+
+Whenever you edit cryptobox database, the backup file (<tt>private/backup/cryptobox</tt>)
+is created with the previous version of your database. So if some unexpected
+error happens, you can always restore your previous database contents.
+
+* Change password (every couple of months)
+
+	$ cbpasswd
+
+As in +cbedit+ command, backup file will be created (or updated) whenever
+you change the password.
+
+== Features
 * Secure storage of sensitive information
 * Desktop and mobile HTML pages for ease of use
 * One-click login for sites without authenticity tokens (read more below)
 * More-than-one-click login for sites with authenticity tokens (that still
-saves you from manually copy-pasting your passwords)
+  saves you from manually copy-pasting your passwords)
 * Really small amount of code. You can get through it probably within an hour
-or two (to ensure that your data is safe)
+  or two (to ensure that your data is safe)
 * Works on every platform with modern browser (everywhere)
+* Chrome extension (planned) or browser bookmarklet to login to currently
+  displayed page
 
-Guts
-----
-All information is stored in the `private/cryptobox` file,
-encrypted via [AES](http://en.wikipedia.org/wiki/Advanced_Encryption_Standard);
+=== Guts
+All information is stored in the <tt>private/cryptobox</tt> file,
+encrypted via AES[http://en.wikipedia.org/wiki/Advanced_Encryption_Standard];
 key length is 256 bits and it is derived from your master password (recommend
-way to generate it - [Diceware](http://world.std.com/~reinhold/diceware.html))
-using [PBKDF2](http://en.wikipedia.org/wiki/Pbkdf2)
+way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
+using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
 (consult your lawyer about whether it's considered crime in your country).
-To check the integrity of the database, python code uses
-[HMAC-MD5](http://en.wikipedia.org/wiki/HMAC), while HTML page relies on
+To check the integrity of the database, Ruby code uses
+{HMAC-MD5}[http://en.wikipedia.org/wiki/HMAC], while HTML page relies on
 specific magic field value in the JSON data.
 
-When `cbedit` generates HTML, it asks your password, decrypts
-`private/cryptbox` file and merges it with JSON
-patterns from `include/` directory (more on this later), encrypts it using
+When +cbedit+ generates HTML, it asks your password, decrypts
+<tt>private/cryptbox</tt> file and merges it with JSON
+patterns from <tt>include/</tt> directory (more on this later), encrypts it using
 AES and puts this information into HTML page. Later on, when you
 open it in the browser, it will ask your password and decrypt attached
 database on the fly. So, your sensitive information is never exposed in
 plain text.
 
-The steps `cbedit` does are:
+The steps +cbedit+ does are:
 
-* Reads `private/cryptobox` and decrypts it in memory
+* TODO: describe how it uses pipes to run editor and what it does instead on Windows
+* Reads <tt>private/cryptobox</tt> and decrypts it in memory
 * For each type of entry in this file, reads appropriate JSON file from
-`include/` and merges it with entry's variables (username, password, etc)
+  <tt>include/</tt> and merges it with entry's variables (username, password, etc)
 * Merges all JSON entries into one string and encrypts it with AES
-* Embeds this encrypted data into pre-baked HTML page (look at `html/` for
+* Embeds this encrypted data into pre-baked HTML page (look at <tt>templates/html/</tt> for
 more details)
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
-under `private/html` directory (cryptobox.html - is a desktop
+under <tt>private/html</tt> directory (cryptobox.html - is a desktop
 version; m.cryptobox.html - is a mobile one)
 
-If you're brave enough (or just want to understand what's going on under the
-hood), you can enable debug mode in the `lib/config.py` file; after that,
-all data from the aforementioned steps will be stored in the `private/tmp/`
-directory.
-
-Form bookmarklet
-----------------
+=== Form bookmarklet
 Some sites use authenticity token which they place into the HTML you get;
 the login form along with username and password fields contains hidden field
 with authenticity token. So it's no longer possible to use one-click login
@@ -91,8 +117,8 @@ button for token based sites, you'll be asked for this data. After you paste it
 and press 'OK' you'll be automatically logged in (using provided authenticity
 token and your username/password).
 
-When you're adding such form to the logins storage (`include/login`), you
-should set token field value to `__token__`; that will lead to pop-up dialog
+When you're adding such form to the logins storage (<tt>include/login</tt>), you
+should set token field value to +__token__+; that will lead to pop-up dialog
 box on login asking you to provide form data (you may have multiple tokens
 within forms).
 
@@ -100,121 +126,46 @@ TODO: Describe how to get this bookmark; also describe login bookmark.
 
 	javascript:(function(){s=document.createElement('SCRIPT');s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';document.getElementsByTagName('head')[0].appendChild(s);})();
 
-Fill bookmarklet
-----------------
-T.b.d
+=== Fill bookmarklet
+TODO: describe what and why
 
-Required python modules
-=======================
-Python version 2.6 or 2.7 required!
-
-If your operation system of choice is Windows (sigh), then it's required to
-have the following path in your PATH environment variable -
-`c:\Python26\Scripts\` (assuming default python installation).
-
-* Install pip
-
-	$ easy_install pip
-
-* Install [PBKDF2](https://www.dlitz.net/software/python-pbkdf2/)
-
-	$ pip install pbkdf2
-
-* Install [PyCrypto](https://www.dlitz.net/software/pycrypto/)
-
-	$ pip install pycrypto
-
-* Install argparse (only for Python < 2.7)
-
-	$ pip install argparse
-
-Installation on Windows
------------------------
-Get python 2.6 and install all required modules from the previous section.
-Also don't forget to add `c:\Python26\Scripts\` to your PATH environment
-variable.
-
-Installation on Mac OS X
-------------------------
-Use `brew` to get python 2.7 and then install required modules.
-
-Installation on Linux
----------------------
-Chances are, you'll already have python 2.6 or 2.7 on a Linux machine;
-so just install the required modules.
-
-Usage
-=====
-* Create database (creates empty `private/cryptobox` and
-`private/cryptobox.hmac`)
-
-	$ ./cbcreate
-
-Upon database creation, PBKDB2 salt and AES IV will be generated. That
-guarantees that even two databases with equal content will be encrypted to
-different cipher text.
-
-* Edit your database (it will also update html page at
-`private/html/cryptobox.html` and at `private/html/m.cryptobox.html`)
-
-	$ ./cbedit
-
-Whenever you edit cryptobox database, the backup file (`private/cryptobox.tar`)
-is created with the previous version of your database. So if some unexpected
-error happens, you can always restore your previous database contents from
-simple tar archive.
-
-* Change password (every couple of months)
-
-	$ ./cbpasswd
-
-As in `cbedit` command, backup file will be created (or updated) whenever
-you change the password.
-
-Database format
-===============
-Windows INI-like file format is used for database (on Linux it normally has
-.conf extension). More information with examples can be found in the
-[appropriate python page](http://docs.python.org/library/configparser.html).
+== Database format
+YAML format is used for database. More information with examples can be found
+at the [appropriate page](http://yaml.org).
 
 Your sensitive information is stored in the form of entries; there may be a
 number of entries, each describing particular login, bookmark, secure note or
 other information.
 
-Entry has the following structure:
+Entry has the following structure (fields in square brackets are optional):
 
-	[<entry type>  <entry name>]
-	tag=<tag>
+	<entry type>  <entry name>:
+	  [tag: <tag>]
+	  [fisible: false]
+	  <variable1>: <value1>
+	  <variableN>: <valueN>
+	  <multiline>: <line1>
+	               <line2>
 
-	hidden=yes
+You don't need to quote anything; just put variable name on the left side of
+colon and variable value on the right side of color without any quotes.
 
-	<variable1>=<value1>
-
-	<variableN>=<valueN>
-
-	<multiline>:<line1>
-	            <line2>
-
-You don't need to quote anything; just put variable name on the left side of `=`
-sign and variable value on the right side of `=` sign without any quotes. If you
-want to have a multi line value, use colon (:) to delimit variable name from
-value and follow the example above.
-
-Entry type is a relative path to a file inside the `include/` directory. And
-the first component in this path (until the first `/` of end of string) will
-form a tab in the HTML page. So, for example, if you have `login/google.com`
-and `login/yahoo.com`, there will be a `login` page (or `Logins` because of
-pre-defined translations) in the HTML document
-containing two entries. If you have several `note` entries, they will
+Entry type is a relative path to a file inside the <tt>include/</tt> directory.
+And the first component in this path (until the first / of end of string) will
+form a tab in the HTML page. So, for example, if you have <tt>login/google.com</tt>
+and <tt>login/yahoo.com</tt>, there will be a +login+ page (or +Logins+
+because of pre-defined translations) in the HTML document
+containing two entries. If you have several +note+ entries, they will
 be located on anther tab. Be aware that you can't have two entries with the
-same `entry type` and `entry name`!
+same <tt>entry type</tt> and <tt>entry name</tt>!
 
-Each file in the `include/` directory is a JSON file which describes the
+Each file in the <tt>include/</tt> directory is a JSON file which describes the
 format and layout of entry. Variables from the entry will be substituted with
-`@variableN@` inside the JSON file and will form particular login/bookmark/etc.
-There is some special handling for the login entries, where it's expected to
-have `form` information with `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` variables.
-For the other entries, there will be probably only `text` variable that will
+<tt><%= @vars[:name] %></tt> inside the JSON file and will form particular
+login/bookmark/etc. There is some special handling for the login entries,
+where it's expected to have +form+ information with
+<tt><%= @vars[:name] %></tt> and <tt><%= @vars[:pass] %></tt> variables.
+For the other entries, there will be probably only +text+ variable that will
 somehow format other variables from the entry.
 
 Entry name has special meaning for login entry type: it should contain your
@@ -226,131 +177,119 @@ be placed close to each other on the HTML page). You don't have to
 use tag variable, it's usage is optional (and intended to help you with
 the clutter).
 
-You can use `hidden=yes` to remove some entries from the final HTML page (this
-is handy for the entries you want to keep and be able to access at some point
-but don't want it to clutter your HTML).
+You can use <tt>visible :false</tt> to remove some entries from the final HTML
+page (this is handy for the entries you want to keep and be able to access at
+some point but don't want it to clutter your HTML).
 
-Comments are started with `#` and ended at the end of the line.
+Comments are started with # and ended at the end of the line.
 
-Extending / Adding new login (includes)
----------------------------------------
-I think it's pretty straightforward. You can use aforesaid `form` bookmarklet
-on your target site. The only caveat is that it can have multiple forms on one
-page, so watch out and select the one you need (don't copy leading `[` and
-trailing `]`, JSON data should start with `{` and end with `}`). Afterwards,
-look through the JSON and place `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` into appropriate
-form fields (look for other logins JSON data in `include/login`, it will
-become clear from the example what to do). Better yet, you can fill in the
-form in the browser with `<%= @vars[:name] %>` and `<%= @vars[:pass] %>` and run the bookmarklet;
-this way, you don't need to dig into the JSON and find out were to put
-these marks, they will already be in place.
-
-Database example
-----------------
-
-	[login/dropbox.com qwe@qwe.qwe]
-	password=pwd
-
-	[login/gmail.com qwe@qwe.qwe]
-	password=pwd
-
-	[card bank]
-	cardholder=Jonh Smith
-	number=1234 5678 9012 3456
-	pin=1234
-	cvv=123
-
-	[note note]
-	text=with body
-
-	[app Photoshop]
-	key=secret
-
-	[bookmark Google]
-	url=http://google.com
-	comment=Google search
-
-	[note Multiline Note]
-	text:line1
-	     line2
-
-Import database from other password managers
---------------------------------------------
+=== Is it possible to import database from other password managers?
 No, there is probably no easy way to automate it (taking into account the
 number of existing formats); you have to create (or use pre-created) JSON
-form layout in the `include/login` directory (via provided bookmarklet)
-and then add entry with your username/password to `private/cryptobox` manually.
+form layout in the <tt>include/login</tt> directory (via provided bookmarklet)
+and then add entry with your username/password to <tt>private/cryptobox</tt>
+manually.
 
 I'm not telling its impossible; I just see no need to implement it myself.
 
-Export database
----------------
+=== Is is possible to export database to other password managers?
 No, there are no reasons to switch from cryptobox :-) But if you have strong
-reasons, you can always implement `private/cryptobox` parser yourself; the
-format is pretty simple to parse (there are probably available implementations
-for languages other that Python) and all routines that decrypt data are waiting
-for you in the `lib/` directory.
+reasons, you can always implement <tt>private/cryptobox</tt> parser yourself; the
+format is YAML, so probably all languages have some support of it and +cbedit+
+tool have useful <tt>--stdout</tt> argument which you can use to pipe your
+plain text database to other tools safely.
 
-Configuration
-=============
-You can configure cryptobox via configuration file called `.cryptoboxrc`.
+== Extending / Adding new login (includes)
+I think it's pretty straightforward. You can use aforesaid +form+ bookmarklet
+on your target site. The only caveat is that it can have multiple forms on one
+page, so watch out and select the one you need (don't copy leading [ and
+trailing ], JSON data should start with { and end with }). Afterwards,
+look through the JSON and place <tt>&lg;%= @vars[:name] %&gt;</tt> and
+<tt><%= @vars[:pass] %></tt> into appropriate
+form fields (look for other logins JSON data in <tt>include/login</tt>, it will
+become clear from the example what to do). Better yet, you can fill in the
+form in the browser with the mentioned values and run the bookmarklet;
+this way, you don't need to dig into the JSON and find out were to put
+these marks, they will already be in place.
+
+== Database example
+
+	# this is a comment
+	login/dropbox.com s@fomichev.me:
+	  pass: who knows
+
+	login/gmail.com s@fomichev.me:
+	  pass: really don''t know
+
+	login/gmail.com 2s@fomichev.me:
+	  pass: 2really don''t know
+
+	identity test:
+	  firstname: my name
+	  passport: qwer
+		    blah blah blah
+
+		    blah blah
+
+	note test:
+	  text: test
+
+	note test test test:
+	  text: test
+		multiline
+
+	app Abc:
+	  key: 123
+
+	app Def:
+	  key: 456
+
+	card bank name:
+	  cardholder: Jonh Smith
+	  number: 1234 5678 9012 3456
+	  pin: 1234
+	  cvv: 123
+
+	bookmark Google:
+	  url: http://google.com
+	  comment: Google search
+
+== Configuration
+You can configure cryptobox via configuration file called <tt>.cryptoboxrc</tt>.
 When you run any of the cryptobox commands, it first searches for the
-`.cryptoboxrc` file in the current directory, then it tries to find this
+<tt>.cryptoboxrc</tt> file in the current directory, then it tries to find this
 file in your home directory, and if it didn't find any configuration, it
 will use the default one. You can also pass configuration file path to
-the tools via `-c` command line option.
+the tools via <tt>-c</tt> command line option.
 
-Configuration file is simple INI-like file with the following
+Configuration file is simple YAML file with the following
 possible variables:
 
-	[path]
-	db = <path to cryptobox database directory>
-	db_bookmarklet_login = <where to store login bookmarklet>
-	db_bookmarklet_form = <where to store form bookmarklet>
+	path:
+	  db: <path to cryptobox database directory>
+	  db_bookmarklet_login: <where to store login bookmarklet>
+	  db_bookmarklet_form: <where to store form bookmarklet>
 
-	[ui]
-	jquery_ui_theme = <use different jquery-ui theme>
-	editor = <full path to your editor>
-	lang = <select language; currently supported are en and ru>
+	ui:
+	  jquery_ui_theme: <use different jquery-ui theme>
+	  editor: <full path to your editor>
+	  lang: <select language; currently supported are en and ru>
 
-	[security]
-	lock_timeout_minutes = <web site lock timeout in minutes>
-	default_password_length = <default password length in generate dialog>
+	security:
+	  lock_timeout_minutes: <web site lock timeout in minutes>
+	  default_password_length: <default password length in generate dialog>
+
+TODO: describe all possible configuration options!
 
 All the options are optional. You can dig default values in
-the `lib/cfg.py` file.
+the <tt>lib/cryptobox/config.rb</tt> file.
 
-Works on (where it has been tested)
-===================================
-* Chrome 18, 19, 20
+== Used components
 
-* Firefox 11, 12
+=== Ruby
+* On Ruby only standard bindings to OpenSSL are used to manage database
 
-* Safari 5
-
-* Chrome Beta (Android 4)
-
-* iPhone (iOS 5)
-
-Used components
-===============
-
-Python
-------
-* [PBKDF2](http://www.dlitz.net/software/python-pbkdf2/) - MIT
-
-* [AES](https://www.dlitz.net/software/pycrypto/) - Public Domain
-
-* [HMAC-MD5](http://docs.python.org/library/hmac.html) - Python
-
-* [Mozilla preprocessor](http://mxr.mozilla.org/mozilla-central/source/config/) - Mozilla Public License 2
-
-	lib/extern/Expression.py f4157e8c4107
-
-	lib/extern/Preprocessor.py 13ea641e1b5a
-
-JavaScript
-----------
+=== JavaScript
 * [CryptoJS 3.0.2](https://code.google.com/p/crypto-js/) - New BSD License
 
 	html/extern/CryptoJS
@@ -379,8 +318,9 @@ JavaScript
 
 	private/html/clippy.swf
 
-Decrypt data without cryptobox
-==============================
+== Decrypt data without cryptobox
+TODO: update! This is out of date and should be adapted to new database format!
+
 Even if you don't have cryptobox available, you may still fairly easy
 decrypt your data.
 
@@ -419,8 +359,7 @@ you really need to get your data no matter what consequences may be.
 The following text is used just to demonstrate that your data could be
 easily decrypted using standard tools.
 
-Give me the key!
-----------------
+=== Give me the key!
 You have to take out the value of pbkdf2.salt field of config and convert
 it to hex enconding:
 
@@ -450,8 +389,7 @@ encoding is represented by two characters)
 	$ cat secret
 	0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9d
 
-Decrypt my data
----------------
+=== Decrypt my data
 Now, we have a key, the only thing we need to do is to convert initialization
 vector (aes.iv) to hex and call openssl, let's do it:
 
@@ -467,17 +405,12 @@ vector (aes.iv) to hex and call openssl, let's do it:
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
 it's better to remove all temporary files and clean `bash` history.
 
-TODO: describe the following features
-=====================================
+== TODO: describe the following features
 * broken logins
 * comments in include/ JSON
 * cryptobox.json
 
-
-
-
-
-
+== MENTION SOMEWHERE
 * Supported fields for login entry are: user, pass, secret, note
 * hidden = yes -> visible: false
 
@@ -514,3 +447,5 @@ TODO: describe the following features
 * consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)
 
 * add some kind of checkbox which will show visible=false entries
+
+* keep more backups (add save time to the backup name)
