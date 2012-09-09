@@ -124,7 +124,7 @@ within forms).
 
 TODO: Describe how to get this bookmark; also describe login bookmark.
 
-	javascript:(function(){s=document.createElement('SCRIPT');s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';document.getElementsByTagName('head')[0].appendChild(s);})();
+<tt>javascript:(function(){s=document.createElement('SCRIPT');s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';document.getElementsByTagName('head')[0].appendChild(s);})();</tt>
 
 === Fill bookmarklet
 TODO: describe what and why
@@ -139,13 +139,15 @@ other information.
 
 Entry has the following structure (fields in square brackets are optional):
 
-	<entry type>  <entry name>:
-	  [tag: <tag>]
-	  [fisible: false]
-	  <variable1>: <value1>
-	  <variableN>: <valueN>
-	  <multiline>: <line1>
-	               <line2>
+<tt>
+<entry type>  <entry name>:
+  [tag: <tag>]
+  [fisible: false]
+  <variable1>: <value1>
+  <variableN>: <valueN>
+  <multiline>: <line1>
+               <line2>
+</tt>
 
 You don't need to quote anything; just put variable name on the left side of
 colon and variable value on the right side of color without any quotes.
@@ -214,45 +216,47 @@ these marks, they will already be in place.
 
 == Database example
 
-	# this is a comment
-	login/dropbox.com s@fomichev.me:
-	  pass: who knows
+<tt>
+# this is a comment
+login/dropbox.com s@fomichev.me:
+  pass: who knows
 
-	login/gmail.com s@fomichev.me:
-	  pass: really don''t know
+login/gmail.com s@fomichev.me:
+  pass: really don''t know
 
-	login/gmail.com 2s@fomichev.me:
-	  pass: 2really don''t know
+login/gmail.com 2s@fomichev.me:
+  pass: 2really don''t know
 
-	identity test:
-	  firstname: my name
-	  passport: qwer
-		    blah blah blah
+identity test:
+  firstname: my name
+  passport: qwer
+	    blah blah blah
 
-		    blah blah
+	    blah blah
 
-	note test:
-	  text: test
+note test:
+  text: test
 
-	note test test test:
-	  text: test
-		multiline
+note test test test:
+  text: test
+	multiline
 
-	app Abc:
-	  key: 123
+app Abc:
+  key: 123
 
-	app Def:
-	  key: 456
+app Def:
+  key: 456
 
-	card bank name:
-	  cardholder: Jonh Smith
-	  number: 1234 5678 9012 3456
-	  pin: 1234
-	  cvv: 123
+card bank name:
+  cardholder: Jonh Smith
+  number: 1234 5678 9012 3456
+  pin: 1234
+  cvv: 123
 
-	bookmark Google:
-	  url: http://google.com
-	  comment: Google search
+bookmark Google:
+  url: http://google.com
+  comment: Google search
+</tt>
 
 == Configuration
 You can configure cryptobox via configuration file called <tt>.cryptoboxrc</tt>.
@@ -265,19 +269,21 @@ the tools via <tt>-c</tt> command line option.
 Configuration file is simple YAML file with the following
 possible variables:
 
-	path:
-	  db: <path to cryptobox database directory>
-	  db_bookmarklet_login: <where to store login bookmarklet>
-	  db_bookmarklet_form: <where to store form bookmarklet>
+<tt>
+path:
+  db: <path to cryptobox database directory>
+  db_bookmarklet_login: <where to store login bookmarklet>
+  db_bookmarklet_form: <where to store form bookmarklet>
 
-	ui:
-	  jquery_ui_theme: <use different jquery-ui theme>
-	  editor: <full path to your editor>
-	  lang: <select language; currently supported are en and ru>
+ui:
+  jquery_ui_theme: <use different jquery-ui theme>
+  editor: <full path to your editor>
+  lang: <select language; currently supported are en and ru>
 
-	security:
-	  lock_timeout_minutes: <web site lock timeout in minutes>
-	  default_password_length: <default password length in generate dialog>
+security:
+  lock_timeout_minutes: <web site lock timeout in minutes>
+  default_password_length: <default password length in generate dialog>
+</tt>
 
 TODO: describe all possible configuration options!
 
