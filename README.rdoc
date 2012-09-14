@@ -290,10 +290,24 @@ TODO: describe all possible configuration options!
 All the options are optional. You can dig default values in
 the <tt>lib/cryptobox/config.rb</tt> file.
 
+== Embed include into database
+
+cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
+
+put 'include' key in your database, e.g:
+
+include:
+  "login/xyz.com": "{ here goes JSON }"
+  "login/qwe.com": "{ here goes another JSON }"
+
 == Used components
 
 === Ruby
 * On Ruby only standard bindings to OpenSSL are used to manage database
+
+=== Chrome extension
+* Iconic(https://github.com/somerandomdude/Iconic) - CC BY-SA 3.0
+	html/chrome/icon.png
 
 === JavaScript
 * [CryptoJS 3.0.2](https://code.google.com/p/crypto-js/) - New BSD License
@@ -424,7 +438,6 @@ it's better to remove all temporary files and clean `bash` history.
 * add RDoc and GEM support
 
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
-  Add option to use cbserve or to embed database
 
 * Cucumber/Aruba tests
 * ? .cryptoboxrc.yml -> .cryptobox.yml

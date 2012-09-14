@@ -1,8 +1,8 @@
 {
-	"name": "My First Extension",
-	"version": "1.0",
+	"name": "Cryptobox",
+	"version": "<%= Cryptobox::VERSION %>",
 	"manifest_version": 2,
-	"description": "The first extension that I made.",
+	"description": "Cryptobox",
 	"browser_action": {
 		"default_icon": "icon.png",
 		"default_popup": "popup.html"

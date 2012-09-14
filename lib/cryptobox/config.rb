@@ -23,7 +23,7 @@ module Cryptobox
     end
 
     def load_config(path)
-      @config = { ui: {}, cryptobox: {}, path: {}, text: {} }
+      @config = { ui: {}, cryptobox: {}, chrome: {}, path: {}, text: {} }
 
       user_config = path ? YAML.load_file(path).symbolize_keys : {}
 
@@ -52,6 +52,8 @@ module Cryptobox
       set_value user_config, :cryptobox, :date_format, '%H:%M %d.%m.%Y'
       set_value user_config, :cryptobox, :date, DateTime.now.strftime(@config[:cryptobox][:date_format])
       set_value user_config, :cryptobox, :keep_backups, true
+
+      set_value user_config, :chrome, :embed, true
 
       set_value user_config, :path, :root, Dir.pwd
 

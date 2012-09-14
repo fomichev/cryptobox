@@ -7,8 +7,13 @@ function lock() {
 }
 
 function unlock(pwd) {
+	<% if @config[:chrome][:embed] %>
 	var text = decrypt(pwd, cfg.pbkdf2.salt, cfg.ciphertext, cfg.pbkdf2.iterations, cfg.aes.iv);
 	return jQuery.parseJSON(text);
+	<% else %>
+	// TODO
+	return null;
+	<% end %>
 }
 
 function sendToBackground(r) {
