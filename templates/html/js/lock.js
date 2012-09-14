@@ -6,8 +6,10 @@ function lockTimeoutStart() {
 	lockTimeoutId = window.setInterval(function() {
 		lockTimeout--;
 
-		if (lockTimeout <= 0)
+		if (lockTimeout <= 0) {
+			lockTimeoutStop();
 			lock();
+		}
 	}, 1000 * 60);
 }
 

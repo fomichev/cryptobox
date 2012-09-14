@@ -1,3 +1,7 @@
-// we can use background.js to share unlocked instance
+<%= incl(File.join(@config[:path][:html], 'js/lock.js')) %>
 
-qwe = 'qwe';
+function lock() {
+	chrome.extension.getBackgroundPage().data = null;
+}
+
+data = null;

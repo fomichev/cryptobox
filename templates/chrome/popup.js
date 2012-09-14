@@ -1,5 +1,5 @@
 function lock() {
-	lockTimeoutStop();
+	chrome.extension.getBackgroundPage().data = null;
 
 	$("#div-unlocked").hide();
 	$("#div-login-error").hide();
@@ -26,7 +26,7 @@ function sendToBackground(r) {
 
 function onUnlock(tab, data) {
 	var matched = new Array();
-	var nonmatched = new Array();
+	var unmatched = new Array();
 
 	var address = sitename(tab.url);
 
@@ -42,24 +42,29 @@ function onUnlock(tab, data) {
 		if (el.type != 'login')
 			continue;
 
+		if (el.form.action == undefined)
+			continue;
+
 		var action = sitename(el.form.action);
 
-		if (address == action)
+		if (address == action) {
 			matched.push(el);
-		else
-			nonmatched.push(el);
+		} else {
+			if (el.visible == true)
+				unmatched.push(el);
+		}
 	}
 
 	var div_matched = '';
 	for (var i = 0; i < matched.length; i++) {
 		var name = matched[i].name + ' (' + matched[i].form.vars.user + ')';
-		div_matched += '<p id="matched_' + i + '">' + name + '</p>';
+		div_matched += '<p id="matched_' + i + '"><a href="#">' + name + '</a></p>';
 	}
 
 	var div_other = '';
-	for (var i = 0; i < nonmatched.length; i++) {
-		var name = nonmatched[i].name + ' (' + nonmatched[i].form.vars.user + ')';
-		div_other += '<p>' + name + '</p>';
+	for (var i = 0; i < unmatched.length; i++) {
+		var name = unmatched[i].name + ' (' + unmatched[i].form.vars.user + ')';
+		div_other += '<p id="unmatched_' + i +'">' + name + '</p>';
 	}
 
 	$("#div-matched").html(div_matched);
@@ -70,37 +75,55 @@ function onUnlock(tab, data) {
 		e.addEventListener("click", function() { sendToBackground(form); window.close(); });
 	}
 
-	for (var i = 0; i < matched.length; i++) {
+	function addListenerForUnmatched(id, form) {
+	}
+
+	for (var i = 0; i < matched.length; i++)
 		addListenerForMatched("matched_" + i, matched[i]);
+
+	for (var i = 0; i < unmatched.length; i++)
+		addListenerForUnmatched("unmatched_" + i, unmatched[i]);
+
+}
+
+function showData(data) {
+	$("#div-login-error").hide();
+
+	try {
+		chrome.tabs.getSelected(null, function (t){
+			onUnlock(t, data);
+
+			$("#div-locked").hide();
+			$("#div-login-error").hide();
+			$("#div-unlocked").show();
+		});
+	} catch(e) {
+		$("#div-login-error").show();
+		alert(e);
+		return;
 	}
 }
 
 $(document).ready(function() {
-	lock();
+	$("#button-lock").click(lock);
 
-	$("#form-unlock").submit(function(event) {
-		event.preventDefault();
+	if (chrome.extension.getBackgroundPage().data != null) {
+		chrome.extension.getBackgroundPage().lockTimeoutUpdate();
+		showData(chrome.extension.getBackgroundPage().data);
+	} else {
+		lock();
 
-		$("#div-login-error").hide();
+		$("#form-unlock").submit(function(event) {
+			event.preventDefault();
+			var data = unlock($("#input-password").val());
+			$("#input-password").val("");
 
-		try {
-			chrome.tabs.getSelected(null, function (t){
-				var data = unlock($("#input-password").val());
-				$("#input-password").val("");
+			chrome.extension.getBackgroundPage().lockTimeoutStart();
+			chrome.extension.getBackgroundPage().data = data;
 
-				onUnlock(t, data);
-				lockTimeoutStart();
+			showData(data);
+		});
+	}
 
-				$("#div-locked").hide();
-				$("#div-login-error").hide();
-				$("#div-unlocked").show();
-			});
-
-		} catch(e) {
-			$("#div-login-error").show();
-			alert(e);
-			return;
-		}
-
-	});
+	$("body").mousemove(function() { chrome.extension.getBackgroundPage().lockTimeoutUpdate(); });
 });

@@ -438,6 +438,7 @@ it's better to remove all temporary files and clean `bash` history.
 * add RDoc and GEM support
 
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+  - Add possibility to get to user/pass window and copy/paste them (via clippy?)
 
 * Cucumber/Aruba tests
 * ? .cryptoboxrc.yml -> .cryptobox.yml
