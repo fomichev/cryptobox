@@ -1,14 +1,12 @@
-
-
-
+<%= incl(File.join(@config[:path][:html], 'js/fill.js')) %>
 
 chrome.extension.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		// TODO: call fillForm with received data
+	function(form, sender, sendResponse) {
+//		console.log(sender.tab ?
+//			"from a content script:" + sender.tab.url :
+//			"from the extension");
+//		if (request.greeting == "hello")
+//			sendResponse({farewell: "goodbye"});
 
-		console.log(sender.tab ?
-			"from a content script:" + sender.tab.url :
-			"from the extension");
-		if (request.greeting == "hello")
-			sendResponse({farewell: "goodbye"});
+		formFill(form.form);
 	});

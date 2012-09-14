@@ -48,9 +48,9 @@ def generate_json(config, db)
 
     case type
     when 'login'
-      j['vars'] = { 'user' => vars[:name], 'pass' => vars[:pass] }
-      j['vars']['secret'] = vars[:secret] if vars.has_key? :secret
-      j['vars']['note'] = vars[:note] if vars.has_key? :note
+      j['form']['vars'] = { 'user' => vars[:name], 'pass' => vars[:pass] }
+      j['form']['vars']['secret'] = vars[:secret] if vars.has_key? :secret
+      j['form']['vars']['note'] = vars[:note] if vars.has_key? :note
     end
 
     result << j

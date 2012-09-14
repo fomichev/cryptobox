@@ -423,9 +423,9 @@ it's better to remove all temporary files and clean `bash` history.
 == Todo
 * add RDoc and GEM support
 
-* fix includes (for ERB)
-
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+  Add option to use cbserve or to embed database
+
 * Cucumber/Aruba tests
 * ? .cryptoboxrc.yml -> .cryptobox.yml
 * Add unit tests
@@ -439,8 +439,7 @@ it's better to remove all temporary files and clean `bash` history.
 * improve autolock feature (don't use mouse move event)
 
 * eval -> jQuery.parseJSON
-* generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)?
-* add chrome extension (https://code.google.com/chrome/extensions/getstarted.html) which may be used in the developer mode
+* ? generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * revise README.md and add other missing information
@@ -452,6 +451,6 @@ it's better to remove all temporary files and clean `bash` history.
 * remove versions from jquery and jquery-ui files to ease version change
 * consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)
 
-* add some kind of checkbox which will show visible=false entries
+* ? add some kind of checkbox which will show visible=false entries
 
-* keep more backups (add save time to the backup name)
+* look for possible ways to integrate private/include into database itself (using --- YAML separators)

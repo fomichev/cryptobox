@@ -2,7 +2,7 @@ function accordionItem(header, body) {
 	return '<h3><a href="#">' + header + '</a></h3><div>' + body + '</div>';
 }
 
-function createLogin(id, name, address, form, vars) {
+function createLogin(id, name, address, form) {
 	var hocid = 0;
 	function collapsible(name, value, cp) {
 		var copy = '';
@@ -12,7 +12,7 @@ function createLogin(id, name, address, form, vars) {
 		return '<div class="expand"><span style="float:left;" class="ui-icon ui-icon-circlesmall-plus"></span><a href="#" onClick="javascript:return false;"><strong>' + name + '</strong></a>&nbsp;' + copy + '</div><div>' + value + '</div>';
 	}
 
-	var title = name + " (" + vars.user + ")"
+	var title = name + " (" + form.vars.user + ")"
 
 	var r = "";
 
@@ -29,21 +29,21 @@ function createLogin(id, name, address, form, vars) {
 	}
 
 	r += '<a class="button-goto" href="' + address + '" target="_blank"><%= @text[:goto] %></a>';
-	r += '<p>' + collapsible("<%= @text[:username] %>", vars.user, true) + '</p>';
-	r += '<p>' + collapsible("<%= @text[:password] %>", vars.pass, true) + '</p>';
+	r += '<p>' + collapsible("<%= @text[:username] %>", form.vars.user, true) + '</p>';
+	r += '<p>' + collapsible("<%= @text[:password] %>", form.vars.pass, true) + '</p>';
 
-	if (vars.secret)
-		r += '<p>' + collapsible("<%= @text[:secret] %>", vars.secret, false) + '</p>';
+	if (form.vars.secret)
+		r += '<p>' + collapsible("<%= @text[:secret] %>", form.vars.secret, false) + '</p>';
 
-	if (vars.note)
-		r += '<p>' + collapsible("<%= @text[:note] %>", addBr(vars.note), false) + '</p>';
+	if (form.vars.note)
+		r += '<p>' + collapsible("<%= @text[:note] %>", addBr(form.vars.note), false) + '</p>';
 
 	return accordionItem(title, r);
 }
 
 function viewCreatePageEntry(id, type, data) {
 	if (type == 'login')
-		return createLogin(id, data.name, data.address, data.form, data.vars);
+		return createLogin(id, data.name, data.address, data.form);
 	else
 		return accordionItem(data.name, addBr(data.text));
 }

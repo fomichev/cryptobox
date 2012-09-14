@@ -7,7 +7,7 @@ require 'cryptobox/template'
 require 'cryptobox/output/json'
 require 'cryptobox/output/html'
 require 'cryptobox/output/bookmarklet'
-#require 'cryptobox/output/chrome'
+require 'cryptobox/output/chrome'
 
 module Cryptobox
   VERSION = "0.5"

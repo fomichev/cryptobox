@@ -19,10 +19,10 @@ function page(id, header, data) {
 	return t;
 }
 
-function createLogin(id, name, address, form, vars) {
+function createLogin(id, name, address, form) {
 	var flat = flattenMap(form.fields);
 
-	var title = name + " (" + vars.name + ")";
+	var title = name + " (" + form.vars.name + ")";
 	var t = '';
 
 	if (!loginBroken(form)) {
@@ -34,21 +34,21 @@ function createLogin(id, name, address, form, vars) {
 	}
 
 	t += '<a href="' + address + '" data-role="button"><%= @text[:goto] %></a>';
-	t += collapsible("<%= @text[:username] %>", vars.name);
-	t += collapsible("<%= @text[:password] %>", vars.password);
+	t += collapsible("<%= @text[:username] %>", form.vars.name);
+	t += collapsible("<%= @text[:password] %>", form.vars.password);
 
-	if (vars.secret)
-		t += '<p>' + collapsible("<%= @text[:secret] %>", vars.secret) + '</p>';
+	if (form.vars.secret)
+		t += '<p>' + collapsible("<%= @text[:secret] %>", form.vars.secret) + '</p>';
 
-	if (vars.note)
-		t += '<p>' + collapsible("<%= @text[:note] %>", addBr(vars.note)) + '</p>';
+	if (form.vars.note)
+		t += '<p>' + collapsible("<%= @text[:note] %>", addBr(form.vars.note)) + '</p>';
 
 	return page(id, title, t);
 }
 
 function viewCreatePageEntry(id, type, data) {
 	if (type == 'login')
-		return createLogin(id, data.name, data.address, data.form, data.vars);
+		return createLogin(id, data.name, data.address, data.form);
 	else {
 		if (data.mtext != undefined)
 			return page(id, data.name, addBr(data.mtext));

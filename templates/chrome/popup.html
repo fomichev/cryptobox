@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<title>Cryptobox</title>
 		<style>
 			body {
@@ -38,30 +39,20 @@
 	<body>
 		<div id="div-locked">
 			<form id="form-unlock">
-				<h1>@text.enter_password@</h1>
+				<h1><%= @text[:enter_password] %></h1>
 				<p><input id="input-password" type="password" /></p>
-				<p><button type="submit" id="button-unlock">@text.button_unlock@</button></p>
+				<p><button type="submit" id="button-unlock"><%= @text[:button_unlock] %></button></p>
 			</form>
 		</div>
 
 		<div id="div-login-error">
-			@text.login_not_found@
+			<%= @text[:login_not_found] %>
 		</div>
 
 		<div id="div-unlocked">
-			<div id="div-matched">
-				<ul>
-					<li><a href="#">lalalal</a></li>
-				</ul>
-			</div>
-
-			<div id="div-other">
-				<ul>
-					<li><a href="#">lalalal1</a></li>
-					<li><a href="#">lalalal2</a></li>
-					<li><a href="#">lalalal3</a></li>
-				</ul>
-			</div>
+			<div id="div-matched"></div>
+			<hr />
+			<div id="div-other"></div>
 		</div>
 	</body>
 </html>

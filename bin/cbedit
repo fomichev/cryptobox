@@ -44,7 +44,9 @@ OptionParser.new do |opts|
 end.parse!
 
 config = Cryptobox::Config.new options[:config]
-db = Cryptobox::Db.new config[:path][:db_cipher], config[:path][:db_backup]
+db = Cryptobox::Db.new config[:path][:db_cipher],
+                       config[:path][:db_backup],
+                       config[:cryptobox][:keep_backups]
 db.load
 
 if options[:stdout]
@@ -64,5 +66,5 @@ if options[:update]
   generate_json config, db
   generate_html config
   generate_bookmarklet config
-#  generate_chrome config
+  generate_chrome config
 end

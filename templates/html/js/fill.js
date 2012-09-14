@@ -2,13 +2,13 @@ function sitename(t) {
 	return t.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
 }
 
-function formToLink(name, vars, form) {
+function formToLink(name, form) {
 	var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
 	var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
 
 	return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
 		'formFill(' + JSON.stringify(form) + ');' +
-		'return false;\'>' + vars.username + '</a></div>';
+		'return false;\'>' + form.vars.username + '</a></div>';
 }
 
 function formFill(form) {

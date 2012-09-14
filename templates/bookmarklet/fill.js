@@ -44,7 +44,7 @@ function unlock(pwd, caption) {
 		var r = ''
 		for (var i = 0; i < matched.length; i++) {
 			var el = matched[i];
-			r += formToLink(el.name, el.vars, el.form);
+			r += formToLink(el.name, el.form);
 		}
 
 		caption.innerHTML = '<%= @text[:select_login] %>' + r;

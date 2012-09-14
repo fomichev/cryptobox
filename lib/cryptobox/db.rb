@@ -20,9 +20,10 @@ module Cryptobox
 
     # @db_path - path to cryptobox database
     # @backup_path - use given path as backup directory
-    def initialize(db_path, backup_path)
+    def initialize(db_path, backup_path, keep_backups)
       @db_path = db_path
       @backup_path = backup_path
+      @keep_backups = keep_backups
       @password = ask_password
     end
 
@@ -136,9 +137,10 @@ module Cryptobox
 
     # Backup previous version of database
     def backup
+      return unless @keep_backups
       return unless File.exist? @db_path
       Dir.mkdir @backup_path unless Dir.exist? @backup_path
-      FileUtils.cp @db_path, @backup_path + '/' + File.basename(@db_path)
+      FileUtils.cp @db_path, File.join(@backup_path, Time.now.strftime("%H_%M_%S_%d_%m_%Y"))
     end
 
     # Get encryption key from password and store it in @key

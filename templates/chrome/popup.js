@@ -11,6 +11,14 @@ function unlock(pwd) {
 	return jQuery.parseJSON(text);
 }
 
+function sendToBackground(r) {
+	chrome.tabs.getSelected(null, function(tab) {
+		chrome.tabs.sendMessage(tab.id, r, function(msg) {
+			console.log("sent msg");
+		});
+	});
+}
+
 function onUnlock(tab, data) {
 	var matched = new Array();
 	var nonmatched = new Array();
@@ -21,10 +29,13 @@ function onUnlock(tab, data) {
 		var el = data[i];
 		if (el.type == "magic") {
 			if (el.value != "270389")
-				throw("@text.incorrect_password@");
+				throw("<%= @text[:incorrect_password] %>");
 
 			continue;
 		}
+
+		if (el.type != 'login')
+			continue;
 
 		var action = sitename(el.form.action);
 
@@ -34,57 +45,52 @@ function onUnlock(tab, data) {
 			nonmatched.push(el);
 	}
 
+	var div_matched = '';
 	for (var i = 0; i < matched.length; i++) {
-		console.log("a");
+		var name = matched[i].name + ' (' + matched[i].form.vars.user + ')';
+		div_matched += '<p id="matched_' + i + '">' + name + '</p>';
 	}
 
+	var div_other = '';
 	for (var i = 0; i < nonmatched.length; i++) {
-		console.log("b");
+		var name = nonmatched[i].name + ' (' + nonmatched[i].form.vars.user + ')';
+		div_other += '<p>' + name + '</p>';
 	}
 
-	p = chrome.tabs.connect(tab.id);
-	p.onMessage.addListener(function (e) {
-		console.log(e);
-	});
+	$("#div-matched").html(div_matched);
+	$("#div-other").html(div_other);
+
+	function addListenerForMatched(id, form) {
+		var e = document.getElementById(id);
+		e.addEventListener("click", function() { sendToBackground(form); window.close(); });
+	}
+
+	for (var i = 0; i < matched.length; i++) {
+		addListenerForMatched("matched_" + i, matched[i]);
+	}
 }
 
 $(document).ready(function() {
 	lock();
 
-	p = chrome.extension.getBackgroundPage();
-	console.log('p:');
-	console.log(p);
-
-
 	$("#form-unlock").submit(function(event) {
 		event.preventDefault();
-
-	// send message to content.js with form data to fill
-	// {
-	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendMessage(tab.id, {'xuy': 'xuy'}, function(msg) {
-			console.log("sent msg");
-		});
-		
-	 });
-	// }
-
-
-	return;
 
 		$("#div-login-error").hide();
 
 		try {
-			var data = unlock($("#input-password").val());
-			$("#input-password").val("");
+			chrome.tabs.getSelected(null, function (t){
+				var data = unlock($("#input-password").val());
+				$("#input-password").val("");
 
-			chrome.tabs.getSelected(null, function (t){ onUnlock(t, data); });
+				onUnlock(t, data);
+				lockTimeoutStart();
 
-			lockTimeoutStart();
+				$("#div-locked").hide();
+				$("#div-login-error").hide();
+				$("#div-unlocked").show();
+			});
 
-			$("#div-locked").hide();
-			$("#div-login-error").hide();
-			$("#div-unlocked").show();
 		} catch(e) {
 			$("#div-login-error").show();
 			alert(e);

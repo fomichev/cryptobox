@@ -31,8 +31,14 @@ module Cryptobox
       set_value user_config, :ui, :default_password_length, 16
       set_value user_config, :ui, :lock_timeout_minutes, 5
 
+      if RUBY_PLATFORM =~ /(win|w)32$/
+        set_value user_config, :ui, :editor, 'gvim -n -f'
+      # else if on mac => use mvim
+      else
+        set_value user_config, :ui, :editor, 'vim -n -f'
+      end
 
-      set_value user_config, :ui, :editor, 'vim -n -f'
+
 #      set_value user_config, :ui, :editor, 'mvim -n -f'
 #      set_value user_config, :ui, :editor, 'gvim -n -f'
 #editor=ENV['EDITOR']
@@ -45,6 +51,7 @@ module Cryptobox
       set_value user_config, :cryptobox, :version, VERSION
       set_value user_config, :cryptobox, :date_format, '%H:%M %d.%m.%Y'
       set_value user_config, :cryptobox, :date, DateTime.now.strftime(@config[:cryptobox][:date_format])
+      set_value user_config, :cryptobox, :keep_backups, true
 
       set_value user_config, :path, :root, Dir.pwd
 
@@ -55,7 +62,6 @@ module Cryptobox
       set_value user_config, :path, :db_clippy, File.expand_path(File.join(@config[:path][:db], 'html/clippy.swf'))
       set_value user_config, :path, :db_mobile_html, File.expand_path(File.join(@config[:path][:db], 'html/m.cryptobox.html'))
       set_value user_config, :path, :db_chrome, File.expand_path(File.join(@config[:path][:db], 'chrome'))
-      set_value user_config, :path, :db_chrome_cfg, File.expand_path(File.join(@config[:path][:db], 'chrome/cfg.js'))
       set_value user_config, :path, :db_include, File.expand_path(File.join(@config[:path][:db], 'include'))
       set_value user_config, :path, :db_backup, File.expand_path(File.join(@config[:path][:db], 'backup'))
       set_value user_config, :path, :db_bookmarklet_form, File.expand_path(File.join(@config[:path][:db], 'bookmarket/form.js'))
