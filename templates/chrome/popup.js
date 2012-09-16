@@ -59,8 +59,12 @@ function onUnlock(tab, data) {
 	}
 
 	function createLink(id, name) {
-//		return '<div style="clear: both"><div style="float:left" id="' + id +'"><a href="#">' + name + '</a></div><div style="float:right"><a href="#">[Show details]</a></div></div>';
-		return '<tr><td id="' + id +'"><a href="#">' + name + '</a></td><td><div class="pull-right"><button class="btn btn-mini btn-primary" type="button"><%= @text[:button_details] %></button></div></td></tr>';
+		return '<tr><td id="' + id +'"><a href="#">' + name + '</a></td><td><div class="pull-right"><button id="' + id + '_button" class="btn btn-mini btn-primary" type="button" data-toggle="button"><%= @text[:button_details] %></button></div></td></tr>';
+	}
+	function createDetails(id, user, pass) {
+		var t = '<dl class="dl-horizontal"><dt><%= @text[:username] %>:</dt><dd>' + user + '</dd><dt><%= @text[:password] %>:</dt><dd>' + pass + '</dd></dl>';
+
+		return '<tr id="'+ id + '_details" style="display:none"><td colspan="2">' + t + '</td></tr>';
 	}
 
 	$("#table-matched tbody").html('');
@@ -71,6 +75,7 @@ function onUnlock(tab, data) {
 	for (var i = 0; i < matched.length; i++) {
 		var name = matched[i].name + ' (' + matched[i].form.vars.user + ')';
 		$('#table-matched tbody').append(createLink('matched_' + i, name));
+		$('#table-matched tbody').append(createDetails('matched_' + i, matched[i].form.vars.user, matched[i].form.vars.pass));
 	}
 	if (matched.length == 0)
 		$('#table-matched').hide();
@@ -78,6 +83,7 @@ function onUnlock(tab, data) {
 	for (var i = 0; i < unmatched.length; i++) {
 		var name = unmatched[i].name + ' (' + unmatched[i].form.vars.user + ')';
 		$('#table-unmatched tbody').append(createLink('unmatched_' + i, name));
+		$('#table-unmatched tbody').append(createDetails('unmatched_' + i, unmatched[i].form.vars.user, unmatched[i].form.vars.pass));
 	}
 	if (unmatched.length == 0)
 		$('#table-unmatched').hide();
@@ -85,16 +91,23 @@ function onUnlock(tab, data) {
 	function addListenerForMatched(id, form) {
 		var e = document.getElementById(id);
 		e.addEventListener("click", function() { sendToBackground(form); window.close(); });
+
+		e = document.getElementById(id + '_button');
+		e.addEventListener("click", function() { $('#' + id + '_details').toggle(); });
 	}
 
 	function addListenerForUnmatched(id, form) {
+		var e = document.getElementById(id + '_button');
+		e.addEventListener("click", function() { $('#' + id + '_details').toggle(); });
+
 	}
 
 	for (var i = 0; i < matched.length; i++)
 		addListenerForMatched("matched_" + i, matched[i]);
 
-	for (var i = 0; i < unmatched.length; i++)
+	for (var i = 0; i < unmatched.length; i++) {
 		addListenerForUnmatched("unmatched_" + i, unmatched[i]);
+	}
 
 }
 
