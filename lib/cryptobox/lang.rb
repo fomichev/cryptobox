@@ -31,7 +31,11 @@ module Cryptobox
     log_in: 'Log in',
     button_back: 'Back',
     login_not_found: 'No logins found!',
-    select_login: 'Select login'
+    select_login: 'Select login',
+    actions: 'Actions',
+    filter: 'Filter',
+    unmatched_sites: 'Unmatched sites',
+    button_details: 'Details',
   },
     ru: {
     title: 'Cryptobox',
@@ -62,7 +66,11 @@ module Cryptobox
     log_in: 'Войти',
     button_back: 'Назад',
     login_not_found: 'Логин не найден!',
-    select_login: 'Выберите логин'
+    select_login: 'Выберите логин',
+    actions: 'Действия',
+    filter: 'Фильтр',
+    unmatched_sites: 'Другие сайты',
+    button_details: 'Детальная информация',
   }
   }
 

@@ -1,7 +1,7 @@
 require 'fileutils'
 
 def embed_images(text, images_root)
-  text.gsub(/url\(([^)]*)\)*/) do
+  text.gsub(/url\("?([^")]*)"?\)*/) do
     verbose "Embed image #{$1}"
     img = File.read(File.join(images_root, $1))
 

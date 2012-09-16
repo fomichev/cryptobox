@@ -3,6 +3,7 @@ function lock() {
 
 	$("#div-unlocked").hide();
 	$("#div-login-error").hide();
+	$("#div-login-details").hide();
 	$("#div-locked").show();
 
 	$("#input-password").focus();
@@ -57,20 +58,29 @@ function onUnlock(tab, data) {
 		}
 	}
 
-	var div_matched = '';
+	function createLink(id, name) {
+//		return '<div style="clear: both"><div style="float:left" id="' + id +'"><a href="#">' + name + '</a></div><div style="float:right"><a href="#">[Show details]</a></div></div>';
+		return '<tr><td id="' + id +'"><a href="#">' + name + '</a></td><td><div class="pull-right"><button class="btn btn-mini btn-primary" type="button"><%= @text[:button_details] %></button></div></td></tr>';
+	}
+
+	$("#table-matched tbody").html('');
+	$("#table-unmatched tbody").html('');
+	$("#table-matched").show();
+	$("#table-unmatched").show();
+
 	for (var i = 0; i < matched.length; i++) {
 		var name = matched[i].name + ' (' + matched[i].form.vars.user + ')';
-		div_matched += '<p id="matched_' + i + '"><a href="#">' + name + '</a></p>';
+		$('#table-matched tbody').append(createLink('matched_' + i, name));
 	}
+	if (matched.length == 0)
+		$('#table-matched').hide();
 
-	var div_other = '';
 	for (var i = 0; i < unmatched.length; i++) {
 		var name = unmatched[i].name + ' (' + unmatched[i].form.vars.user + ')';
-		div_other += '<p id="unmatched_' + i +'">' + name + '</p>';
+		$('#table-unmatched tbody').append(createLink('unmatched_' + i, name));
 	}
-
-	$("#div-matched").html(div_matched);
-	$("#div-other").html(div_other);
+	if (unmatched.length == 0)
+		$('#table-unmatched').hide();
 
 	function addListenerForMatched(id, form) {
 		var e = document.getElementById(id);
@@ -90,6 +100,7 @@ function onUnlock(tab, data) {
 
 function showData(data) {
 	$("#div-login-error").hide();
+	$("#div-login-details").hide();
 
 	try {
 		chrome.tabs.getSelected(null, function (t){
@@ -110,9 +121,6 @@ function showData(data) {
 
 $(document).ready(function() {
 	$("#button-lock").click(lock);
-	$("#button-unlock").button({ icons: { primary: "ui-icon-unlocked" } });
-	$("#button-lock").button({ text: false, icons: { primary: "ui-icon-locked" } });
-	$("#button-generate-show").button({ text: false, icons: { primary: "ui-icon-gear" } });
 
 	if (chrome.extension.getBackgroundPage().data != null) {
 		chrome.extension.getBackgroundPage().lockTimeoutUpdate();

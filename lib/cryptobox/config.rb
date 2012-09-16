@@ -73,6 +73,7 @@ module Cryptobox
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
       set_value user_config, :path, :html, File.expand_path(File.join(@config[:path][:templates], 'html'))
+      set_value user_config, :path, :bootstrap, File.expand_path(File.join(@config[:path][:html], 'extern/bootstrap'))
       set_value user_config, :path, :bookmarklet, File.expand_path(File.join(@config[:path][:templates], 'bookmarklet'))
       set_value user_config, :path, :chrome, File.expand_path(File.join(@config[:path][:templates], 'chrome'))
       set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:html], '/extern/clippy/build/clippy.swf'))

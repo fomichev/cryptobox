@@ -448,6 +448,8 @@ it's better to remove all temporary files and clean `bash` history.
     https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
   - Implement cbserve and add its support to extension
 
+* login -> webform
+
 * Cucumber/Aruba tests
 * ? .cryptoboxrc.yml -> .cryptobox.yml
 * Add unit tests

@@ -2,35 +2,34 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-		<title>Cryptobox</title>
+		<title><%= @text[:title] %></title>
 		<style>
 			body {
-				min-width: 350px;
-				font-size: 12px;
-				/*overflow-x:hidden;*/
+			min-width: 400px;
 			}
 
 			#div-locked {
 				text-align: center;
 			}
-			#toolbar {
-				text-align: right;
+
+			#div-copyright {
+				text-align: center;
 			}
 
-<%= incl_plain(File.join(@config[:path][:html], "extern/jquery-ui/css/#{@config[:ui][:jquery_ui_theme]}/jquery-ui-1.8.21.custom.css")) %>
+<%= incl_plain(File.join(@config[:path][:bootstrap], "css/bootstrap.min.css")) %>
 		</style>
 
 		<script src="jquery-1.7.2.min.js"></script>
-		<script src="jquery-ui-1.8.21.custom.min.js"></script>
+		<script src="bootstrap.min.js"></script>
 
 	<% if @config[:chrome][:embed] %>
-		<script type="text/javascript" src="core-min.js"></script>
-		<script type="text/javascript" src="enc-base64-min.js"></script>
-		<script type="text/javascript" src="cipher-core-min.js"></script>
-		<script type="text/javascript" src="aes-min.js"></script>
-		<script type="text/javascript" src="sha1-min.js"></script>
-		<script type="text/javascript" src="hmac-min.js"></script>
-		<script type="text/javascript" src="pbkdf2-min.js"></script>
+		<script src="core-min.js"></script>
+		<script src="enc-base64-min.js"></script>
+		<script src="cipher-core-min.js"></script>
+		<script src="aes-min.js"></script>
+		<script src="sha1-min.js"></script>
+		<script src="hmac-min.js"></script>
+		<script src="pbkdf2-min.js"></script>
 
 		<script src="cfg.js"></script>
 		<script src="crypto.js"></script>
@@ -43,11 +42,18 @@
 	</head>
 	<body>
 		<div id="div-locked">
-			<form id="form-unlock">
-				<h1><%= @text[:enter_password] %></h1>
-				<p><input id="input-password" type="password" /></p>
-				<p><button type="submit" id="button-unlock"><%= @text[:button_unlock] %></button></p>
-			</form>
+			<h1><%= @text[:enter_password] %></h1>
+
+			<div id="div-locked">
+				<form id="form-unlock">
+						<input id="input-password" size="16" type="password">
+						<div>
+						<button id="button-unlock" type="submit" class="btn btn-primary">
+							<i class="icon-lock"></i> <%= @text[:button_unlock] %>
+						</button>
+					</div>
+				</form>
+			</div>
 		</div>
 
 		<div id="div-login-error">
@@ -55,16 +61,35 @@
 		</div>
 
 		<div id="div-unlocked">
-			<div id="toolbar" class="ui-widget-header ui-corner-all">
-				<span><input type="text" id="input-filter" /></span>
-				<button id="button-generate-show"><%= @text[:button_generate] %></button>
-				<button id="button-lock"><%= @text[:button_lock] %></button>
+			<div class="navbar">
+				<div class="navbar-inner">
+					<form class="navbar-search pull-left">
+						<input type="text" width="" class="search-query" placeholder="<%= @text[:filter] %>">
+					</form>
+					<ul class="nav pull-right">
+						<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= @text[:actions] %> <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li class="disabled"><a href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
+								<li class="disabled"><a href="#"><i class="icon-list"></i> Fetch form</a></li>
+								<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
 			</div>
 
+			<table id="table-matched" class="table table-hover"><tbody></tbody></table>
+			<table id="table-unmatched" class="table table-hover"><caption><h3><%= @text[:unmatched_sites] %></h3></caption><tbody></tbody></table>
+		</div>
 
-			<div id="div-matched"></div>
-			<hr />
-			<div id="div-other"></div>
+		<div id="div-login-details">
+			<p>Username: asd</p>
+			<p>Password: asd</p>
+		</div>
+
+		<div id="div-copyright" class="ui-widget">
+			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
 		</div>
 	</body>
 </html>
