@@ -4,6 +4,8 @@ function lock() {
 	$("#div-unlocked").hide();
 	$("#div-login-error").hide();
 	$("#div-locked").show();
+
+	$("#input-password").focus();
 }
 
 function unlock(pwd) {
@@ -96,6 +98,8 @@ function showData(data) {
 			$("#div-locked").hide();
 			$("#div-login-error").hide();
 			$("#div-unlocked").show();
+
+			$("#input-filter").focus();
 		});
 	} catch(e) {
 		$("#div-login-error").show();
@@ -106,6 +110,9 @@ function showData(data) {
 
 $(document).ready(function() {
 	$("#button-lock").click(lock);
+	$("#button-unlock").button({ icons: { primary: "ui-icon-unlocked" } });
+	$("#button-lock").button({ text: false, icons: { primary: "ui-icon-locked" } });
+	$("#button-generate-show").button({ text: false, icons: { primary: "ui-icon-gear" } });
 
 	if (chrome.extension.getBackgroundPage().data != null) {
 		chrome.extension.getBackgroundPage().lockTimeoutUpdate();

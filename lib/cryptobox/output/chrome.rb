@@ -22,11 +22,13 @@ def generate_chrome(config)
   templates.each do |filename|
     name = File.basename filename
     t = Template.new(config, filename, name).generate
+    t = embed_images(t, config[:path][:jquery_ui_css_images])
     File.open(File.join(config[:path][:db_chrome], name), 'w') {|f| f.write t }
   end
 
   copy = [ File.join(config[:path][:chrome], 'icon.png'),
-    File.join(config[:path][:html], 'extern/jquery/jquery-1.7.2.min.js') ]
+    File.join(config[:path][:html], 'extern/jquery/jquery-1.7.2.min.js'),
+    File.join(config[:path][:html], 'extern/jquery-ui/js/jquery-ui-1.8.21.custom.min.js') ]
 
   copy.concat [
     File.join(config[:path][:html], 'extern/CryptoJS/components/core-min.js'),

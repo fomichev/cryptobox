@@ -5,20 +5,23 @@
 		<title>Cryptobox</title>
 		<style>
 			body {
-				min-width:357px;
-				overflow-x:hidden;
+				min-width: 350px;
+				font-size: 12px;
+				/*overflow-x:hidden;*/
 			}
 
-			img {
-				margin:5px;
-				border:2px solid black;
-				vertical-align:middle;
-				width:75px;
-				height:75px;
+			#div-locked {
+				text-align: center;
 			}
+			#toolbar {
+				text-align: right;
+			}
+
+<%= incl_plain(File.join(@config[:path][:html], "extern/jquery-ui/css/#{@config[:ui][:jquery_ui_theme]}/jquery-ui-1.8.21.custom.css")) %>
 		</style>
 
 		<script src="jquery-1.7.2.min.js"></script>
+		<script src="jquery-ui-1.8.21.custom.min.js"></script>
 
 	<% if @config[:chrome][:embed] %>
 		<script type="text/javascript" src="core-min.js"></script>
@@ -52,7 +55,12 @@
 		</div>
 
 		<div id="div-unlocked">
-			<a id="button-lock" href="#">Lock</a>
+			<div id="toolbar" class="ui-widget-header ui-corner-all">
+				<span><input type="text" id="input-filter" /></span>
+				<button id="button-generate-show"><%= @text[:button_generate] %></button>
+				<button id="button-lock"><%= @text[:button_lock] %></button>
+			</div>
+
 
 			<div id="div-matched"></div>
 			<hr />
