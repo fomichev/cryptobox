@@ -45,8 +45,8 @@ module Cryptobox
 #editor='gvim -n -f'
 #editor='mvim -n -f'
 #editor='vim -n'
-#      set_value user_config, :ui, :lang, :en
-      set_value user_config, :ui, :lang, :ru
+      set_value user_config, :ui, :lang, :en
+#      set_value user_config, :ui, :lang, :ru
 
       set_value user_config, :cryptobox, :version, VERSION
       set_value user_config, :cryptobox, :date_format, '%H:%M %d.%m.%Y'
@@ -72,14 +72,11 @@ module Cryptobox
 
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
-      set_value user_config, :path, :html, File.expand_path(File.join(@config[:path][:templates], 'html'))
-      set_value user_config, :path, :bootstrap, File.expand_path(File.join(@config[:path][:html], 'extern/bootstrap'))
-      set_value user_config, :path, :bookmarklet, File.expand_path(File.join(@config[:path][:templates], 'bookmarklet'))
+      set_value user_config, :path, :bootstrap, File.expand_path(File.join(@config[:path][:templates], 'extern/bootstrap'))
       set_value user_config, :path, :chrome, File.expand_path(File.join(@config[:path][:templates], 'chrome'))
-      set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:html], '/extern/clippy/build/clippy.swf'))
+      set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:templates], 'extern/clippy/build/clippy.swf'))
 
-      set_value user_config, :path, :jquery_ui_css_images, File.expand_path(File.join(@config[:path][:html], '/extern/jquery-ui/css/', @config[:ui][:jquery_ui_theme]))
-      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:html], '/extern/jquery-mobile/'))
+      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:templates], 'extern/jquery-mobile/'))
 
       # todo: add text (lang)
     end

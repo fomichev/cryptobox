@@ -437,24 +437,34 @@ it's better to remove all temporary files and clean `bash` history.
 == Todo
 * add RDoc and GEM support
 
+* cleanup fill/form bookmarklets
+
 * remove versions from jquery and jquery-ui files to ease version change
 * rename jquery-ui.js style.css to index.js/css (and also for mobile)
 
+* Bootstrap desktop
+  - Check login with token
+  - Rework login.js (remove stupid string conversions)
+  - Add filter
+  - Set empty tag instead of __default__
+  - Probably try to use another layout
+  - Share as many code as possible with chrome plugin
+  - move template/html/* -> template/
+
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
-  - Add possibility to get to user/pass window and copy/paste them (via clippy?)
+  - Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
   - Add filter
   - Add passwords generator (with possible diceware support; and use random.org when possible to generate passwords)
   - Try to support firefox also (seems to be possible to share huge amount of codebase)
     https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
   - Implement cbserve and add its support to extension
 
-* login -> webform
+* ? login -> webform
 
 * Cucumber/Aruba tests
 * ? .cryptoboxrc.yml -> .cryptobox.yml
 * Add unit tests
 * .html -> .rhtml
-* __default__ tag -> ''
 * clean clipboard when locking HTML page
 
 * use external repositories when possible (jQuery, CryproJS) to keep up with updates

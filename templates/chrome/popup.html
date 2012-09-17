@@ -3,9 +3,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<title><%= @text[:title] %></title>
-		<style>
+		<style type="text/css">
 			body {
-			min-width: 400px;
+				min-width: 400px;
 			}
 
 			#div-locked {
@@ -38,6 +38,7 @@
 		<script src="lock.js"></script>
 		<script src="fill.js"></script>
 
+		<script src="bootstrap-common.js"></script>
 		<script src="popup.js"></script>
 	</head>
 	<body>
@@ -64,7 +65,7 @@
 			<div class="navbar">
 				<div class="navbar-inner">
 					<form class="navbar-search pull-left">
-						<input type="text" width="" class="search-query" placeholder="<%= @text[:filter] %>">
+						<input type="text" id="input-filter" class="search-query" placeholder="<%= @text[:filter] %>">
 					</form>
 					<ul class="nav pull-right">
 						<li class="dropdown">
@@ -83,10 +84,45 @@
 			<table id="table-unmatched" class="table table-hover"><caption><h3><%= @text[:unmatched_sites] %></h3></caption><tbody></tbody></table>
 		</div>
 
-		<div id="div-login-details">
-			<p>Username: asd</p>
-			<p>Password: asd</p>
+
+
+
+		<div id="div-details">
+			<a id="a-hide-details" href="#" class="btn"><%= @text[:button_close] %></a>
 		</div>
+
+		<div id="div-generate" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3><%= @text[:title_generate] %></h3>
+			</div>
+			<div class="modal-body">
+				<form>
+					<label><%= @text[:generate_length] %></label>
+					<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" />
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-num" checked /> <%= @text[:generate_numbers] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-punc" checked /> <%= @text[:generate_punctuation] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-pronounceable" /> <%= @text[:generate_pronounceable] %>
+					</label>
+					<label><%= @text[:generated] %></label>
+					<input type="text" id="intput-generated-password" size="30" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+				<a id="a-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
+			</div>
+		</div>
+
+
 
 		<div id="div-copyright" class="ui-widget">
 			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>

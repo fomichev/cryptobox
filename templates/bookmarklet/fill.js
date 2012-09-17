@@ -1,17 +1,17 @@
 var cfg = <%= incl(@config[:path][:db_json]) %>;
 
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/enc-base64-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/cipher-core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/aes-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/sha1-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/hmac-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:html], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/aes-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/sha1-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
 
-<%= incl(File.join(@config[:path][:bookmarklet], 'common.js')) %>
-<%= incl(File.join(@config[:path][:html], 'js/fill.js')) %>
-<%= incl(File.join(@config[:path][:html], 'js/login.js')) %>
-<%= incl(File.join(@config[:path][:html], 'js/crypto.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'bookmarklet/common.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/fill.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/login.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/crypto.js')) %>
 
 function unlock(pwd, caption) {
 	var text = decrypt(pwd, cfg.pbkdf2.salt, cfg.cipher, cfg.pbkdf2.iterations, cfg.aes.iv);

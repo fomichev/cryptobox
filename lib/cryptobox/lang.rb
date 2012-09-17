@@ -36,6 +36,9 @@ module Cryptobox
     filter: 'Filter',
     unmatched_sites: 'Unmatched sites',
     button_details: 'Details',
+    address: 'Address',
+    button_close: 'Close',
+    button_hide_reveal: 'Hide/reveal',
   },
     ru: {
     title: 'Cryptobox',
@@ -71,6 +74,9 @@ module Cryptobox
     filter: 'Фильтр',
     unmatched_sites: 'Другие сайты',
     button_details: 'Детальная информация',
+    address: 'Адрес',
+    button_close: 'Закрыть',
+    button_hide_reveal: 'Скрыть/показать',
   }
   }
 

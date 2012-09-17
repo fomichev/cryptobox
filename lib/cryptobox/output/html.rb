@@ -15,8 +15,8 @@ def generate_html(config)
   dirname = File.dirname config[:path][:db_html]
   Dir.mkdir dirname unless Dir.exist? dirname
 
-  t = Template.new(config, File.join(config[:path][:html], 'desktop/index.html')).generate
-  t = embed_images(t, config[:path][:jquery_ui_css_images])
+  t = Template.new(config, File.join(config[:path][:templates], 'desktop/index.html')).generate
+  t = embed_images(t, File.join(config[:path][:bootstrap], 'css'))
 
   File.open(config[:path][:db_html], 'w') {|f| f.write t }
 
@@ -27,7 +27,7 @@ def generate_html(config)
   dirname = File.dirname config[:path][:db_mobile_html]
   Dir.mkdir dirname unless Dir.exist? dirname
 
-  t = Template.new(config, File.join(config[:path][:html], 'mobile/index.html')).generate
+  t = Template.new(config, File.join(config[:path][:templates], 'mobile/index.html')).generate
   t = embed_images(t, config[:path][:jquery_mobile_css_images])
 
   File.open(config[:path][:db_mobile_html], 'w') {|f| f.write t }

@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+		<title><%= @text[:title] %></title>
+		<style type="text/css">
+<%= incl_plain(File.join(@config[:path][:templates], 'desktop/index.css')) %>
+<%= incl_plain(File.join(@config[:path][:bootstrap], "css/bootstrap.min.css")) %>
+		</style>
+		<script type="text/javascript">
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery-1.7.2.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:bootstrap], 'js/bootstrap.min.js')) %>
+
+var cfg = <%= incl(@config[:path][:db_json]) %>;
+
+<%= incl(File.join(@config[:path][:templates], 'js/login.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/view.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/password.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/crypto.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/bootstrap-common.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'desktop/index.js')) %>
+
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/seedrandom.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/aes-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/sha1-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
+		</script>
+	</head>
+	<body>
+		<noscript><%= @text[:noscript] %></noscript>
+
+		<div id="div-locked">
+			<h1><%= @text[:enter_password] %></h1>
+
+			<div id="div-locked">
+				<form id="form-unlock">
+						<input id="input-password" size="16" type="password">
+						<div>
+						<button id="button-unlock" type="submit" class="btn btn-primary">
+							<i class="icon-lock"></i> <%= @text[:button_unlock] %>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="div-unlocked">
+			<div class="container">
+				<div class="navbar">
+					<div class="navbar-inner">
+						<form class="navbar-search">
+							<input type="text" id="input-filter" class="search-query" placeholder="<%= @text[:filter] %>">
+						</form>
+						<ul class="nav pull-right">
+							<li><a id="button-generate-show" href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
+							<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="span3">
+						<ul id="ul-nav" class="nav nav-pills nav-stacked"></ul>
+					</div>
+					<div class="span9">
+						<div id="div-tabs">
+							<div class="tab-content"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="div-details" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3></h3>
+			</div>
+			<div class="modal-body"></div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+			</div>
+		</div>
+
+		<div id="div-generate" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3><%= @text[:title_generate] %></h3>
+			</div>
+			<div class="modal-body">
+				<form>
+					<label><%= @text[:generate_length] %></label>
+					<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" />
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-num" checked /> <%= @text[:generate_numbers] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-punc" checked /> <%= @text[:generate_punctuation] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
+					</label>
+					<label class="checkbox">
+						<input type="checkbox" id="input-pronounceable" /> <%= @text[:generate_pronounceable] %>
+					</label>
+					<label><%= @text[:generated] %></label>
+					<input type="text" id="intput-generated-password" size="30" />
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+				<a id="a-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
+			</div>
+		</div>
+
+		<div id="div-token" class="modal hide fade">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3><%= @text[:title_token] %></h3>
+			</div>
+			<div class="modal-body">
+				<input type="text" id="input-json" />
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+				<a id="a-token" href="#" class="btn btn-success" target="_blank"><%= @text[:get_token] %></a>
+				<a id="a-token-login" href="#" class="btn btn-primary"><%= @text[:log_in] %></a>
+			</div>
+		</div>
+
+		<div id="div-copyright">
+			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
+		</div>
+	</body>
+</html>

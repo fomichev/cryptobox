@@ -1,4 +1,4 @@
-<%= incl(File.join(@config[:path][:html], 'js/lock.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
 
 function lock() {
 	chrome.extension.getBackgroundPage().data = null;

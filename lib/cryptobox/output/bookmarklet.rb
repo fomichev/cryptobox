@@ -4,7 +4,7 @@ def generate_bookmarklet(config)
   dirname = File.dirname config[:path][:db_bookmarklet_fill]
   Dir.mkdir dirname unless Dir.exist? dirname
 
-  t = Template.new(config, File.join(config[:path][:bookmarklet], 'fill.js')).generate
+  t = Template.new(config, File.join(config[:path][:templates], 'bookmarklet/fill.js')).generate
 
   File.open(config[:path][:db_bookmarklet_fill], 'w') {|f| f.write t }
 
@@ -13,7 +13,7 @@ def generate_bookmarklet(config)
   dirname = File.dirname config[:path][:db_bookmarklet_form]
   Dir.mkdir dirname unless Dir.exist? dirname
 
-  t = Template.new(config, File.join(config[:path][:bookmarklet], 'form.js')).generate
+  t = Template.new(config, File.join(config[:path][:templates], 'bookmarklet/form.js')).generate
 
   File.open(config[:path][:db_bookmarklet_form], 'w') {|f| f.write t }
 end

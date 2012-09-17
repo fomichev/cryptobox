@@ -1,7 +1,21 @@
+function __headerClick(el) {
+	sendToBackground(el);
+	window.close();
+}
+
+function __detailsClick(el) {
+//	$('#div-details .modal-body').html('');
+//	getLoginDetails($('#div-details .modal-body'), el);
+//	$('#div-details .modal-header h3').text(el.name);
+	$('#div-unlocked').slideUp();
+	$('#div-details').show();
+}
+
 function lock() {
 	chrome.extension.getBackgroundPage().data = null;
 
 	$("#div-unlocked").hide();
+	$("#div-details").hide();
 	$("#div-login-error").hide();
 	$("#div-login-details").hide();
 	$("#div-locked").show();
@@ -51,13 +65,14 @@ function onUnlock(tab, data) {
 		var action = sitename(el.form.action);
 
 		if (address == action) {
-			matched.push(el);
+			uiCreateEntry($('#table-matched'), el);
 		} else {
 			if (el.visible == true)
-				unmatched.push(el);
+				uiCreateEntry($('#table-unmatched'), el);
 		}
 	}
 
+	/*
 	function createLink(id, name) {
 		return '<tr><td id="' + id +'"><a href="#">' + name + '</a></td><td><div class="pull-right"><button id="' + id + '_button" class="btn btn-mini btn-primary" type="button" data-toggle="button"><%= @text[:button_details] %></button></div></td></tr>';
 	}
@@ -99,7 +114,6 @@ function onUnlock(tab, data) {
 	function addListenerForUnmatched(id, form) {
 		var e = document.getElementById(id + '_button');
 		e.addEventListener("click", function() { $('#' + id + '_details').toggle(); });
-
 	}
 
 	for (var i = 0; i < matched.length; i++)
@@ -108,6 +122,7 @@ function onUnlock(tab, data) {
 	for (var i = 0; i < unmatched.length; i++) {
 		addListenerForUnmatched("unmatched_" + i, unmatched[i]);
 	}
+	*/
 
 }
 
@@ -132,9 +147,24 @@ function showData(data) {
 	}
 }
 
-$(document).ready(function() {
-	$("#button-lock").click(lock);
+function dialogDetailsInit() {
+	$('#a-hide-details').click(function() {
+		$('#div-unlocked').slideDown();
+		$('#div-details').hide();
+	});
 
+}
+
+function lockInit() {
+	$("body").mousemove(function() { chrome.extension.getBackgroundPage().locktimeoutupdate(); });
+
+	$("#button-lock").click(function(event) {
+		event.preventDefault();
+		lock();
+	});
+}
+
+$(document).ready(function() {
 	if (chrome.extension.getBackgroundPage().data != null) {
 		chrome.extension.getBackgroundPage().lockTimeoutUpdate();
 		showData(chrome.extension.getBackgroundPage().data);
@@ -153,5 +183,7 @@ $(document).ready(function() {
 		});
 	}
 
-	$("body").mousemove(function() { chrome.extension.getBackgroundPage().lockTimeoutUpdate(); });
+	lockInit();
+	filterInit();
+	dialogDetailsInit();
 });

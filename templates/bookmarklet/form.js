@@ -1,4 +1,4 @@
-<%= incl(File.join(@config[:path][:bookmarklet], 'common.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'bookmarklet/common.js')) %>
 
 var ta = document.createElement('textarea');
 ta.style.width = '100%';

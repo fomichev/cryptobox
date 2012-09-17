@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby -w
+# coding: utf-8
 
 if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
   railties_path = File.expand_path('../../lib', __FILE__)
