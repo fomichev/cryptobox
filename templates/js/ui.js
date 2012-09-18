@@ -24,7 +24,7 @@ cryptobox.ui.addBr = function(text) {
 		return "";
 }
 
-cryptobox.ui.init = function(pwd, createPage, createGroup, createEntry) {
+cryptobox.ui.init = function(pwd) {
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var map = {};
@@ -32,31 +32,50 @@ cryptobox.ui.init = function(pwd, createPage, createGroup, createEntry) {
 	if (data[0].type != "magic" || data[0].value != "270389")
 		throw "Wrong magic number";
 
-	map.list = {};
-	map.page = {};
-
-	page = {};
-	pageGroups = {};
-
+	var pages = {};
 	for (var i = 0; i < data.length; i++) {
 		var el = data[i];
-		var id = "u_" + i;
 
 		if (el.type == 'magic')
 			continue;
 
-		if (el.visible == false)
+		if (!(el.type in pages))
+			pages[el.type] = {};
+
+		if (!(el.tag in pages[el.type]))
+			pages[el.type][el.tag] = [];
+
+		pages[el.type][el.tag].push(el);
+	}
+
+	var result = [];
+	for (var page_key in pages) {
+		var p = { id: page_key, name: cryptobox.cfg.page[page_key], tag: [] };
+
+		for (var tag_key in pages[page_key])
+			p.tag.push({ name: tag_key, item: pages[page_key][tag_key] });
+
+		result.push(p);
+	}
+
+	return result;
+
+	/*
+
+
+
+	var output = {};
+	for (var key in cryptobox.cfg.page)
+		output[key] = [];
+
+	for (var i = 0; i < data.length; i++) {
+		if (data[i].type == 'magic')
 			continue;
 
-		if (!page[el.type]) {
-			page[el.type] = createPage(id, el);
-			pageGroups[el.type] = {};
-		}
 
-		if (!pageGroups[el.type][el.tag])
-			pageGroups[el.type][el.tag] = createGroup(page[el.type], el);
-
-
-		createEntry(pageGroups[el.type][el.tag], el);
+		output[data[i].type].push(data[i]);
 	}
+
+	return output;
+	*/
 }

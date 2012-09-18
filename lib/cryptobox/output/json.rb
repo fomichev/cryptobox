@@ -41,8 +41,10 @@ def generate_json(config, db)
           }
         end
 
+
     j['type'] = type
-    j['tag'] = '' unless j.has_key? 'tag'
+    j['tag'] = ''
+    j['tag'] = vars[:tag] if vars.has_key? :tag
     j['visible'] = true
     j['visible'] = vars[:visible] if vars.has_key? :visible
 

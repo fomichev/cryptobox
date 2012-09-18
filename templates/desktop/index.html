@@ -13,6 +13,7 @@
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.js')) %>
 <%= incl_plain(File.join(@config[:path][:bootstrap], 'js/bootstrap.min.js')) %>
 
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
@@ -20,6 +21,7 @@
 <%= incl(File.join(@config[:path][:templates], 'js/password.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/helpers.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/ui-bootstrap.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'desktop/index.js')) %>
 
@@ -35,8 +37,8 @@
 	</head>
 	<body>
 		<noscript><%= @text[:noscript] %></noscript>
-
-		<div id="div-locked">
+		<script id="locked-template" type="text/x-handlebars-temlate">
+			<div id="div-locked">
 			<h1><%= @text[:enter_password] %></h1>
 
 			<div id="div-locked">
@@ -49,29 +51,61 @@
 					</div>
 				</form>
 			</div>
-		</div>
-
-		<div id="div-unlocked">
-			<div class="container">
-				<div class="navbar">
-					<div class="navbar-inner">
-						<form class="navbar-search">
-							<input type="text" id="input-filter" class="search-query" placeholder="<%= @text[:filter] %>">
-						</form>
-						<ul class="nav pull-right">
-							<li><a id="button-generate-show" href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
-							<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
-						</ul>
-					</div>
+			</div>
+		</script>
+		<script id="unlocked-template" type="text/x-handlebars-temlate">
+		<div class="container">
+			<div class="navbar">
+				<div class="navbar-inner">
+					<form class="navbar-search">
+						<input type="text" id="input-filter" class="search-query" placeholder="<%= @text[:filter] %>">
+					</form>
+					<ul class="nav pull-right">
+						<li><a id="button-generate-show" href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
+						<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
+					</ul>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="span3">
-						<ul id="ul-nav" class="nav nav-pills nav-stacked"></ul>
-					</div>
-					<div class="span9">
-						<div id="div-tabs">
-							<div class="tab-content"></div>
+			<div class="row">
+				<div class="span3">
+					<ul id="ul-nav" class="nav nav-pills nav-stacked">
+						{{#each page}}
+							<li><a href="#{{id}}" data-toggle="tab">{{name}}</a></li>
+						{{/each}}
+					</ul>
+				</div>
+				<div class="span9">
+					<div id="div-tabs">
+						<div class="tab-content">
+						{{#each page}}
+						<div id="{{id}}" class="tab-pane fade generated">
+							{{#each tag}}
+								<table class="table table-hover">
+									{{#if name}}
+									<caption>{{name}}</caption>
+									{{/if}}
+
+									{{#each item}}
+										<tr json="{{stringify this}}">
+										<td>
+											{{#if_eq type to='login'}}
+												<a class="button-login" href="#">{{name}} ({{form.vars.user}})</a>
+											{{else}}
+												{{name}}
+											{{/if_eq}}
+										</td>
+										<td>
+											<button class="button-details btn btn-mini btn-primary pull-right" type="button">
+												<%= @text[:button_details] %>
+											</button>
+										</td>
+										</tr>
+									{{/each}}
+								</table>
+							{{/each}}
+						</div>
+						{{/each}}
 						</div>
 					</div>
 				</div>
@@ -138,5 +172,7 @@
 		<div id="div-copyright">
 			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
 		</div>
+		</script>
+		<div id="content"></div>
 	</body>
 </html>

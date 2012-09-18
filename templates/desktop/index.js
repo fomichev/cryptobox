@@ -1,4 +1,11 @@
-function loginHeaderClick(el) {
+function render(name, context) {
+	var source = $(name).html();
+	var template = Handlebars.compile(source);
+	var html = template(context);
+	$('#content').html(html);
+}
+
+function headerClick(el) {
 	if (cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
 		$('#div-token').modal();
@@ -7,7 +14,7 @@ function loginHeaderClick(el) {
 	}
 }
 
-function loginDetailsClick(el) {
+function detailsClick(el) {
 	if (el.type == 'login') {
 		$('#div-details .modal-body').html('');
 
@@ -38,24 +45,7 @@ function loginDetailsClick(el) {
 function lock() {
 	cryptobox.lock.stopTimeout();
 
-	if ($("#div-locked").is(":visible") && $("#div-unlocked").is(":visible")) {
-		$("#div-generate").hide();
-		$("#div-details").hide();
-		$("#div-token").hide();
-		$("#div-unlocked").hide();
-	} else {
-		$("#div-generate").modal('hide');
-		$("#div-details").modal('hide');
-		$("#div-token").modal('hide');
-
-		$("#div-locked").fadeIn();
-		$("#div-unlocked").hide();
-	}
-
-	$(".generated").remove();
-	$("#tabs").html('');
-	$("#tabs").removeClass();
-
+	render('#locked-template', this);
 	$("#input-password").focus();
 }
 
@@ -108,26 +98,37 @@ function dialogTokenLoginInit() {
 }
 
 $(document).ready(function() {
-	lock();
+	render('#locked-template', this);
+	$("#input-password").focus();
 
-	/* Unlock */
-	$("#form-unlock").submit(function(event) {
+	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
 		try {
-			cryptobox.ui.init($("#input-password").val(),
-				cryptobox.bootstrap.createPage,
-				cryptobox.bootstrap.createGroup,
-				function(group, el) { cryptobox.bootstrap.createEntry(group, el, loginHeaderClick, loginDetailsClick); });
-			$("#input-password").val("");
-
+//			var _decrypt, _render, _init, _end;
+//			_decrypt = Date.now();
+			var data = cryptobox.ui.init($("#input-password").val());
+//			_render = Date.now();
+			render('#unlocked-template', { page: data });
+//			_init = Date.now();
 			$('#ul-nav a:first').tab('show');
-
-			cryptobox.lock.startTimeout(lock);
-
-			$("#div-locked").hide();
-			$("#div-unlocked").fadeIn();
-
 			$("#input-filter").focus();
+
+			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); });
+			dialogTokenLoginInit();
+			dialogGenerateInit();
+			cryptobox.bootstrap.filterInit();
+
+			$('.button-login').click(function() {
+				var el = $.parseJSON($(this).parent().parent().attr('json'));
+				headerClick(el);
+			});
+
+			$('.button-details').click(function() {
+				var el = $.parseJSON($(this).parent().parent().attr('json'));
+				detailsClick(el);
+			});
+//			_end = Date.now();
+//			console.log('decrypt=' + (_render - _decrypt) + ' render=' + (_init - _render) + ' init=' + (_end - _init));
 		} catch(e) {
 			alert("<%= @text[:incorrect_password] %> " + e);
 			return;
@@ -139,9 +140,4 @@ $(document).ready(function() {
 
 		$(this).next().toggle();
 	});
-
-	cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); });
-	dialogTokenLoginInit();
-	dialogGenerateInit();
-	cryptobox.bootstrap.filterInit();
 });

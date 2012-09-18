@@ -1,50 +1,6 @@
 /* common functionality shared between chrome extension and desktop html */
 cryptobox.bootstrap = {};
 
-cryptobox.bootstrap.createPage = function(id, el) {
-	if (cryptobox.cfg.page[el.name])
-		el.name = cryptobox.cfg.page[el.name];
-
-	$('<li>', { 'class': 'generated' }).html(
-		$('<a>', { 'href': '#' + id, 'data-toggle': 'tab' }).text(el.name)
-	).appendTo('#ul-nav');
-
-	$('<div>', { 'id': id, 'class': 'tab-pane fade generated' }
-	).appendTo('#div-tabs div.tab-content');
-
-	return $('div#' + id);
-}
-
-cryptobox.bootstrap.createGroup = function(page, el) {
-	$('<table>', { 'class': 'table table-hover' }).html(function() {
-		if (el.tag != undefined || el.tag == '')
-			return $('<caption>').text(el.tag).after($('<tbody>'))
-		else
-			return $('<tbody>')
-
-	}).appendTo(page);
-
-	return $('div.tab-pane table.table:last tbody');
-}
-
-cryptobox.bootstrap.createEntry = function(group, el, headerClickCallback, detailsClickCallback) {
-	$('<tr>').
-		append($('<td>').html(function() {
-			if (el.type == 'login') {
-				return $('<a>', { 'href': '#' }).text(el.name + ' (' + el.form.vars.user + ')').click(
-					function() { headerClickCallback(el); });
-			} else {
-				return el.name;
-			}
-		})).
-		append($('<td>').html(
-			$('<button>', { 'class': 'btn btn-mini btn-primary pull-right', 'type': 'button' }
-			).text('<%= @text[:button_details] %>').
-			click(function() { detailsClickCallback(el); })
-		)
-	).appendTo(group);
-}
-
 cryptobox.bootstrap.createDetails = function(entry, map) {
 	var items = $();
 	$.each(map, function(k, v) {
