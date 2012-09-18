@@ -76,7 +76,7 @@ module Cryptobox
       set_value user_config, :path, :chrome, File.expand_path(File.join(@config[:path][:templates], 'chrome'))
       set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:templates], 'extern/clippy/build/clippy.swf'))
 
-      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:templates], 'extern/jquery-mobile/'))
+      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:templates], 'extern/jquery.mobile/'))
 
       # todo: add text (lang)
     end

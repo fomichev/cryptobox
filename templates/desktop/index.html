@@ -12,7 +12,7 @@
 			var cryptobox = {};
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery-1.7.2.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
 <%= incl_plain(File.join(@config[:path][:bootstrap], 'js/bootstrap.min.js')) %>
 
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>

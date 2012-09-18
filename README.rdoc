@@ -276,7 +276,6 @@ path:
   db_bookmarklet_form: <where to store form bookmarklet>
 
 ui:
-  jquery_ui_theme: <use different jquery-ui theme>
   editor: <full path to your editor>
   lang: <select language; currently supported are en and ru>
 
@@ -324,9 +323,10 @@ include:
 
 	html/extern/jquery
 
-* [jQuery UI 1.8.21](http://jqueryui.com/download) - MIT
+* [Twitter Bootstrap 2.1.1](https://github.com/twitter/bootstrap) - Apache License, Version 2.0
 
-	html/extern/jquery-ui (Dialog, Tabs, Accordion, Button, Flick theme)
+	html/extern/bootstrap
+
 
 * [jQuery Mobile 1.1.0](http://jquerymobile.com) - MIT
 
@@ -438,9 +438,6 @@ it's better to remove all temporary files and clean `bash` history.
 * add RDoc and GEM support
 
 * cleanup fill/form bookmarklets
-
-* remove versions from jquery and jquery-ui files to ease version change
-* rename jquery-ui.js style.css to index.js/css (and also for mobile)
 
 * Bootstrap desktop
   - Check login with token

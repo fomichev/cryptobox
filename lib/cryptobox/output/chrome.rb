@@ -30,7 +30,7 @@ def generate_chrome(config)
   copy = [ File.join(config[:path][:chrome], 'icon.png'),
     File.join(config[:path][:bootstrap], 'css/bootstrap.min.css'),
     File.join(config[:path][:bootstrap], 'js/bootstrap.min.js'),
-    File.join(config[:path][:templates], 'extern/jquery/jquery-1.7.2.min.js') ]
+    File.join(config[:path][:templates], 'extern/jquery/jquery.min.js') ]
 
   copy.concat [
     File.join(config[:path][:templates], 'extern/seedrandom.min.js'),
