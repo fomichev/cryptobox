@@ -1,22 +1,24 @@
-var lockTimeout;
-var lockTimeoutId;
+cryptobox.lock = {
+	_timeout: 0,
+	_timeoutId: 0
+};
 
-function lockTimeoutStart() {
-	lockTimeout = <%= @config[:ui][:lock_timeout_minutes] %>;
-	lockTimeoutId = window.setInterval(function() {
-		lockTimeout--;
+cryptobox.lock.startTimeout = function(lockCallback) {
+	cryptobox.lock._timeout = <%= @config[:ui][:lock_timeout_minutes] %>;
+	cryptobox.lock._timeoutId = window.setInterval(function() {
+		cryptobox.lock._timeout--;
 
-		if (lockTimeout <= 0) {
+		if (cryptobox.lock._timeout <= 0) {
 			lockTimeoutStop();
-			lock();
+			lockCallback();
 		}
 	}, 1000 * 60);
 }
 
-function lockTimeoutUpdate() {
-	lockTimeout = <%= @config[:ui][:lock_timeout_minutes] %>;
+cryptobox.lock.updateTimeout = function() {
+	cryptobox.lock._timeout = <%= @config[:ui][:lock_timeout_minutes] %>;
 }
 
-function lockTimeoutStop() {
-		clearInterval(lockTimeoutId);
+cryptobox.lock.stopTimeout = function() {
+		clearInterval(cryptobox.lock._timeoutId);
 }

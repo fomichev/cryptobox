@@ -1,4 +1,7 @@
-<%= incl(File.join(@config[:path][:templates], 'bookmarklet/common.js')) %>
+var cryptobox = {};
+
+<%= incl(File.join(@config[:path][:templates], 'js/popover.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 
 var ta = document.createElement('textarea');
 ta.style.width = '100%';
@@ -8,8 +11,8 @@ ta.style.background = '#000';
 ta.style.color = '#fff';
 ta.style.resize = 'none';
 
-ta.appendChild(document.createTextNode(getFormsJson()));
+ta.appendChild(document.createTextNode(cryptobox.form.toJson()));
 
-showPopover('50%', '50%', ta);
+cryptobox.popover.show('50%', '50%', ta);
 
 ta.select();

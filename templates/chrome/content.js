@@ -1,4 +1,4 @@
-<%= incl(File.join(@config[:path][:templates], 'js/fill.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 
 chrome.extension.onMessage.addListener(
 	function(form, sender, sendResponse) {
@@ -8,5 +8,5 @@ chrome.extension.onMessage.addListener(
 //		if (request.greeting == "hello")
 //			sendResponse({farewell: "goodbye"});
 
-		formFill(form.form);
+		crypboxo.form.fill(form.form);
 	});

@@ -1,4 +1,6 @@
-function copyToClipboard(text) {
+cryptobox.ui = {};
+
+cryptobox.ui.copyToClipboard = function(text) {
 	var t = '';
 	var pathToClippy = 'clippy.swf';
 
@@ -15,15 +17,15 @@ function copyToClipboard(text) {
 	return t;
 }
 
-function addBr(text) {
+cryptobox.ui.addBr = function(text) {
 	if (text)
 		return text.replace(/\n/g, '<br />');
 	else
 		return "";
 }
 
-function unlock(pwd, createPage, createGroup, createEntry) {
-	var text = decrypt(pwd, cfg.pbkdf2.salt, cfg.ciphertext, cfg.pbkdf2.iterations, cfg.aes.iv);
+cryptobox.ui.init = function(pwd, createPage, createGroup, createEntry) {
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var map = {};
 

@@ -1,21 +1,23 @@
-function isVowel(c) {
-	c = c.toLowerCase();
+cryptobox.password = {};
 
-	if (c == 'a')
-		return true;
-	else if (c == 'e')
-		return true;
-	else if (c == 'i')
-		return true;
-	else if (c == 'o')
-		return true;
-	else if (c == 'u')
-		return true;
-	else
-		return false;
-}
+cryptobox.password.generate = function(length, includeNumbers, includePunc, includeUc, pronounceable) {
+	var isVowel = function(c) {
+		c = c.toLowerCase();
 
-function generatePassword(length, includeNumbers, includePunc, includeUc, pronounceable) {
+		if (c == 'a')
+			return true;
+		else if (c == 'e')
+			return true;
+		else if (c == 'i')
+			return true;
+		else if (c == 'o')
+			return true;
+		else if (c == 'u')
+			return true;
+		else
+			return false;
+	}
+
 	Math.seedrandom();
 
 	var pass = "";

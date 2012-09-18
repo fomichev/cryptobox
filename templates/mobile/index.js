@@ -92,7 +92,7 @@ $(document).bind("pagebeforehide", function(event, data) {
 	try {
 		to = data.nextPage[0].id;
 		if (to == 'div-locked') {
-			lockTimeoutStop();
+			cryptobox.lock.stopTimeout();
 
 			$(".generated").remove();
 		}
@@ -104,16 +104,17 @@ $(document).ready(function() {
 		event.preventDefault();
 
 		try {
-			var map = unlock($("#input-password").val());
+			cryptobox.ui.init($("#input-password").val());
 			$("#input-password").val("");
 
+			/*
 			var pages_list = '';
 			var pages = "";
 
 			for (var key in map.page) {
 				var name = key;
-				if (cfg.page[key])
-					name = cfg.page[key];
+				if (cryptobox.cfg.page[key])
+					name = cryptobox.cfg.page[key];
 
 				pages_list += '<li><a href="#' + key + '">' + name + '</a></li>'
 				pages += page(key, name, map.list[key]);
@@ -137,8 +138,9 @@ $(document).ready(function() {
 			$("#ul-pages-list").html(pages_list);
 			$("body").append(pages);
 			$(".button-lock").click(function () { lock(); });
+			*/
 
-			lockTimeoutStart();
+			cryptobox.lock.startTimeout(lock);
 
 			$.mobile.changePage("#div-main");
 		} catch(e) {

@@ -16,6 +16,7 @@ function lock() {
 
 	$("#div-unlocked").hide();
 	$("#div-details").hide();
+	$("#div-generate").hide();
 	$("#div-login-error").hide();
 	$("#div-login-details").hide();
 	$("#div-locked").show();
@@ -25,7 +26,7 @@ function lock() {
 
 function unlock(pwd) {
 	<% if @config[:chrome][:embed] %>
-	var text = decrypt(pwd, cfg.pbkdf2.salt, cfg.ciphertext, cfg.pbkdf2.iterations, cfg.aes.iv);
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	return jQuery.parseJSON(text);
 	<% else %>
 	// TODO
@@ -45,7 +46,7 @@ function onUnlock(tab, data) {
 	var matched = new Array();
 	var unmatched = new Array();
 
-	var address = sitename(tab.url);
+	var address = cryptobox.form.sitename(tab.url);
 
 	for (var i = 0; i < data.length; i++) {
 		var el = data[i];
@@ -62,68 +63,21 @@ function onUnlock(tab, data) {
 		if (el.form.action == undefined)
 			continue;
 
-		var action = sitename(el.form.action);
+		var action = cryptobox.form.sitename(el.form.action);
 
+		$("#table-matched tbody").html('');
+		$("#table-unmatched tbody").html('');
+		$('#table-matched').hide();
+		$('#table-unmatched').hide();
 		if (address == action) {
-			uiCreateEntry($('#table-matched'), el);
+			cryptobox.bootstrap.createEntry($('#table-matched'), el, __headerClick, __detailsClick);
 		} else {
 			if (el.visible == true)
-				uiCreateEntry($('#table-unmatched'), el);
+				cryptobox.bootstrap.createEntry($('#table-unmatched'), el, __headerClick, __detailsClick);
 		}
+		$('#table-matched').show();
+		$('#table-unmatched').show();
 	}
-
-	/*
-	function createLink(id, name) {
-		return '<tr><td id="' + id +'"><a href="#">' + name + '</a></td><td><div class="pull-right"><button id="' + id + '_button" class="btn btn-mini btn-primary" type="button" data-toggle="button"><%= @text[:button_details] %></button></div></td></tr>';
-	}
-	function createDetails(id, user, pass) {
-		var t = '<dl class="dl-horizontal"><dt><%= @text[:username] %>:</dt><dd>' + user + '</dd><dt><%= @text[:password] %>:</dt><dd>' + pass + '</dd></dl>';
-
-		return '<tr id="'+ id + '_details" style="display:none"><td colspan="2">' + t + '</td></tr>';
-	}
-
-	$("#table-matched tbody").html('');
-	$("#table-unmatched tbody").html('');
-	$("#table-matched").show();
-	$("#table-unmatched").show();
-
-	for (var i = 0; i < matched.length; i++) {
-		var name = matched[i].name + ' (' + matched[i].form.vars.user + ')';
-		$('#table-matched tbody').append(createLink('matched_' + i, name));
-		$('#table-matched tbody').append(createDetails('matched_' + i, matched[i].form.vars.user, matched[i].form.vars.pass));
-	}
-	if (matched.length == 0)
-		$('#table-matched').hide();
-
-	for (var i = 0; i < unmatched.length; i++) {
-		var name = unmatched[i].name + ' (' + unmatched[i].form.vars.user + ')';
-		$('#table-unmatched tbody').append(createLink('unmatched_' + i, name));
-		$('#table-unmatched tbody').append(createDetails('unmatched_' + i, unmatched[i].form.vars.user, unmatched[i].form.vars.pass));
-	}
-	if (unmatched.length == 0)
-		$('#table-unmatched').hide();
-
-	function addListenerForMatched(id, form) {
-		var e = document.getElementById(id);
-		e.addEventListener("click", function() { sendToBackground(form); window.close(); });
-
-		e = document.getElementById(id + '_button');
-		e.addEventListener("click", function() { $('#' + id + '_details').toggle(); });
-	}
-
-	function addListenerForUnmatched(id, form) {
-		var e = document.getElementById(id + '_button');
-		e.addEventListener("click", function() { $('#' + id + '_details').toggle(); });
-	}
-
-	for (var i = 0; i < matched.length; i++)
-		addListenerForMatched("matched_" + i, matched[i]);
-
-	for (var i = 0; i < unmatched.length; i++) {
-		addListenerForUnmatched("unmatched_" + i, unmatched[i]);
-	}
-	*/
-
 }
 
 function showData(data) {
@@ -136,6 +90,8 @@ function showData(data) {
 
 			$("#div-locked").hide();
 			$("#div-login-error").hide();
+			$("#div-details").hide();
+			$("#div-generate").hide();
 			$("#div-unlocked").show();
 
 			$("#input-filter").focus();
@@ -147,26 +103,33 @@ function showData(data) {
 	}
 }
 
+function dialogGenerateInit() {
+	$('#button-hide-generate').click(function() {
+		$('#div-unlocked').slideDown();
+		$('#div-generate').hide();
+	});
+
+	$('#button-generate-show').click(function() {
+		$('#div-unlocked').slideUp();
+		$('#div-generate').show();
+	});
+
+	$('#button-generate').click(function() {
+		cryptobox.bootstrap.dialogGenerateSubmit();
+	});
+}
+
 function dialogDetailsInit() {
-	$('#a-hide-details').click(function() {
+	$('#button-hide-details').click(function() {
 		$('#div-unlocked').slideDown();
 		$('#div-details').hide();
 	});
 
 }
 
-function lockInit() {
-	$("body").mousemove(function() { chrome.extension.getBackgroundPage().locktimeoutupdate(); });
-
-	$("#button-lock").click(function(event) {
-		event.preventDefault();
-		lock();
-	});
-}
-
 $(document).ready(function() {
 	if (chrome.extension.getBackgroundPage().data != null) {
-		chrome.extension.getBackgroundPage().lockTimeoutUpdate();
+		chrome.extension.getBackgroundPage().updateTimeout();
 		showData(chrome.extension.getBackgroundPage().data);
 	} else {
 		lock();
@@ -176,14 +139,15 @@ $(document).ready(function() {
 			var data = unlock($("#input-password").val());
 			$("#input-password").val("");
 
-			chrome.extension.getBackgroundPage().lockTimeoutStart();
+			chrome.extension.getBackgroundPage().startTimeout();
 			chrome.extension.getBackgroundPage().data = data;
 
 			showData(data);
 		});
 	}
 
-	lockInit();
-	filterInit();
+	cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); });
+	cryptobox.bootstrap.filterInit();
 	dialogDetailsInit();
+	dialogGenerateInit();
 });

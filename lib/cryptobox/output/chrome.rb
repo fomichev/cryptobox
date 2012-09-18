@@ -8,16 +8,16 @@ def generate_chrome(config)
   templates = [ File.join(config[:path][:chrome], 'popup.html'),
     File.join(config[:path][:chrome], 'background.js'),
     File.join(config[:path][:chrome], 'content.js'),
-    File.join(config[:path][:templates], 'js/login.js'),
+    File.join(config[:path][:templates], 'js/form.js'),
     File.join(config[:path][:templates], 'js/lock.js'),
-    File.join(config[:path][:templates], 'js/fill.js'),
-    File.join(config[:path][:templates], 'js/bootstrap-common.js'),
+    File.join(config[:path][:templates], 'js/password.js'),
+    File.join(config[:path][:templates], 'js/ui-bootstrap.js'),
     File.join(config[:path][:chrome], 'popup.js'),
     File.join(config[:path][:chrome], 'manifest.json'),
   ]
 
   templates.concat [
-    File.join(config[:path][:templates], 'js/crypto.js'),
+    File.join(config[:path][:templates], 'js/cipher.js'),
   ] if config[:chrome][:embed]
 
   templates.each do |filename|
@@ -33,6 +33,7 @@ def generate_chrome(config)
     File.join(config[:path][:templates], 'extern/jquery/jquery-1.7.2.min.js') ]
 
   copy.concat [
+    File.join(config[:path][:templates], 'extern/seedrandom.min.js'),
     File.join(config[:path][:templates], 'extern/CryptoJS/components/core-min.js'),
     File.join(config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js'),
     File.join(config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js'),
@@ -48,6 +49,6 @@ def generate_chrome(config)
   end
 
   if config[:chrome][:embed]
-    File.open(File.join(config[:path][:db_chrome], 'cfg.js'), 'w') { |f| f.write 'var cfg = ' + File.read(config[:path][:db_json]) }
+    File.open(File.join(config[:path][:db_chrome], 'cfg.js'), 'w') { |f| f.write "var cryptobox = {};\ncryptobox.cfg = " + File.read(config[:path][:db_json]) }
   end
 end

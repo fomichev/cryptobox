@@ -1,9 +1,9 @@
 function __headerClick(el) {
-	if (formWithToken(el.form)) {
-		$('#a-token').attr('href', el.form.action);
+	if (cryptobox.form.withToken(el.form)) {
+		$('#button-token').attr('href', el.form.action);
 		$('#div-token').modal();
 	} else {
-		formLogin(true, el.form);
+		cryptobox.form.login(true, el.form);
 	}
 }
 
@@ -35,21 +35,21 @@ function getLoginDetails(entry, el) {
 
 	var values = {
 		'<%= @text[:address] %>:': $('<a>', { 'href': el.address }).text(el.address),
-		'<%= @text[:username] %>:': collapsible(el.form.vars.user, copyToClipboard(el.form.vars.user)),
-		'<%= @text[:password] %>:': collapsible(el.form.vars.pass, copyToClipboard(el.form.vars.pass))
+		'<%= @text[:username] %>:': collapsible(el.form.vars.user, cryptobox.ui.copyToClipboard(el.form.vars.user)),
+		'<%= @text[:password] %>:': collapsible(el.form.vars.pass, cryptobox.ui.copyToClipboard(el.form.vars.pass))
 	};
 
 	if (el.form.vars.secret)
-		values['<%= @text[:secret] %>'] = addBr(forms.vars.secret);
+		values['<%= @text[:secret] %>'] = cryptobox.ui.addBr(forms.vars.secret);
 
 	if (el.form.vars.note)
-		values['<%= @text[:note] %>'] = addBr(forms.vars.note);
+		values['<%= @text[:note] %>'] = cryptobox.ui.addBr(forms.vars.note);
 
 	setKeyValue(entry, values);
 }
 
 function lock() {
-	lockTimeoutStop();
+	cryptobox.lock.stopTimeout();
 
 	if ($("#div-locked").is(":visible") && $("#div-unlocked").is(":visible")) {
 		$("#div-generate").hide();
@@ -72,15 +72,6 @@ function lock() {
 	$("#input-password").focus();
 }
 
-function dialogGenerateSubmit() {
-	$("#intput-generated-password").val(generatePassword(
-		$("#input-password-length").val(),
-		$("#input-include-num").is(":checked"),
-		$("#input-include-punc").is(":checked"),
-		$("#input-include-uc").is(":checked"),
-		$("#input-pronounceable").is(":checked")));
-}
-
 function dialogGenerateInit() {
 	$("#button-generate-show").click(function(event) {
 		event.preventDefault();
@@ -88,12 +79,12 @@ function dialogGenerateInit() {
 
 	});
 
-	$('#a-generate').click(function() {
-		dialogGenerateSubmit();
+	$('#button-generate').click(function() {
+		cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 	$("#div-generate").keydown(function(event) {
 		if (event.keyCode == $.ui.keyCode.ENTER)
-			dialogGenerateSubmit();
+			cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 
 	$("#input-pronounceable").click(function() {
@@ -120,21 +111,12 @@ function dialogTokenLoginSubmit(url, name, keys, values, tokens) {
 }
 
 function dialogTokenLoginInit() {
-	$('#a-token-login').click(function (){
+	$('#button-token-login').click(function (){
 		dialogTokenLoginSubmit(url, name, keys, values, tokens);
 	});
 	$("#div-token").keydown(function(event) {
 		if (event.keyCode == $.ui.keyCode.ENTER)
 			dialogTokenLoginSubmit(url, name, keys, values, tokens);
-	});
-}
-
-function lockInit() {
-	$("body").mousemove(function() { lockTimeoutUpdate(); });
-
-	$("#button-lock").click(function(event) {
-		event.preventDefault();
-		lock();
 	});
 }
 
@@ -145,15 +127,15 @@ $(document).ready(function() {
 	$("#form-unlock").submit(function(event) {
 		event.preventDefault();
 		try {
-			var map = unlock($("#input-password").val(),
-				uiCreatePage,
-				uiCreateGroup,
-				uiCreateEntry);
+			cryptobox.ui.init($("#input-password").val(),
+				cryptobox.bootstrap.createPage,
+				cryptobox.bootstrap.createGroup,
+				function(group, el) { cryptobox.bootstrap.createEntry(group, el, __headerClick, __detailsClick); });
 			$("#input-password").val("");
 
 			$('#ul-nav a:first').tab('show');
 
-			lockTimeoutStart();
+			cryptobox.lock.startTimeout(lock);
 
 			$("#div-locked").hide();
 			$("#div-unlocked").fadeIn();
@@ -171,8 +153,8 @@ $(document).ready(function() {
 		$(this).next().toggle();
 	});
 
-	lockInit();
+	cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); });
 	dialogTokenLoginInit();
 	dialogGenerateInit();
-	filterInit();
+	cryptobox.bootstrap.filterInit();
 });

@@ -1,4 +1,5 @@
-var cfg = <%= incl(@config[:path][:db_json]) %>;
+var cryptobox = {};
+cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
@@ -8,13 +9,21 @@ var cfg = <%= incl(@config[:path][:db_json]) %>;
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
 
-<%= incl(File.join(@config[:path][:templates], 'bookmarklet/common.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/fill.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/login.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/crypto.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/popover.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
+
+function formToLink(name, form) {
+	var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
+	var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
+
+	return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
+		'cryptobox.form.fill(' + JSON.stringify(form) + ');' +
+		'return false;\'>' + form.vars.username + '</a></div>';
+}
 
 function unlock(pwd, caption) {
-	var text = decrypt(pwd, cfg.pbkdf2.salt, cfg.cipher, cfg.pbkdf2.iterations, cfg.aes.iv);
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.cipher, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 
@@ -27,8 +36,8 @@ function unlock(pwd, caption) {
 			continue;
 		}
 
-		var address = sitename(document.URL);
-		var action = sitename(el.form.action);
+		var address = cryptobox.form.sitename(document.URL);
+		var action = cryptobox.form.sitename(el.form.action);
 
 		if (address == action)
 			matched.push(el);
@@ -39,7 +48,7 @@ function unlock(pwd, caption) {
 		window.setTimeout(function () { document.body.click(); }, 1000)
 	} else if (matched.length == 1) {
 		caption.innerHTML = '<%= @text[:wait_for_login] %>';
-		formFill(matched[0].form);
+		cryptobox.form.fill(matched[0].form);
 	} else {
 		var r = ''
 		for (var i = 0; i < matched.length; i++) {
@@ -92,6 +101,6 @@ form.onsubmit = function() {
 	return false;
 }
 
-showPopover('320', '165', div);
+cryptobox.popover.show('320', '165', div);
 
 input.focus();
