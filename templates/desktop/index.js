@@ -1,4 +1,4 @@
-function __headerClick(el) {
+function loginHeaderClick(el) {
 	if (cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
 		$('#div-token').modal();
@@ -7,45 +7,32 @@ function __headerClick(el) {
 	}
 }
 
-function __detailsClick(el) {
+function loginDetailsClick(el) {
 	if (el.type == 'login') {
 		$('#div-details .modal-body').html('');
-		getLoginDetails($('#div-details .modal-body'), el);
+
+		var collapsible = function(value, copy) {
+			return '<div class="expand"><a href="#" class="btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
+		}
+
+		var values = {
+			'<%= @text[:address] %>:': $('<a>', { 'href': el.address }).text(el.address),
+			'<%= @text[:username] %>:': collapsible(el.form.vars.user, cryptobox.ui.copyToClipboard(el.form.vars.user)),
+			'<%= @text[:password] %>:': collapsible(el.form.vars.pass, cryptobox.ui.copyToClipboard(el.form.vars.pass))
+		};
+
+		if (el.form.vars.secret)
+			values['<%= @text[:secret] %>'] = cryptobox.ui.addBr(forms.vars.secret);
+
+		if (el.form.vars.note)
+			values['<%= @text[:note] %>'] = cryptobox.ui.addBr(forms.vars.note);
+
+		cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
 	} else {
 		$('#div-details .modal-body').html(el.text);
 	}
 	$('#div-details .modal-header h3').text(el.name);
 	$('#div-details').modal();
-}
-
-function getLoginDetails(entry, el) {
-	function setKeyValue(entry, map) {
-		var items = $();
-		$.each(map, function(k, v) {
-			items = items.add($('<dt>').html(k));
-			items = items.add($('<dd>').html(v));
-		});
-
-		$('<dl>', { 'class': 'dl-horizontal' }).html(items).appendTo(entry);
-	}
-
-	function collapsible(value, copy) {
-		return '<div class="expand"><a href="#" class="btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
-	}
-
-	var values = {
-		'<%= @text[:address] %>:': $('<a>', { 'href': el.address }).text(el.address),
-		'<%= @text[:username] %>:': collapsible(el.form.vars.user, cryptobox.ui.copyToClipboard(el.form.vars.user)),
-		'<%= @text[:password] %>:': collapsible(el.form.vars.pass, cryptobox.ui.copyToClipboard(el.form.vars.pass))
-	};
-
-	if (el.form.vars.secret)
-		values['<%= @text[:secret] %>'] = cryptobox.ui.addBr(forms.vars.secret);
-
-	if (el.form.vars.note)
-		values['<%= @text[:note] %>'] = cryptobox.ui.addBr(forms.vars.note);
-
-	setKeyValue(entry, values);
 }
 
 function lock() {
@@ -130,7 +117,7 @@ $(document).ready(function() {
 			cryptobox.ui.init($("#input-password").val(),
 				cryptobox.bootstrap.createPage,
 				cryptobox.bootstrap.createGroup,
-				function(group, el) { cryptobox.bootstrap.createEntry(group, el, __headerClick, __detailsClick); });
+				function(group, el) { cryptobox.bootstrap.createEntry(group, el, loginHeaderClick, loginDetailsClick); });
 			$("#input-password").val("");
 
 			$('#ul-nav a:first').tab('show');

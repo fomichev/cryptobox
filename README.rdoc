@@ -425,58 +425,49 @@ vector (aes.iv) to hex and call openssl, let's do it:
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
 it's better to remove all temporary files and clean `bash` history.
 
-== TODO: describe the following features
-* broken logins
-* comments in include/ JSON
-* cryptobox.json
-
 == MENTION SOMEWHERE
 * Supported fields for login entry are: user, pass, secret, note
-* hidden = yes -> visible: false
 
 == Todo
+* describe the following features
+  - broken logins
+  - comments in include/ JSON
+  - cryptobox.json
+
 * add RDoc and GEM support
 
 * cleanup fill/form bookmarklets
 
+* FIX AND CHECK: mobile version, bookmarklets
+
 * Bootstrap desktop
   - Check login with token
-  - Rework login.js (remove stupid string conversions)
-  - Add filter
-  - Set empty tag instead of __default__
-  - Probably try to use another layout
   - Share as many code as possible with chrome plugin
-  - move template/html/* -> template/
 
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
   - Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
-  - Add filter
-  - Add passwords generator (with possible diceware support; and use random.org when possible to generate passwords)
   - Try to support firefox also (seems to be possible to share huge amount of codebase)
     https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
   - Implement cbserve and add its support to extension
 
+* improve autolock feature (don't use mouse move event)
+
 * ? login -> webform
 
 * Cucumber/Aruba tests
-* ? .cryptoboxrc.yml -> .cryptobox.yml
 * Add unit tests
-* .html -> .rhtml
+* ? .html -> .rhtml
 * clean clipboard when locking HTML page
 
-* use external repositories when possible (jQuery, CryproJS) to keep up with updates
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
-
-* improve autolock feature (don't use mouse move event)
 
 * eval -> jQuery.parseJSON
 * ? generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
-* revise README.md and add other missing information
+* revise README.rdoc and add other missing information
 
 * fix form bookmarklet for deviantart.com, lastpass.com
-* add support for __token__ in form.action
 * add comments to all items under include/ describing required variables
 
 * consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)

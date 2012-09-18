@@ -45,6 +45,16 @@ cryptobox.bootstrap.createEntry = function(group, el, headerClickCallback, detai
 	).appendTo(group);
 }
 
+cryptobox.bootstrap.createDetails = function(entry, map) {
+	var items = $();
+	$.each(map, function(k, v) {
+		items = items.add($('<dt>').html(k));
+		items = items.add($('<dd>').html(v));
+	});
+
+	$('<dl>', { 'class': 'dl-horizontal' }).html(items).appendTo(entry);
+}
+
 cryptobox.bootstrap.filterInit = function() {
 	$("#input-filter").keyup(function() {
 		var text = $("#input-filter").val().toLowerCase();

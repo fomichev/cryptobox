@@ -1,26 +1,41 @@
-function __headerClick(el) {
+function show(div) {
+	$("#div-locked").hide();
+	$("#div-login-error").hide();
+	$("#div-unlocked").hide();
+	$("#div-details").hide();
+	$("#div-generate").hide();
+
+	if (div == '#div-unlocked' || div == '#div-details' || div == '#div-generate') {
+		if (!$("#div-locked").is(":visible"))
+			$("#div-navbar").fadeIn();
+	} else {
+		$("#div-navbar").hide();
+	}
+
+	$(div).fadeIn();
+}
+
+function loginHeaderClick(el) {
 	sendToBackground(el);
 	window.close();
 }
 
-function __detailsClick(el) {
-//	$('#div-details .modal-body').html('');
-//	getLoginDetails($('#div-details .modal-body'), el);
-//	$('#div-details .modal-header h3').text(el.name);
-	$('#div-unlocked').slideUp();
-	$('#div-details').show();
+function loginDetailsClick(el) {
+	$('#div-details-body').html('');
+
+	var values = {
+		'<%= @text[:username] %>:': el.form.vars.user,
+		'<%= @text[:password] %>:': el.form.vars.pass
+	};
+
+	cryptobox.bootstrap.createDetails($('#div-details-body'), values);
+
+	show('#div-details');
 }
 
 function lock() {
 	chrome.extension.getBackgroundPage().data = null;
-
-	$("#div-unlocked").hide();
-	$("#div-details").hide();
-	$("#div-generate").hide();
-	$("#div-login-error").hide();
-	$("#div-login-details").hide();
-	$("#div-locked").show();
-
+	show('#div-locked');
 	$("#input-password").focus();
 }
 
@@ -48,6 +63,10 @@ function onUnlock(tab, data) {
 
 	var address = cryptobox.form.sitename(tab.url);
 
+	$("#table-matched tbody").html('');
+	$("#table-unmatched tbody").html('');
+	$('#table-matched').hide();
+	$('#table-unmatched').hide();
 	for (var i = 0; i < data.length; i++) {
 		var el = data[i];
 		if (el.type == "magic") {
@@ -65,19 +84,15 @@ function onUnlock(tab, data) {
 
 		var action = cryptobox.form.sitename(el.form.action);
 
-		$("#table-matched tbody").html('');
-		$("#table-unmatched tbody").html('');
-		$('#table-matched').hide();
-		$('#table-unmatched').hide();
 		if (address == action) {
-			cryptobox.bootstrap.createEntry($('#table-matched'), el, __headerClick, __detailsClick);
+			cryptobox.bootstrap.createEntry($('#table-matched'), el, loginHeaderClick, loginDetailsClick);
 		} else {
 			if (el.visible == true)
-				cryptobox.bootstrap.createEntry($('#table-unmatched'), el, __headerClick, __detailsClick);
+				cryptobox.bootstrap.createEntry($('#table-unmatched'), el, loginHeaderClick, loginDetailsClick);
 		}
-		$('#table-matched').show();
-		$('#table-unmatched').show();
 	}
+	$('#table-matched').show();
+	$('#table-unmatched').show();
 }
 
 function showData(data) {
@@ -87,13 +102,7 @@ function showData(data) {
 	try {
 		chrome.tabs.getSelected(null, function (t){
 			onUnlock(t, data);
-
-			$("#div-locked").hide();
-			$("#div-login-error").hide();
-			$("#div-details").hide();
-			$("#div-generate").hide();
-			$("#div-unlocked").show();
-
+			show("#div-unlocked");
 			$("#input-filter").focus();
 		});
 	} catch(e) {
@@ -105,13 +114,11 @@ function showData(data) {
 
 function dialogGenerateInit() {
 	$('#button-hide-generate').click(function() {
-		$('#div-unlocked').slideDown();
-		$('#div-generate').hide();
+		show('#div-unlocked');
 	});
 
 	$('#button-generate-show').click(function() {
-		$('#div-unlocked').slideUp();
-		$('#div-generate').show();
+		show('#div-generate');
 	});
 
 	$('#button-generate').click(function() {
@@ -121,8 +128,7 @@ function dialogGenerateInit() {
 
 function dialogDetailsInit() {
 	$('#button-hide-details').click(function() {
-		$('#div-unlocked').slideDown();
-		$('#div-details').hide();
+		show('#div-unlocked');
 	});
 
 }
