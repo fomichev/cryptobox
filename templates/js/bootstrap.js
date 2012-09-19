@@ -16,10 +16,10 @@ cryptobox.bootstrap.filterInit = function() {
 		var text = $("#input-filter").val().toLowerCase();
 
 		if (text == "") {
-			$("table caption").show();
+			$("table").show();
 			$("tr").show();
 		} else {
-			$("table caption").hide();
+			$("table").show();
 
 			$("tr").hide();
 			$("tr").filter(function() {
@@ -28,6 +28,11 @@ cryptobox.bootstrap.filterInit = function() {
 				else
 					return false;
 			}).show();
+
+			$('div.active table').each(function() {
+				if ($('tr:visible', this).length == 0)
+					$(this).hide();
+			});
 		}
 	});
 }
