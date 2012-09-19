@@ -26,7 +26,11 @@
 			<li data-role="list-divider">{{name}}</li>
 			{{/if}}
 			{{#each item}}
-			<li><a href="#page-{{id}}">{{name}}</a></li>
+				{{#if_eq ../../id to='login'}}
+				<li><a href="#page-{{id}}">{{name}} ({{form.vars.user}})</a></li>
+				{{else}}
+				<li><a href="#page-{{id}}">{{name}}</a></li>
+				{{/if_eq}}
 			{{/each}}
 		{{/each}}
 		</ul>
