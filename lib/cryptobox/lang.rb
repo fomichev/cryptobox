@@ -39,6 +39,7 @@ module Cryptobox
     address: 'Address',
     button_close: 'Close',
     button_hide_reveal: 'Hide/reveal',
+    no_login_with_token: 'Login with token is not supported!',
   },
     ru: {
     title: 'Cryptobox',
@@ -77,6 +78,7 @@ module Cryptobox
     address: 'Адрес',
     button_close: 'Закрыть',
     button_hide_reveal: 'Скрыть/показать',
+    no_login_with_token: 'Логин с токеном не поддерживается!',
   }
   }
 

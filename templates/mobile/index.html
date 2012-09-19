@@ -14,7 +14,9 @@
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
+$(document).bind("mobileinit", function () { $.mobile.autoInitializePage = false; });
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery.mobile/jquery.mobile.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.js')) %>
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
@@ -26,24 +28,93 @@
 
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/ui.js')) %>
+<%= incl(File.join(@config[:path][:templates], 'js/helpers.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'mobile/index.js')) %>
 		</script>
-	</head>
-	<body>
-		<div data-role="dialog" id="div-locked">
-			<div data-role="header">
-				<h1><%= @text[:title] %></h1>
-			</div>
 
-			<div data-role="content">
-				<form id="form-unlock" action="#div-main" method="get" data-ajax="false">
-					<label for="input-password"><%= @text[:enter_password] %></label>
-					<input type="password" id="input-password" value="" />
-					<input type="submit" value="<%= @text[:button_unlock] %>" />
-				</form>
+		<script id="locked-template" type="text/x-handlebars-temlate">
+			<div data-role="page" id="div-locked">
+				<div data-role="header">
+					<h1><%= @text[:title] %></h1>
+				</div>
+
+				<div data-role="content">
+					<form id="form-unlock" action="#div-main" method="get" data-ajax="false">
+						<label for="input-password"><%= @text[:enter_password] %></label>
+						<input type="password" id="input-password" value="" />
+						<input type="submit" value="<%= @text[:button_unlock] %>" />
+					</form>
+				</div>
 			</div>
-		</div>
-	</body>
+		</script>
+		<script id="unlocked-template" type="text/x-handlebars-temlate">
+			<div data-role="page" id="div-main" class="generated">
+				<div data-role="header">
+					<h1><%= @text[:title] %></h1>
+					<a class="button-lock ui-btn-right" href="#" data-icon="delete"><%= @text[:button_lock] %></a>
+				</div>
+
+				<div data-role="content">
+					<ul id="ul-pages-list" data-role="listview" data-inset="true">
+						{{#each page}}
+						<li><a href="#{{id}}" data-toggle="tab">{{name}}</a></li>
+						{{/each}}
+					</ul>
+				</div>
+			</div>
+			{{#each page}}
+			<div data-role="page" id="{{id}}" class="generated">
+				<div data-role="header">
+					<h1>{{name}}</h1>
+					<a data-rel="back" href="#"><%= @text[:button_back] %></a>
+					<a class="button-lock" href="#" data-icon="delete"><%= @text[:button_lock] %></a>
+				</div>
+				<div data-role="content">
+					<ul data-role="listview" data-inset="true" data-filter="true">
+					{{#each tag}}
+						{{#if name}}
+						<li data-role="list-divider">{{name}}</li>
+						{{/if}}
+						{{#each item}}
+						<li><a href="#page-{{id}}">{{name}}</a></li>
+						{{/each}}
+					{{/each}}
+					</ul>
+				</div>
+			</div>
+			{{/each}}
+			{{#each page}}
+				{{#each tag}}
+					{{#each item}}
+					<div data-role="page" id="page-{{id}}" class="generated">
+						<div data-role="header">
+							<h1>{{name}}</h1>
+							<a data-rel="back" href="#"><%= @text[:button_back] %></a>
+							<a class="button-lock" href="#" data-icon="delete"><%= @text[:button_lock] %></a>
+						</div>
+						<div data-role="content">
+							{{#if_eq type to='login'}}
+							<a class="button-login" href="#" data-role="button" json="{{stringify this}}"><%= @text[:log_in] %></a>
+							<a href={{address}} data-role="button"><%= @text[:goto] %></a>
+							<div data-role="collapsible"><h3><%= @text[:username] %></h3><p>{{form.vars.user}}</p></div>
+							<div data-role="collapsible"><h3><%= @text[:password] %></h3><p>{{form.vars.pass}}</p></div>
+								{{#if form.vars.secret}}
+							<div data-role="collapsible"><h3><%= @text[:secret] %></h3><p>{{form.vars.secret}}</p></div>
+								{{/if}}
+								{{#if form.vars.note}}
+							<div data-role="collapsible"><h3><%= @text[:note] %></h3><p>{{form.vars.note}}</p></div>
+								{{/if}}
+							{{else}}
+							{{name}}
+							{{/if_eq}}
+						</div>
+					</div>
+					{{/each}}
+				{{/each}}
+			{{/each}}
+		</script>
+	</head>
+	<body></body>
 </html>

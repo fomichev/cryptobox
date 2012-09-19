@@ -13,8 +13,8 @@
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/bootstrap/js/bootstrap.min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.js')) %>
-<%= incl_plain(File.join(@config[:path][:bootstrap], 'js/bootstrap.min.js')) %>
 
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/ui.js')) %>
@@ -34,9 +34,6 @@
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
 		</script>
-	</head>
-	<body>
-		<noscript><%= @text[:noscript] %></noscript>
 		<script id="locked-template" type="text/x-handlebars-temlate">
 			<div id="div-locked">
 			<h1><%= @text[:enter_password] %></h1>
@@ -71,7 +68,7 @@
 				<div class="span3">
 					<ul id="ul-nav" class="nav nav-pills nav-stacked">
 						{{#each page}}
-							<li><a href="#{{id}}" data-toggle="tab">{{name}}</a></li>
+						<li><a href="#{{id}}" data-toggle="tab">{{name}}</a></li>
 						{{/each}}
 					</ul>
 				</div>
@@ -81,28 +78,28 @@
 						{{#each page}}
 						<div id="{{id}}" class="tab-pane fade generated">
 							{{#each tag}}
-								<table class="table table-hover">
-									{{#if name}}
-									<caption>{{name}}</caption>
-									{{/if}}
+							<table class="table table-hover">
+								{{#if name}}
+								<caption>{{name}}</caption>
+								{{/if}}
 
-									{{#each item}}
-										<tr json="{{stringify this}}">
-										<td>
-											{{#if_eq type to='login'}}
-												<a class="button-login" href="#">{{name}} ({{form.vars.user}})</a>
-											{{else}}
-												{{name}}
-											{{/if_eq}}
-										</td>
-										<td>
-											<button class="button-details btn btn-mini btn-primary pull-right" type="button">
-												<%= @text[:button_details] %>
-											</button>
-										</td>
-										</tr>
-									{{/each}}
-								</table>
+								{{#each item}}
+								<tr json="{{stringify this}}">
+								<td>
+									{{#if_eq type to='login'}}
+									<a class="button-login" href="#">{{name}} ({{form.vars.user}})</a>
+									{{else}}
+									{{name}}
+									{{/if_eq}}
+								</td>
+								<td>
+									<button class="button-details btn btn-mini btn-primary pull-right" type="button">
+										<%= @text[:button_details] %>
+									</button>
+								</td>
+								</tr>
+								{{/each}}
+							</table>
 							{{/each}}
 						</div>
 						{{/each}}
@@ -173,6 +170,8 @@
 			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
 		</div>
 		</script>
-		<div id="content"></div>
+	</head>
+	<body>
+		<noscript><%= @text[:noscript] %></noscript>
 	</body>
 </html>

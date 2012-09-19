@@ -24,7 +24,26 @@ cryptobox.ui.addBr = function(text) {
 		return "";
 }
 
+cryptobox.ui.measure = function(name, fn) {
+//	var begin = Date.now(), end;
+	fn();
+//	end = Date.now();
+//	console.log(name + ' ' + (end - begin) + 'ms');
+}
+
+cryptobox.ui.render = function (name, context) {
+	var html;
+	cryptobox.ui.measure('render ' + name, function(){
+		var source = $(name).html();
+		var template = Handlebars.compile(source);
+		html = template(context);
+	});
+	return html;
+}
+
 cryptobox.ui.init = function(pwd) {
+	var result = [];
+	cryptobox.ui.measure('decrypt', function(){
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var map = {};
@@ -45,10 +64,10 @@ cryptobox.ui.init = function(pwd) {
 		if (!(el.tag in pages[el.type]))
 			pages[el.type][el.tag] = [];
 
+		el.id = i;
 		pages[el.type][el.tag].push(el);
 	}
 
-	var result = [];
 	for (var page_key in pages) {
 		var p = { id: page_key, name: cryptobox.cfg.page[page_key], tag: [] };
 
@@ -58,24 +77,6 @@ cryptobox.ui.init = function(pwd) {
 		result.push(p);
 	}
 
+	});
 	return result;
-
-	/*
-
-
-
-	var output = {};
-	for (var key in cryptobox.cfg.page)
-		output[key] = [];
-
-	for (var i = 0; i < data.length; i++) {
-		if (data[i].type == 'magic')
-			continue;
-
-
-		output[data[i].type].push(data[i]);
-	}
-
-	return output;
-	*/
 }

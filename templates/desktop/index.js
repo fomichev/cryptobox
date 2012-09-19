@@ -1,10 +1,3 @@
-function render(name, context) {
-	var source = $(name).html();
-	var template = Handlebars.compile(source);
-	var html = template(context);
-	$('#content').html(html);
-}
-
 function headerClick(el) {
 	if (cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
@@ -97,6 +90,10 @@ function dialogTokenLoginInit() {
 	});
 }
 
+function render(name, context) {
+	$('body').html(cryptobox.ui.render(name, context));
+}
+
 $(document).ready(function() {
 	render('#locked-template', this);
 	$("#input-password").focus();
@@ -104,12 +101,8 @@ $(document).ready(function() {
 	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
 		try {
-//			var _decrypt, _render, _init, _end;
-//			_decrypt = Date.now();
 			var data = cryptobox.ui.init($("#input-password").val());
-//			_render = Date.now();
 			render('#unlocked-template', { page: data });
-//			_init = Date.now();
 			$('#ul-nav a:first').tab('show');
 			$("#input-filter").focus();
 
@@ -127,8 +120,6 @@ $(document).ready(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
 				detailsClick(el);
 			});
-//			_end = Date.now();
-//			console.log('decrypt=' + (_render - _decrypt) + ' render=' + (_init - _render) + ' init=' + (_end - _init));
 		} catch(e) {
 			alert("<%= @text[:incorrect_password] %> " + e);
 			return;
