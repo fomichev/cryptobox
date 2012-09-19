@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 	$(".button-lock").live('click', function(event) {
 		event.preventDefault();
-		lock();
+		cryptobox.main.lock();
 	});
 
 	$('.button-login').live('click', function() {

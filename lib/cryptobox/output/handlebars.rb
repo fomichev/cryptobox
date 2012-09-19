@@ -1,3 +1,5 @@
+#require 'execjs'
+
 def generate_handlebars(config)
   files = [ 'locked.handlebars', 'unlocked.handlebars' ]
 
@@ -14,3 +16,22 @@ def generate_handlebars(config)
   end
 end
 
+def __generate_handlebars(config)
+  filename = File.join config[:path][:templates], 'chrome', 'locked.handlebars'
+
+  compiler_path = File.join config[:path][:templates], 'extern', 'handlebars', 'handlebars.min.js'
+  context = ExecJS.compile(File.read(compiler_path))
+
+  result = "(function() {
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};\n"
+
+  name = File.basename(data_filename).sub(/\.handlebars$/, '')
+  compiled = context.call('Handlebars.precompile', File.read(filename))
+
+  result += "templates['#{name}'] = template(#{compiled})"
+
+
+  result += "\n})();"
+
+  puts result
+end

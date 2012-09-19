@@ -427,6 +427,10 @@ vector (aes.iv) to hex and call openssl, let's do it:
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
 it's better to remove all temporary files and clean `bash` history.
 
+== Development
+
+TODO: describe here what libs used and where
+
 == MENTION SOMEWHERE
 * Supported fields for login entry are: user, pass, secret, note
 
@@ -438,23 +442,24 @@ it's better to remove all temporary files and clean `bash` history.
 
 * add RDoc and GEM support
 
+* add support for visible=false feature to all apps
+
 * FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
 
+* improve autolock feature (don't use mouse move event)
 * Mobile version
   - add autolock feature
 
 * Bootstrap desktop
   - Check login with token
-  - Share as many code as possible with chrome plugin
+  - !!! Share as many code as possible with chrome plugin
 
 * Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
   - Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
   - Try to support firefox also (seems to be possible to share huge amount of codebase)
     https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
   - Implement cbserve and add its support to extension
-
-* improve autolock feature (don't use mouse move event)
 
 * ? login -> webform
 
