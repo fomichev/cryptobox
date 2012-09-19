@@ -24,7 +24,9 @@
 		</style>
 
 		<script src="jquery.min.js"></script>
+		<script src="handlebars.min.js"></script>
 		<script src="bootstrap.min.js"></script>
+		<script src="seedrandom.min.js"></script>
 
 	<% if @config[:chrome][:embed] %>
 		<script src="core-min.js"></script>
@@ -40,91 +42,18 @@
 	<% end %>
 		<script src="form.js"></script>
 		<script src="lock.js"></script>
-		<script src="seedrandom.min.js"></script>
+		<script src="ui.js"></script>
 		<script src="password.js"></script>
+		<script src="helpers.js"></script>
 
 		<script src="ui-bootstrap.js"></script>
 		<script src="popup.js"></script>
+
+		<script src="locked.js"></script>
+		<script src="unlocked.js"></script>
 	</head>
 	<body>
-		<div id="div-locked">
-			<h1><%= @text[:enter_password] %></h1>
-
-			<div id="div-locked">
-				<form id="form-unlock">
-						<input id="input-password" size="16" type="password">
-						<div>
-						<button id="button-unlock" type="submit" class="btn btn-primary">
-							<i class="icon-lock"></i> <%= @text[:button_unlock] %>
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<div id="div-login-error">
-			<%= @text[:login_not_found] %>
-		</div>
-
-		<div id="div-navbar" class="navbar">
-			<div class="navbar-inner">
-				<form class="navbar-search pull-left">
-					<input type="text" id="input-filter" class="search-query" placeholder="<%= @text[:filter] %>">
-				</form>
-				<ul class="nav pull-right">
-					<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= @text[:actions] %> <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a id='button-generate-show' href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
-							<li class="disabled"><a href="#"><i class="icon-list"></i> Fetch form</a></li>
-							<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
-
-		<div id="div-unlocked">
-			<table id="table-matched" class="table table-hover"><tbody></tbody></table>
-			<table id="table-unmatched" class="table table-hover"><caption><h3><%= @text[:unmatched_sites] %></h3></caption><tbody></tbody></table>
-		</div>
-
-		<div id="div-details">
-			<div id="div-details-body"></div>
-
-			<form>
-				<div class="pull-right">
-				<button id="button-hide-details" href="#" class="btn"><%= @text[:button_close] %></button>
-			</div>
-			</form>
-		</div>
-
-		<div id="div-generate">
-			<form>
-				<label><%= @text[:generate_length] %></label>
-				<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" />
-				<label class="checkbox">
-					<input type="checkbox" id="input-include-num" checked /> <%= @text[:generate_numbers] %>
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" id="input-include-punc" checked /> <%= @text[:generate_punctuation] %>
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" id="input-pronounceable" /> <%= @text[:generate_pronounceable] %>
-				</label>
-				<label><%= @text[:generated] %></label>
-				<input type="text" id="intput-generated-password" size="30" />
-			</form>
-
-			<div class="pull-right">
-				<a id="button-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
-				<a id="button-hide-generate" href="#" class="btn"><%= @text[:button_close] %></a>
-			</div>
-			<div class="clearfix"></div>
-		</div>
+		<div id="content"></div>
 
 		<div id="div-copyright" class="ui-widget">
 			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>

@@ -302,41 +302,43 @@ include:
 == Used components
 
 === Ruby
-* On Ruby only standard bindings to OpenSSL are used to manage database
+* On Ruby side only standard bindings to OpenSSL are used to manage database
 
 === Chrome extension
 * Iconic(https://github.com/somerandomdude/Iconic) - CC BY-SA 3.0
-	html/chrome/icon.png
+
+	templates/chrome/icon.png
 
 === JavaScript
-* [CryptoJS 3.0.2](https://code.google.com/p/crypto-js/) - New BSD License
+Some minimized version are obtained via http://closure-compiler.appspot.com/home
 
-	html/extern/CryptoJS
+* {CryptoJS 3.0.2}[https://code.google.com/p/crypto-js/] - New BSD License
 
-* [Random Seed 2.0](http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html) - BSD
+	templates/extern/CryptoJS
 
-	html/extern/seedrandom.js
+* {Random Seed 2.0}[http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html] - BSD
 
-	html/extern/seedrandom.min.js (via http://closure-compiler.appspot.com/home)
+	templates/extern/seedrandom
 
-* [jQuery 1.7.2](http://jquery.com) - MIT
+* {jQuery 1.7.2}[http://jquery.com] - MIT
 
-	html/extern/jquery
+	templates/extern/jquery
 
-* [Twitter Bootstrap 2.1.1](https://github.com/twitter/bootstrap) - Apache License, Version 2.0
+* {Twitter Bootstrap 2.1.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
 
-	html/extern/bootstrap
+	templates/extern/bootstrap
 
+* {Handlebars 1.0.rc.1}[https://github.com/wycats/handlebars.js] - MIT
 
-* [jQuery Mobile 1.1.0](http://jquerymobile.com) - MIT
+	templates/extern/handlebars
 
-	html/extern/jquery-mobile
+* {jQuery Mobile 1.1.0}[http://jquerymobile.com] - MIT
 
-* [Clippy 7329b72360](https://github.com/mojombo/clippy) - MIT
+	templates/extern/jquery-mobile
 
-	html/extern/clippy
+* {Clippy 7329b72360}[https://github.com/mojombo/clippy] - MIT
 
-	private/html/clippy.swf
+	templates/extern/clippy
 
 == Decrypt data without cryptobox
 TODO: update! This is out of date and should be adapted to new database format!
@@ -436,9 +438,11 @@ it's better to remove all temporary files and clean `bash` history.
 
 * add RDoc and GEM support
 
+* FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
 
-* FIX AND CHECK: mobile version, bookmarklets
+* Mobile version
+  - add autolock feature
 
 * Bootstrap desktop
   - Check login with token
@@ -457,7 +461,7 @@ it's better to remove all temporary files and clean `bash` history.
 * Cucumber/Aruba tests
 * Add unit tests
 * ? .html -> .rhtml
-* clean clipboard when locking HTML page
+* clean clipboard when locking HTML page (at least should be possible for chrome plugin)
 
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 

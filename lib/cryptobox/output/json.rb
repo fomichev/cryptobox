@@ -41,7 +41,6 @@ def generate_json(config, db)
           }
         end
 
-
     j['type'] = type
     j['tag'] = ''
     j['tag'] = vars[:tag] if vars.has_key? :tag

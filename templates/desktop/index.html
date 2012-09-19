@@ -14,7 +14,7 @@
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/bootstrap/js/bootstrap.min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.min.js')) %>
 
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/ui.js')) %>
@@ -25,7 +25,7 @@
 <%= incl(File.join(@config[:path][:templates], 'js/ui-bootstrap.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'desktop/index.js')) %>
 
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/seedrandom.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/seedrandom/seedrandom.min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js')) %>
@@ -165,13 +165,15 @@
 				<a id="button-token-login" href="#" class="btn btn-primary"><%= @text[:log_in] %></a>
 			</div>
 		</div>
-
-		<div id="div-copyright">
-			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
-		</div>
 		</script>
 	</head>
 	<body>
 		<noscript><%= @text[:noscript] %></noscript>
+
+		<div id="content"></div>
+
+		<div id="div-copyright">
+			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
+		</div>
 	</body>
 </html>

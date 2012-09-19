@@ -49,3 +49,7 @@ cryptobox.bootstrap.lockInit = function(onMove) {
 		lock();
 	});
 }
+
+cryptobox.bootstrap.render = function(name, context) {
+	$('#content').html(cryptobox.ui.render(name, context));
+}
