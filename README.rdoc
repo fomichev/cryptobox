@@ -304,6 +304,9 @@ include:
 === Ruby
 * On Ruby side only standard bindings to OpenSSL are used to manage database
 
+* ExecJS - to compile Handlebars templates to JS (will be made optional because
+  users don't need to recompile templates)
+
 === Chrome extension
 * Iconic(https://github.com/somerandomdude/Iconic) - CC BY-SA 3.0
 
@@ -439,6 +442,8 @@ TODO: describe here what libs used and where
   - broken logins
   - comments in include/ JSON
   - cryptobox.json
+
+* make Handlebars templates compilation optional (because of ExecJS dependency)
 
 * add RDoc and GEM support
 

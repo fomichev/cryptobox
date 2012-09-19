@@ -35,7 +35,7 @@ function program3(depth0,data) {
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "</h1>\n		<a data-rel=\"back\" href=\"#\"><%= @text[:button_back] %></a>\n		<a class=\"button-lock\" href=\"#\" data-icon=\"delete\"><%= @text[:button_lock] %></a>\n	</div>\n	<div data-role=\"content\">\n		<ul data-role=\"listview\" data-inset=\"true\" data-filter=\"true\">\n		";
+  buffer += escapeExpression(stack1) + "</h1>\n		<a data-rel=\"back\" href=\"#\" data-icon=\"back\"><%= @text[:button_back] %></a>\n		<a class=\"button-lock\" href=\"#\" data-icon=\"delete\"><%= @text[:button_lock] %></a>\n	</div>\n	<div data-role=\"content\">\n		<ul data-role=\"listview\" data-inset=\"true\" data-filter=\"true\">\n		";
   stack1 = depth0.tag;
   stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(4, program4, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -107,7 +107,7 @@ function program11(depth0,data) {
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "</h1>\n				<a data-rel=\"back\" href=\"#\"><%= @text[:button_back] %></a>\n				<a class=\"button-lock\" href=\"#\" data-icon=\"delete\"><%= @text[:button_lock] %></a>\n			</div>\n			<div data-role=\"content\">\n				";
+  buffer += escapeExpression(stack1) + "</h1>\n				<a data-rel=\"back\" href=\"#\" data-icon=\"back\"><%= @text[:button_back] %></a>\n				<a class=\"button-lock\" href=\"#\" data-icon=\"delete\"><%= @text[:button_lock] %></a>\n			</div>\n			<div data-role=\"content\">\n				";
   stack1 = depth0.type;
   stack2 = {};
   stack2['to'] = "login";
