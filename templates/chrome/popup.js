@@ -48,7 +48,7 @@ cryptobox.app.detailsClick = function(el) {
 
 cryptobox.app.lock = function() {
 	chrome.extension.getBackgroundPage().data = null;
-	cryptobox.app.render('locked', this);
+	cryptobox.bootstrap.render('locked', this);
 	cryptobox.app.show('#div-locked');
 	$("#input-password").focus();
 }
@@ -78,7 +78,7 @@ cryptobox.app.showData = function(data) {
 				}
 			}
 
-			cryptobox.app.render('unlocked', { matched: matched, unmatched: unmatched });
+			cryptobox.bootstrap.render('unlocked', { matched: matched, unmatched: unmatched });
 
 			$("#div-login-error").hide();
 			$("#div-login-details").hide();
@@ -122,11 +122,6 @@ cryptobox.app.showData = function(data) {
 		alert(e);
 		return;
 	}
-}
-
-cryptobox.app.render = function(name, context) {
-	var text = Handlebars.templates[name](context);
-	$('#content').html(text);
 }
 
 $(document).ready(function() {

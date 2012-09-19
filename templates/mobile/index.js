@@ -9,7 +9,7 @@ function render(name, context) {
 }
 
 $(document).ready(function() {
-	render('#locked-template', this);
+	render('locked', this);
 	$.mobile.initializePage();
 	$("#input-password").focus();
 
@@ -35,7 +35,7 @@ $(document).ready(function() {
 
 		try {
 			var data = cryptobox.ui.init($("#input-password").val());
-			render('#unlocked-template', { page: data });
+			render('unlocked', { page: data });
 			$("#input-password").val("");
 			$("#input-filter").focus();
 

@@ -1,0 +1,13 @@
+<div data-role="page" id="div-locked">
+	<div data-role="header">
+		<h1><%= @text[:title] %></h1>
+	</div>
+
+	<div data-role="content">
+		<form id="form-unlock" action="#div-main" method="get" data-ajax="false">
+			<label for="input-password"><%= @text[:enter_password] %></label>
+			<input type="password" id="input-password" value="" />
+			<input type="submit" value="<%= @text[:button_unlock] %>" />
+		</form>
+	</div>
+</div>

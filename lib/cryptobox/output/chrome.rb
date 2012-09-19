@@ -1,18 +1,11 @@
 require 'fileutils'
 
-def generate_handlebars(root, files, to)
-  # TODO: apply optimizations
-  # handlebars <input> -f <output> -k each -k if -k unless
-  Dir.chdir(root) { `handlebars #{files.join ' '} -f #{to}` }
-end
-
 def generate_chrome(config)
   verbose "-> GENERATE CHROME PLUGIN"
 
-  Dir.mkdir config[:path][:db_chrome] unless Dir.exist? config[:path][:db_chrome]
 
-  handlebars = [ 'locked.handlebars', 'unlocked.handlebars' ]
-  generate_handlebars config[:path][:chrome], handlebars, 'templates.js'
+  Dir.mkdir config[:path][:db_chrome] unless Dir.exist? config[:path][:db_chrome]
+  Dir.mkdir File.join(config[:path][:db_chrome], 'lib') unless Dir.exist? File.join(config[:path][:db_chrome], 'lib')
 
   templates = [ File.join(config[:path][:chrome], 'popup.html'),
     File.join(config[:path][:chrome], 'background.js'),
@@ -20,9 +13,9 @@ def generate_chrome(config)
     File.join(config[:path][:templates], 'js/form.js'),
     File.join(config[:path][:templates], 'js/lock.js'),
     File.join(config[:path][:templates], 'js/password.js'),
-    File.join(config[:path][:templates], 'js/helpers.js'),
+    File.join(config[:path][:templates], 'js/handlebars.js'),
     File.join(config[:path][:templates], 'js/ui.js'),
-    File.join(config[:path][:templates], 'js/ui-bootstrap.js'),
+    File.join(config[:path][:templates], 'js/bootstrap.js'),
     File.join(config[:path][:chrome], 'popup.js'),
     File.join(config[:path][:chrome], 'templates.js'),
     File.join(config[:path][:chrome], 'manifest.json'),
@@ -40,12 +33,18 @@ def generate_chrome(config)
   end
 
   copy = [ File.join(config[:path][:chrome], 'icon.png'),
-    File.join(config[:path][:bootstrap], 'css/bootstrap.min.css'),
-    File.join(config[:path][:bootstrap], 'js/bootstrap.min.js'),
-    File.join(config[:path][:templates], 'extern/handlebars/handlebars.runtime.js'),
-    File.join(config[:path][:templates], 'extern/jquery/jquery.min.js') ]
+    File.join(config[:path][:bootstrap], 'css/bootstrap.min.css') ]
 
-  copy.concat [
+  copy.each do |filename|
+    name = File.basename filename
+    FileUtils.cp filename, File.join(config[:path][:db_chrome], name)
+  end
+
+  copy_lib = [ File.join(config[:path][:templates], 'extern/handlebars/handlebars.runtime.js'),
+    File.join(config[:path][:templates], 'extern/jquery/jquery.min.js'),
+    File.join(config[:path][:bootstrap], 'js/bootstrap.min.js') ]
+
+  copy_lib.concat [
     File.join(config[:path][:templates], 'extern/seedrandom/seedrandom.min.js'),
     File.join(config[:path][:templates], 'extern/CryptoJS/components/core-min.js'),
     File.join(config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js'),
@@ -56,8 +55,8 @@ def generate_chrome(config)
     File.join(config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js'),
   ] if config[:chrome][:embed]
 
-  copy.each do |filename|
-    name = File.basename filename
+  copy_lib.each do |filename|
+    name = File.join('lib', File.basename(filename))
     FileUtils.cp filename, File.join(config[:path][:db_chrome], name)
   end
 

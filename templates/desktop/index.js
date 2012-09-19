@@ -38,7 +38,7 @@ function detailsClick(el) {
 function lock() {
 	cryptobox.lock.stopTimeout();
 
-	cryptobox.bootstrap.render('#locked-template', this);
+	cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 }
 
@@ -91,14 +91,14 @@ function dialogTokenLoginInit() {
 }
 
 $(document).ready(function() {
-	cryptobox.bootstrap.render('#locked-template', this);
+	cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 
 	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
 		try {
 			var data = cryptobox.ui.init($("#input-password").val());
-			cryptobox.bootstrap.render('#unlocked-template', { page: data });
+			cryptobox.bootstrap.render('unlocked', { page: data });
 			$('#ul-nav a:first').tab('show');
 			$("#input-filter").focus();
 

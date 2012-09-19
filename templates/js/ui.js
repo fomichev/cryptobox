@@ -26,19 +26,16 @@ cryptobox.ui.addBr = function(text) {
 
 cryptobox.ui.measure = function(name, fn) {
 //	var begin = Date.now(), end;
-	fn();
+	var result = fn();
 //	end = Date.now();
 //	console.log(name + ' ' + (end - begin) + 'ms');
+	return result;
 }
 
 cryptobox.ui.render = function (name, context) {
-	var html;
-	cryptobox.ui.measure('render ' + name, function(){
-		var source = $(name).html();
-		var template = Handlebars.compile(source);
-		html = template(context);
+	return cryptobox.ui.measure('render ' + name, function(){
+		return Handlebars.templates[name](context);
 	});
-	return html;
 }
 
 cryptobox.ui.init = function(pwd) {

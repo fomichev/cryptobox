@@ -23,19 +23,19 @@
 <%= incl_plain(File.join(@config[:path][:bootstrap], "css/bootstrap.min.css")) %>
 		</style>
 
-		<script src="jquery.min.js"></script>
-		<script src="handlebars.runtime.js"></script>
-		<script src="bootstrap.min.js"></script>
-		<script src="seedrandom.min.js"></script>
+		<script src="lib/jquery.min.js"></script>
+		<script src="lib/handlebars.runtime.js"></script>
+		<script src="lib/bootstrap.min.js"></script>
+		<script src="lib/seedrandom.min.js"></script>
 
 	<% if @config[:chrome][:embed] %>
-		<script src="core-min.js"></script>
-		<script src="enc-base64-min.js"></script>
-		<script src="cipher-core-min.js"></script>
-		<script src="aes-min.js"></script>
-		<script src="sha1-min.js"></script>
-		<script src="hmac-min.js"></script>
-		<script src="pbkdf2-min.js"></script>
+		<script src="lib/core-min.js"></script>
+		<script src="lib/enc-base64-min.js"></script>
+		<script src="lib/cipher-core-min.js"></script>
+		<script src="lib/aes-min.js"></script>
+		<script src="lib/sha1-min.js"></script>
+		<script src="lib/hmac-min.js"></script>
+		<script src="lib/pbkdf2-min.js"></script>
 
 		<script src="cfg.js"></script>
 		<script src="cipher.js"></script>
@@ -44,9 +44,8 @@
 		<script src="lock.js"></script>
 		<script src="ui.js"></script>
 		<script src="password.js"></script>
-		<script src="helpers.js"></script>
-
-		<script src="ui-bootstrap.js"></script>
+		<script src="handlebars.js"></script>
+		<script src="bootstrap.js"></script>
 		<script src="popup.js"></script>
 
 		<script src="templates.js"></script>
