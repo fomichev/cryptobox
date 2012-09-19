@@ -1,4 +1,6 @@
-function headerClick(el) {
+cryptobox.main = {};
+
+cryptobox.main.headerClick = function(el) {
 	if (cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
 		$('#div-token').modal();
@@ -7,7 +9,7 @@ function headerClick(el) {
 	}
 }
 
-function detailsClick(el) {
+cryptobox.main.detailsClick = function(el) {
 	if (el.type == 'login') {
 		$('#div-details .modal-body').html('');
 
@@ -35,14 +37,14 @@ function detailsClick(el) {
 	$('#div-details').modal();
 }
 
-function lock() {
+cryptobox.main.lock = function() {
 	cryptobox.lock.stopTimeout();
 
 	cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 }
 
-function dialogGenerateInit() {
+cryptobox.main.dialogGenerateInit = function() {
 	$("#button-generate-show").click(function(event) {
 		event.preventDefault();
 		$("#div-generate").modal();
@@ -68,7 +70,7 @@ function dialogGenerateInit() {
 	});
 }
 
-function dialogTokenLoginSubmit(url, name, keys, values, tokens) {
+cryptobox.main.dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
 	var tokenJson = eval($("#input-json").val());
 
 	if (!tokenJson || tokenJson == "")
@@ -80,13 +82,13 @@ function dialogTokenLoginSubmit(url, name, keys, values, tokens) {
 	formLogin(true, el.form, tokenJson);
 }
 
-function dialogTokenLoginInit() {
+cryptobox.main.dialogTokenLoginInit = function() {
 	$('#button-token-login').click(function (){
-		dialogTokenLoginSubmit(url, name, keys, values, tokens);
+		cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
 	});
 	$("#div-token").keydown(function(event) {
 		if (event.keyCode == $.ui.keyCode.ENTER)
-			dialogTokenLoginSubmit(url, name, keys, values, tokens);
+			cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
 	});
 }
 
@@ -102,19 +104,19 @@ $(document).ready(function() {
 			$('#ul-nav a:first').tab('show');
 			$("#input-filter").focus();
 
-			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, lock);
-			dialogTokenLoginInit();
-			dialogGenerateInit();
+			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.main.lock);
+			cryptobox.main.dialogTokenLoginInit();
+			cryptobox.main.dialogGenerateInit();
 			cryptobox.bootstrap.filterInit();
 
 			$('.button-login').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				headerClick(el);
+				cryptobox.main.headerClick(el);
 			});
 
 			$('.button-details').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				detailsClick(el);
+				cryptobox.main.detailsClick(el);
 			});
 		} catch(e) {
 			alert("<%= @text[:incorrect_password] %> " + e);

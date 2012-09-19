@@ -9,9 +9,9 @@ cryptobox.browser.sendToBackground = function(r) {
 	});
 }
 
-cryptobox.app = {};
+cryptobox.main = {};
 
-cryptobox.app.show = function(div) {
+cryptobox.main.show = function(div) {
 	$("#div-locked").hide();
 	$("#div-login-error").hide();
 	$("#div-unlocked").hide();
@@ -28,12 +28,12 @@ cryptobox.app.show = function(div) {
 	$(div).fadeIn();
 }
 
-cryptobox.app.matchedHeaderClick = function(el) {
+cryptobox.main.matchedHeaderClick = function(el) {
 	cryptobox.browser.sendToBackground(el);
 	window.close();
 }
 
-cryptobox.app.detailsClick = function(el) {
+cryptobox.main.detailsClick = function(el) {
 	$('#div-details-body').html('');
 
 	var values = {
@@ -43,17 +43,17 @@ cryptobox.app.detailsClick = function(el) {
 
 	cryptobox.bootstrap.createDetails($('#div-details-body'), values);
 
-	cryptobox.app.show('#div-details');
+	cryptobox.main.show('#div-details');
 }
 
-cryptobox.app.lock = function() {
+cryptobox.main.lock = function() {
 	chrome.extension.getBackgroundPage().data = null;
 	cryptobox.bootstrap.render('locked', this);
-	cryptobox.app.show('#div-locked');
+	cryptobox.main.show('#div-locked');
 	$("#input-password").focus();
 }
 
-cryptobox.app.unlock = function(pwd) {
+cryptobox.main.unlock = function(pwd) {
 	<% if @config[:chrome][:embed] %>
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	return jQuery.parseJSON(text);
@@ -63,7 +63,7 @@ cryptobox.app.unlock = function(pwd) {
 	<% end %>
 }
 
-cryptobox.app.showData = function(data) {
+cryptobox.main.showData = function(data) {
 	try {
 		chrome.tabs.getSelected(null, function (t) {
 			var matched = [];
@@ -85,24 +85,24 @@ cryptobox.app.showData = function(data) {
 
 			$('.button-login-matched').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.app.matchedHeaderClick(el);
+				cryptobox.main.matchedHeaderClick(el);
 			});
 
 			$('.button-details').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.app.detailsClick(el);
+				cryptobox.main.detailsClick(el);
 			});
 
 
-			cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); }, cryptobox.app.lock);
+			cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); }, cryptobox.main.lock);
 			cryptobox.bootstrap.filterInit();
 
 			$('#button-hide-generate').click(function() {
-				cryptobox.app.show('#div-unlocked');
+				cryptobox.main.show('#div-unlocked');
 			});
 
 			$('#button-generate-show').click(function() {
-				cryptobox.app.show('#div-generate');
+				cryptobox.main.show('#div-generate');
 			});
 
 			$('#button-generate').click(function() {
@@ -111,10 +111,10 @@ cryptobox.app.showData = function(data) {
 
 
 			$('#button-hide-details').click(function() {
-				cryptobox.app.show('#div-unlocked');
+				cryptobox.main.show('#div-unlocked');
 			});
 
-			cryptobox.app.show("#div-unlocked");
+			cryptobox.main.show("#div-unlocked");
 			$("#input-filter").focus();
 		});
 	} catch(e) {
@@ -127,20 +127,20 @@ cryptobox.app.showData = function(data) {
 $(document).ready(function() {
 	if (chrome.extension.getBackgroundPage().data != null) {
 		chrome.extension.getBackgroundPage().updateTimeout();
-		cryptobox.app.showData(chrome.extension.getBackgroundPage().data);
+		cryptobox.main.showData(chrome.extension.getBackgroundPage().data);
 	} else {
-		cryptobox.app.lock();
+		cryptobox.main.lock();
 
 		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
-			var data = cryptobox.app.unlock($("#input-password").val());
+			var data = cryptobox.main.unlock($("#input-password").val());
 			$("#input-password").val("");
 
 			chrome.extension.getBackgroundPage().startTimeout();
 			chrome.extension.getBackgroundPage().data = data;
 
-			cryptobox.app.showData(data);
+			cryptobox.main.showData(data);
 		});
 	}
 });

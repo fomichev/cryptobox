@@ -1,15 +1,17 @@
-function lock() {
+cryptobox.main = {};
+
+cryptobox.main.lock = function() {
 	cryptobox.lock.stopTimeout();
 	$.mobile.changePage("#div-locked", "slideup");
 	$("#input-password").focus();
 }
 
-function render(name, context) {
+cryptobox.main.render = function(name, context) {
 	$('body').append(cryptobox.ui.render(name, context));
 }
 
 $(document).ready(function() {
-	render('locked', this);
+	cryptobox.main.render('locked', this);
 	$.mobile.initializePage();
 	$("#input-password").focus();
 
@@ -35,11 +37,11 @@ $(document).ready(function() {
 
 		try {
 			var data = cryptobox.ui.init($("#input-password").val());
-			render('unlocked', { page: data });
+			cryptobox.main.render('unlocked', { page: data });
 			$("#input-password").val("");
 			$("#input-filter").focus();
 
-			cryptobox.lock.startTimeout(lock);
+			cryptobox.lock.startTimeout(cryptobox.main.lock);
 
 			$.mobile.changePage("#div-main");
 		} catch(e) {
