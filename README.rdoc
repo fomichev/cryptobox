@@ -452,10 +452,6 @@ TODO: describe here what libs used and where
 * FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
 
-* improve autolock feature (don't use mouse move event)
-* Mobile version
-  - add autolock feature
-
 * Bootstrap desktop
   - Check login with token
   - !!! Share as many code as possible with chrome plugin
