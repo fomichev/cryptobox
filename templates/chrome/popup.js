@@ -1,6 +1,7 @@
 cryptobox.browser = {};
 
 cryptobox.browser.sendToBackground = function(r) {
+	console.log("about to send msg");
 	chrome.tabs.getSelected(null, function(tab) {
 		chrome.tabs.sendMessage(tab.id, r, function(msg) {
 			console.log("sent msg");
@@ -93,7 +94,7 @@ cryptobox.app.showData = function(data) {
 			});
 
 
-			cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); });
+			cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); }, cryptobox.app.lock);
 			cryptobox.bootstrap.filterInit();
 
 			$('#button-hide-generate').click(function() {
@@ -135,7 +136,7 @@ $(document).ready(function() {
 	} else {
 		cryptobox.app.lock();
 
-		$("#form-unlock").submit(function(event) {
+		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
 			var data = cryptobox.app.unlock($("#input-password").val());

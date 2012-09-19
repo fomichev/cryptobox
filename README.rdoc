@@ -438,6 +438,12 @@ it's better to remove all temporary files and clean `bash` history.
 
 * add RDoc and GEM support
 
+* templates -> template
+* precompile all handlebar templates and user only runtime
+* helpers -> handlebar
+* ui-bootstrap -> bootstrap
+* chrome plugin: put all external js into lib directory
+
 * FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
 

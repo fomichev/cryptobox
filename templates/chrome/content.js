@@ -1,3 +1,5 @@
+var cryptobox = {};
+
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 
 chrome.extension.onMessage.addListener(
@@ -8,5 +10,5 @@ chrome.extension.onMessage.addListener(
 //		if (request.greeting == "hello")
 //			sendResponse({farewell: "goodbye"});
 
-		crypboxo.form.fill(form.form);
+		cryptobox.form.fill(form.form);
 	});

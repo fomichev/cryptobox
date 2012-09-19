@@ -41,12 +41,12 @@ cryptobox.bootstrap.dialogGenerateSubmit = function() {
 		$("#input-pronounceable").is(":checked")));
 }
 
-cryptobox.bootstrap.lockInit = function(onMove) {
+cryptobox.bootstrap.lockInit = function(onMove, lockCallback) {
 	$("body").mousemove(onMove);
 
 	$("#button-lock").click(function(event) {
 		event.preventDefault();
-		lock();
+		lockCallback();
 	});
 }
 

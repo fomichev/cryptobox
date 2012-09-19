@@ -1,15 +1,9 @@
 require 'fileutils'
 
-def generate_handlebars(files)
-  files.each do |filename|
-    path = File.dirname filename
-    from = File.basename filename
-    to = from.sub(/\.handlebars$/, '.js')
-
-    # TODO: apply optimizations
-    # handlebars <input> -f <output> -k each -k if -k unless
-    Dir.chdir(path) { `handlebars #{from} -f #{to}` }
-  end
+def generate_handlebars(root, files, to)
+  # TODO: apply optimizations
+  # handlebars <input> -f <output> -k each -k if -k unless
+  Dir.chdir(root) { `handlebars #{files.join ' '} -f #{to}` }
 end
 
 def generate_chrome(config)
@@ -17,10 +11,8 @@ def generate_chrome(config)
 
   Dir.mkdir config[:path][:db_chrome] unless Dir.exist? config[:path][:db_chrome]
 
-  handlebars = [ File.join(config[:path][:chrome], 'locked.handlebars'),
-    File.join(config[:path][:chrome], 'unlocked.handlebars') ]
-
-  generate_handlebars handlebars
+  handlebars = [ 'locked.handlebars', 'unlocked.handlebars' ]
+  generate_handlebars config[:path][:chrome], handlebars, 'templates.js'
 
   templates = [ File.join(config[:path][:chrome], 'popup.html'),
     File.join(config[:path][:chrome], 'background.js'),
@@ -31,9 +23,8 @@ def generate_chrome(config)
     File.join(config[:path][:templates], 'js/helpers.js'),
     File.join(config[:path][:templates], 'js/ui.js'),
     File.join(config[:path][:templates], 'js/ui-bootstrap.js'),
-    File.join(config[:path][:chrome], 'locked.js'),
-    File.join(config[:path][:chrome], 'unlocked.js'),
     File.join(config[:path][:chrome], 'popup.js'),
+    File.join(config[:path][:chrome], 'templates.js'),
     File.join(config[:path][:chrome], 'manifest.json'),
   ]
 
@@ -51,7 +42,7 @@ def generate_chrome(config)
   copy = [ File.join(config[:path][:chrome], 'icon.png'),
     File.join(config[:path][:bootstrap], 'css/bootstrap.min.css'),
     File.join(config[:path][:bootstrap], 'js/bootstrap.min.js'),
-    File.join(config[:path][:templates], 'extern/handlebars/handlebars.min.js'),
+    File.join(config[:path][:templates], 'extern/handlebars/handlebars.runtime.js'),
     File.join(config[:path][:templates], 'extern/jquery/jquery.min.js') ]
 
   copy.concat [

@@ -102,7 +102,7 @@ $(document).ready(function() {
 			$('#ul-nav a:first').tab('show');
 			$("#input-filter").focus();
 
-			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); });
+			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, lock);
 			dialogTokenLoginInit();
 			dialogGenerateInit();
 			cryptobox.bootstrap.filterInit();
