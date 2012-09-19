@@ -56,7 +56,7 @@ cryptobox.main.lock = function() {
 cryptobox.main.unlock = function(pwd) {
 	<% if @config[:chrome][:embed] %>
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
-	return jQuery.parseJSON(text);
+	return $.parseJSON(text);
 	<% else %>
 	// TODO
 	return [];

@@ -42,7 +42,7 @@ cryptobox.ui.init = function(pwd) {
 	var result = [];
 	cryptobox.ui.measure('decrypt', function(){
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
-	var data = eval(text);
+	var data = $.parseJSON(text);
 	var map = {};
 
 	if (data[0].type != "magic" || data[0].value != "270389")

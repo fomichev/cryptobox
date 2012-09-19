@@ -71,7 +71,7 @@ cryptobox.main.dialogGenerateInit = function() {
 }
 
 cryptobox.main.dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
-	var tokenJson = eval($("#input-json").val());
+	var tokenJson = $.parseJSON($("#input-json").val());
 
 	if (!tokenJson || tokenJson == "")
 		return;

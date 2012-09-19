@@ -471,7 +471,6 @@ TODO: describe here what libs used and where
 
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 
-* eval -> jQuery.parseJSON
 * ? generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
