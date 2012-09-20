@@ -182,6 +182,9 @@ the clutter).
 You can use <tt>visible :false</tt> to remove some entries from the final HTML
 page (this is handy for the entries you want to keep and be able to access at
 some point but don't want it to clutter your HTML).
+For Chrome extension +visible+ attribute controls whether login will appear
+in the unmatched section (so it will hide it from the list but will still
+allow you to use hidden logins on the sites that you know).
 
 Comments are started with # and ended at the end of the line.
 
@@ -447,8 +450,6 @@ TODO: describe here what libs used and where
 
 * add RDoc and GEM support
 
-* add support for visible=false feature to all apps
-
 * FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
 
@@ -481,7 +482,5 @@ TODO: describe here what libs used and where
 * add comments to all items under include/ describing required variables
 
 * consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)
-
-* ? add some kind of checkbox which will show visible=false entries
 
 * look for possible ways to integrate private/include into database itself (using --- YAML separators)

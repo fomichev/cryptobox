@@ -71,10 +71,12 @@ cryptobox.main.showData = function(data) {
 
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].type == 'login') {
-					if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url))
+					if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url)) {
 						matched.push(data[i]);
-					else
-						unmatched.push(data[i]);
+					} else {
+						if (data[i].visible == true)
+							unmatched.push(data[i]);
+					}
 				}
 			}
 

@@ -55,6 +55,9 @@ cryptobox.ui.init = function(pwd) {
 		if (el.type == 'magic')
 			continue;
 
+		if (el.visible == false)
+			continue;
+
 		if (!(el.type in pages))
 			pages[el.type] = {};
 
