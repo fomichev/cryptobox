@@ -16,7 +16,7 @@
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
 $(document).bind("mobileinit", function () { $.mobile.autoInitializePage = false; });
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery.mobile/jquery.mobile.min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.min.js')) %>
+<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.runtime.js')) %>
 
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
 <%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>

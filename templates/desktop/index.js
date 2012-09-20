@@ -101,7 +101,7 @@ $(document).ready(function() {
 		try {
 			var data = cryptobox.ui.init($("#input-password").val());
 			cryptobox.bootstrap.render('unlocked', { page: data });
-			$('#ul-nav a:first').tab('show');
+			$('div.tab-pane:first').addClass('in').addClass('active');
 			$("#input-filter").focus();
 
 			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.main.lock);

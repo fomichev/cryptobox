@@ -1,7 +1,7 @@
 require 'execjs'
 
 def generate_handlebars(config)
-  compiler_path = File.join config[:path][:templates], 'extern', 'handlebars', 'handlebars.min.js'
+  compiler_path = File.join config[:path][:templates], 'extern', 'handlebars', 'handlebars.js'
   context = ExecJS.compile(File.read(compiler_path))
 
   files = [ 'locked.handlebars', 'unlocked.handlebars' ]

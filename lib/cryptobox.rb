@@ -11,7 +11,7 @@ require 'cryptobox/output/bookmarklet'
 require 'cryptobox/output/chrome'
 
 module Cryptobox
-  VERSION = "0.5"
+  VERSION = "0.6"
 end
 
 def verbose(m)

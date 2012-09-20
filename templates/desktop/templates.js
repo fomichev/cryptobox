@@ -31,7 +31,7 @@ function program3(depth0,data) {
   foundHelper = helpers.id;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + "\" class=\"tab-pane fade generated\">\n					";
+  buffer += escapeExpression(stack1) + "\" class=\"tab-pane fade\">\n					";
   stack1 = depth0.tag;
   stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(4, program4, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
