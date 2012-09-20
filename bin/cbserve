@@ -31,19 +31,16 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-#EventMachine.run do
-#  EventMachine::WebSocket.start(:host => "0.0.0.0", :port => 8080) do |ws|
-#    ws.onopen do
-#      puts "WebSocket connection open"
-#
-#      # publish message to the client
-#      ws.send "Hello Client"
-#    end
-#
-#    ws.onclose { puts "Connection closed" }
-#    ws.onmessage do |msg|
-#      puts "Recieved message: #{msg}"
-#      ws.send "Pong: #{msg}"
-#    end
-#  end
-#end
+config = Cryptobox::Config.new options[:config]
+
+puts "Cryptobox server started"
+EventMachine.run do
+  EventMachine::WebSocket.start(:host => "127.0.0.1", :port => 22790) do |ws|
+    ws.onopen do
+      puts "Connection open"
+      ws.send(File.read(config[:path][:db_json]))
+    end
+
+    ws.onclose { puts "Connection closed" }
+  end
+end

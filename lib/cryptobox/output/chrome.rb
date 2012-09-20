@@ -62,5 +62,7 @@ def generate_chrome(config)
 
   if config[:chrome][:embed]
     File.open(File.join(config[:path][:db_chrome], 'cfg.js'), 'w') { |f| f.write "var cryptobox = {};\ncryptobox.cfg = " + File.read(config[:path][:db_json]) }
+  else
+    File.open(File.join(config[:path][:db_chrome], 'cfg.js'), 'w') { |f| f.write "var cryptobox = {};\ncryptobox.cfg = {};" }
   end
 end

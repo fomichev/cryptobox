@@ -11,3 +11,16 @@ chrome.extension.onMessage.addListener(
 			sendResponse(cryptobox.form.toJson());
 		}
 	});
+
+console.log(window);
+
+/* Ctrl-\ shortcut */
+window.addEventListener("keyup", function (e) {
+	if (e.ctrlKey && e.keyCode) {
+		if (e.keyCode == 220) {
+			/* TODO: we need to add our overlay with popup.html
+			 * to the current window because it's not possible
+			 * just to show browser action */
+		}
+	}
+} , false);

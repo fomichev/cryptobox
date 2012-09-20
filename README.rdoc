@@ -305,10 +305,15 @@ include:
 == Used components
 
 === Ruby
-* On Ruby side only standard bindings to OpenSSL are used to manage database
+On Ruby side standard bindings to OpenSSL are used to manage database,
+and additionally:
 
-* ExecJS - to compile Handlebars templates to JS (will be made optional because
+* {ExecJS}[https://github.com/sstephenson/execjs] - MIT
+  Used to compile Handlebars templates to JS (will be made optional because
   users don't need to recompile templates)
+
+* {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
+  Used in cbserve to serve encrypted JSON to Chrome plugin
 
 === Chrome extension
 * Iconic(https://github.com/somerandomdude/Iconic) - CC BY-SA 3.0
@@ -443,6 +448,7 @@ TODO: describe here what libs used and where
   - broken logins
   - comments in include/ JSON
   - cryptobox.json
+  - cbserve and how it talks to extension (and also chrome.embed configure option)
 * revise README.rdoc and add other missing information
 * Mention somewhere: supported fields for login entry are: user, pass, secret, note
 
@@ -471,9 +477,8 @@ TODO: describe here what libs used and where
 * !!! Share as many code as possible with chrome plugin
 
 === Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
-- Add key binding to show popup http://developer.chrome.com/extensions/experimental.keybinding.html
-- Add login for unmatched sites (create new tab and login there)
+- Add key binding to show popup (in overlay)
+- Add login for unmatched sites (create new tab and login there) chrome.tabs.create({'url': chrome.extension.getURL('popup.html'), 'selected': 'true'});
 - Try to support firefox also (seems to be possible to share huge amount of codebase)
 https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
-- Implement cbserve and add its support to extension (https://github.com/igrigorik/em-websocket) http://www.igvita.com/2009/12/22/ruby-websockets-tcp-for-the-browser/
 - ? Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)

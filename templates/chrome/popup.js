@@ -61,13 +61,25 @@ cryptobox.main.lock = function() {
 	$("#input-password").focus();
 }
 
-cryptobox.main.unlock = function(pwd) {
+cryptobox.main.unlock = function(pwd, unlockCallback) {
 	<% if @config[:chrome][:embed] %>
 	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
-	return $.parseJSON(text);
+	unlockCallback($.parseJSON(text));
 	<% else %>
-	// TODO
-	return [];
+		if ("WebSocket" in window) {
+			var ws = new WebSocket("ws://127.0.0.1:22790");
+			ws.onopen = function() { };
+			ws.onmessage = function (evt) {
+				console.log(evt);
+				cryptobox.cfg = $.parseJSON(evt.data);
+				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+				unlockCallback($.parseJSON(text));
+			};
+			ws.onclose = function() { };
+			// TODO add some kind of timeout here
+		} else {
+			// TODO no WebSocket support
+		}
 	<% end %>
 }
 
@@ -150,13 +162,14 @@ $(document).ready(function() {
 		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
-			var data = cryptobox.main.unlock($("#input-password").val());
-			$("#input-password").val("");
+			cryptobox.main.unlock($("#input-password").val(), function(data) {
+				$("#input-password").val("");
 
-			chrome.extension.getBackgroundPage().startTimeout();
-			chrome.extension.getBackgroundPage().data = data;
+				chrome.extension.getBackgroundPage().startTimeout();
+				chrome.extension.getBackgroundPage().data = data;
 
-			cryptobox.main.showData(data);
+				cryptobox.main.showData(data);
+			});
 		});
 	}
 
