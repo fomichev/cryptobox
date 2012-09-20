@@ -8,6 +8,10 @@ cryptobox.browser.sendToContentScript = function(message, callback) {
 	});
 }
 
+cryptobox.browser.copy = function(text) {
+	chrome.extension.sendRequest({ text: text });
+}
+
 cryptobox.main = {};
 
 cryptobox.main.show = function(div) {
@@ -32,12 +36,16 @@ cryptobox.main.matchedHeaderClick = function(el) {
 	window.close();
 }
 
+cryptobox.main.copyToClipboard = function(value) {
+	return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
+}
+
 cryptobox.main.detailsClick = function(el) {
 	$('#div-details-body').html('');
 
 	var values = {
-		'<%= @text[:username] %>:': el.form.vars.user,
-		'<%= @text[:password] %>:': el.form.vars.pass
+		'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
+		'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
 	};
 
 	cryptobox.bootstrap.createDetails($('#div-details-body'), values);
@@ -47,6 +55,7 @@ cryptobox.main.detailsClick = function(el) {
 
 cryptobox.main.lock = function() {
 	chrome.extension.getBackgroundPage().data = null;
+	cryptobox.browser.copy('<%= @text[:cleared_clipboard] %>');
 	cryptobox.bootstrap.render('locked', this);
 	cryptobox.main.show('#div-locked');
 	$("#input-password").focus();
@@ -150,4 +159,14 @@ $(document).ready(function() {
 			cryptobox.main.showData(data);
 		});
 	}
+
+	$('.button-copy').live('click', function() {
+		cryptobox.browser.copy($(this).attr('value'));
+	});
+
+	$('.collaplible').live('click', function() {
+		event.preventDefault();
+
+		$(this).parent().next().toggle();
+	});
 });

@@ -40,6 +40,8 @@ module Cryptobox
     button_close: 'Close',
     button_hide_reveal: 'Hide/reveal',
     no_login_with_token: 'Login with token is not supported!',
+    button_copy: 'Copy',
+    cleared_clipboard: 'Cryptobox has cleared your clipboard!',
   },
     ru: {
     title: 'Cryptobox',
@@ -79,6 +81,8 @@ module Cryptobox
     button_close: 'Закрыть',
     button_hide_reveal: 'Скрыть/показать',
     no_login_with_token: 'Логин с токеном не поддерживается!',
+    button_copy: 'Копировать',
+    cleared_clipboard: 'Cryptobox очистил буфер обмена!',
   }
   }
 

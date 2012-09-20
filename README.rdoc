@@ -471,10 +471,9 @@ TODO: describe here what libs used and where
 * !!! Share as many code as possible with chrome plugin
 
 === Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+- Add key binding to show popup http://developer.chrome.com/extensions/experimental.keybinding.html
 - Add login for unmatched sites (create new tab and login there)
-- Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
-- clean clipboard when locking HTML page
 - Try to support firefox also (seems to be possible to share huge amount of codebase)
 https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
-- Implement cbserve and add its support to extension
-- Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
+- Implement cbserve and add its support to extension (https://github.com/igrigorik/em-websocket) http://www.igvita.com/2009/12/22/ruby-websockets-tcp-for-the-browser/
+- ? Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)

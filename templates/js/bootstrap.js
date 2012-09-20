@@ -1,6 +1,10 @@
 /* common functionality shared between chrome extension and desktop html */
 cryptobox.bootstrap = {};
 
+cryptobox.bootstrap.collapsible = function(value, copy) {
+	return '<div><a href="#" class="collaplible btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
+}
+
 cryptobox.bootstrap.createDetails = function(entry, map) {
 	var items = $();
 	$.each(map, function(k, v) {

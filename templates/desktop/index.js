@@ -1,5 +1,22 @@
 cryptobox.main = {};
 
+cryptobox.main.copyToClipboard = function(text) {
+	var t = '';
+	var pathToClippy = 'clippy.swf';
+
+	t += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="110" height="14">';
+	t += '<param name="movie" value="' + pathToClippy + '"/>';
+	t += '<param name="allowScriptAccess" value="always" />';
+	t += '<param name="quality" value="high" />';
+	t += '<param name="scale" value="noscale" />';
+	t += '<param name="FlashVars" value="text=#' + text + '">';
+	t += '<param name="bgcolor" value="#fff">';
+	t += '<embed src="' + pathToClippy + '" width="110" height="14" name="clippy" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" FlashVars="text=' + text + '" bgcolor="#fff" />';
+	t += '</object>';
+
+	return t;
+}
+
 cryptobox.main.headerClick = function(el) {
 	if (cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
@@ -13,14 +30,10 @@ cryptobox.main.detailsClick = function(el) {
 	if (el.type == 'login') {
 		$('#div-details .modal-body').html('');
 
-		var collapsible = function(value, copy) {
-			return '<div class="expand"><a href="#" class="btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
-		}
-
 		var values = {
 			'<%= @text[:address] %>:': $('<a>', { 'href': el.address }).text(el.address),
-			'<%= @text[:username] %>:': collapsible(el.form.vars.user, cryptobox.ui.copyToClipboard(el.form.vars.user)),
-			'<%= @text[:password] %>:': collapsible(el.form.vars.pass, cryptobox.ui.copyToClipboard(el.form.vars.pass))
+			'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
+			'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
 		};
 
 		if (el.form.vars.secret)
@@ -124,9 +137,9 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.expand').live('click', function() {
+	$('.collaplible').live('click', function() {
 		event.preventDefault();
 
-		$(this).next().toggle();
+		$(this).parent().next().toggle();
 	});
 });
