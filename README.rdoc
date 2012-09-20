@@ -461,6 +461,7 @@ TODO: describe here what libs used and where
   - Try to support firefox also (seems to be possible to share huge amount of codebase)
     https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
   - Implement cbserve and add its support to extension
+  - Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
 
 * ? login -> webform
 

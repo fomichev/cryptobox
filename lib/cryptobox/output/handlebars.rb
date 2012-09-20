@@ -24,6 +24,6 @@ def generate_handlebars(config)
 
     result += "\n})();"
 
-    File.open(to, 'w') {|f| f.write result}
+    File.open(to, 'wb') {|f| f.write result }
   end
 end
