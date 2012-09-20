@@ -3,12 +3,10 @@ var cryptobox = {};
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 
 chrome.extension.onMessage.addListener(
-	function(form, sender, sendResponse) {
-		console.log(sender.tab ?
-			"from a content script:" + sender.tab.url :
-			"from the extension");
-//		if (request.greeting == "hello")
-//			sendResponse({farewell: "goodbye"});
-
-		cryptobox.form.fill(form.form);
+	function(message, sender, sendResponse) {
+		if (message.type == 'fillForm') {
+			cryptobox.form.fill(message.data.form);
+		} else if (message.type == 'getFormJson') {
+			sendResponse(cryptobox.form.toJson());
+		}
 	});

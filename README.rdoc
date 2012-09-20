@@ -437,50 +437,44 @@ it's better to remove all temporary files and clean `bash` history.
 
 TODO: describe here what libs used and where
 
-== MENTION SOMEWHERE
-* Supported fields for login entry are: user, pass, secret, note
-
 == Todo
+=== Documentation
 * describe the following features
   - broken logins
   - comments in include/ JSON
   - cryptobox.json
+* revise README.rdoc and add other missing information
+* Mention somewhere: supported fields for login entry are: user, pass, secret, note
 
+=== Ruby
 * make Handlebars templates compilation optional (because of ExecJS dependency)
-
 * add RDoc and GEM support
-
-* FIX AND CHECK: bookmarklets
-* cleanup fill/form bookmarklets
-
-* Bootstrap desktop
-  - Check login with token
-  - !!! Share as many code as possible with chrome plugin
-
-* Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
-  - Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
-  - Try to support firefox also (seems to be possible to share huge amount of codebase)
-    https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
-  - Implement cbserve and add its support to extension
-  - Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
-
-* ? login -> webform
-
 * Cucumber/Aruba tests
 * Add unit tests
 * ? .html -> .rhtml
-* clean clipboard when locking HTML page (at least should be possible for chrome plugin)
-
-* use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
-
 * ? generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
-* revise README.rdoc and add other missing information
-
-* fix form bookmarklet for deviantart.com, lastpass.com
 * add comments to all items under include/ describing required variables
+* look for possible ways to integrate private/include into database itself (using --- YAML separators)
 
+=== Javascript
+* FIX AND CHECK: bookmarklets
+* cleanup fill/form bookmarklets
+* fix form bookmarklet for deviantart.com, lastpass.com
+* ? login -> webform
+* use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 * consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)
 
-* look for possible ways to integrate private/include into database itself (using --- YAML separators)
+=== Javascript Bootstrap
+* Check login with token
+* !!! Share as many code as possible with chrome plugin
+
+=== Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+- Add login for unmatched sites (create new tab and login there)
+- Add possibility to get to user/pass window and copy/paste them (check clipboard permissions)
+- clean clipboard when locking HTML page
+- Try to support firefox also (seems to be possible to share huge amount of codebase)
+https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
+- Implement cbserve and add its support to extension
+- Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)

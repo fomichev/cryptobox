@@ -7,8 +7,8 @@
 			<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= @text[:actions] %> <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a id='button-generate-show' href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
-					<li class="disabled"><a href="#"><i class="icon-list"></i> Fetch form</a></li>
+					<li><a id="button-generate-show" href="#"><i class="icon-asterisk"></i> <%= @text[:button_generate] %></a></li>
+					<li><a id="button-get-json" href="#"><i class="icon-list"></i> Fetch form</a></li>
 					<li><a id="button-lock" href="#"><i class="icon-lock"></i> <%= @text[:button_lock] %></a></li>
 				</ul>
 			</li>
@@ -62,7 +62,7 @@
 	<form>
 		<div class="pull-right">
 		<button id="button-hide-details" href="#" class="btn"><%= @text[:button_close] %></button>
-	</div>
+		</div>
 	</form>
 </div>
 

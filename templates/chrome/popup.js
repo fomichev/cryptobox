@@ -1,10 +1,9 @@
 cryptobox.browser = {};
 
-cryptobox.browser.sendToBackground = function(r) {
-	console.log("about to send msg");
+cryptobox.browser.sendToContentScript = function(message, callback) {
 	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendMessage(tab.id, r, function(msg) {
-			console.log("sent msg");
+		chrome.tabs.sendMessage(tab.id, message, function(response) {
+			callback(response);
 		});
 	});
 }
@@ -29,7 +28,7 @@ cryptobox.main.show = function(div) {
 }
 
 cryptobox.main.matchedHeaderClick = function(el) {
-	cryptobox.browser.sendToBackground(el);
+	cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
 	window.close();
 }
 
@@ -111,6 +110,12 @@ cryptobox.main.showData = function(data) {
 				cryptobox.bootstrap.dialogGenerateSubmit();
 			});
 
+			$('#button-get-json').click(function() {
+				cryptobox.browser.sendToContentScript({ type: 'getFormJson' }, function(text) {
+					$('#div-details-body').html('<textarea class="span6" rows="20">' + text + '</textarea>');
+					cryptobox.main.show('#div-details');
+				});
+			});
 
 			$('#button-hide-details').click(function() {
 				cryptobox.main.show('#div-unlocked');
