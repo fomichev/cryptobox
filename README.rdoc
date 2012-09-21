@@ -453,6 +453,7 @@ TODO: describe here what libs used and where
 * Mention somewhere: supported fields for login entry are: user, pass, secret, note
 
 === Ruby
+* create fifo somwhere in tmp with random name
 * make Handlebars templates compilation optional (because of ExecJS dependency)
 * add RDoc and GEM support
 * Cucumber/Aruba tests
@@ -465,20 +466,23 @@ TODO: describe here what libs used and where
 * look for possible ways to integrate private/include into database itself (using --- YAML separators)
 * ? login -> webform
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
+* lib/cryptobox/output code cleanup
 
 === Bookmarklets
-* FIX AND CHECK: bookmarklets
 * cleanup fill/form bookmarklets
-* fix form bookmarklet for deviantart.com, lastpass.com
+* add CSS to bookmarklets popover so they look the same on all sites
+* fix form bookmarklet for deviantart.com
 
 === Desktop HTML
 * Check login with token
 * !!! Share as many code as possible with chrome plugin
+* TEST VISIBLE=FALSE HANDLING
 
 === Chrome extension
 - Add key binding to show popup (in overlay)
 - ? Possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
+* TEST VISIBLE=FALSE HANDLING
 
 === Firefox extension
 - Try to support firefox also (seems to be possible to share huge amount of codebase)

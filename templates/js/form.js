@@ -89,7 +89,11 @@ cryptobox.form.toJson = function() {
 				form_elements += ',\n\t\t\t"' + el.name + '": "' + el.value + '"';
 		}
 
-		var form_text = '\t\t"action": "' + form.action + '",\n\t\t"method": "' + form.method + '",\n\t\t"fields":\n\t\t{\n' + form_elements + '\n\t\t}';
+		var method = form.method;
+		if (method != 'get')
+			method = 'post';
+
+		var form_text = '\t\t"action": "' + form.action + '",\n\t\t"method": "' + method + '",\n\t\t"fields":\n\t\t{\n' + form_elements + '\n\t\t}';
 
 		if (text == "")
 			text += '[\n';

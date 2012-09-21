@@ -13,17 +13,17 @@ cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 <%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
 <%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
 
-function formToLink(name, form) {
-	var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
-	var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
-
-	return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
-		'cryptobox.form.fill(' + JSON.stringify(form) + ');' +
-		'return false;\'>' + form.vars.username + '</a></div>';
-}
-
 function unlock(pwd, caption) {
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.cipher, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+	formToLink = function(name, form) {
+		var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
+		var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
+
+		return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
+			'cryptobox.form.fill(' + JSON.stringify(form) + ');' +
+			'return false;\'>' + name + '</a></div>';
+	}
+
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 
@@ -35,6 +35,9 @@ function unlock(pwd, caption) {
 
 			continue;
 		}
+
+		if (el.type != 'login')
+			continue;
 
 		var address = cryptobox.form.sitename(document.URL);
 		var action = cryptobox.form.sitename(el.form.action);
@@ -53,7 +56,7 @@ function unlock(pwd, caption) {
 		var r = ''
 		for (var i = 0; i < matched.length; i++) {
 			var el = matched[i];
-			r += formToLink(el.name, el.form);
+			r += formToLink(el.name + ' (' + el.form.vars.user + ')', el.form);
 		}
 
 		caption.innerHTML = '<%= @text[:select_login] %>' + r;
