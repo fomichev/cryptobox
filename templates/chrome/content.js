@@ -9,10 +9,10 @@ chrome.extension.onMessage.addListener(
 			sendResponse({});
 		} else if (msg.type == 'getFormJson') {
 			sendResponse(cryptobox.form.toJson());
+		} else {
+			// unknown message
 		}
 	});
-
-console.log(window);
 
 /* Ctrl-\ shortcut */
 window.addEventListener("keyup", function (e) {

@@ -1,10 +1,14 @@
 cryptobox.browser = {};
 
+cryptobox.browser.sendTo = function(tab, message, callback) {
+	chrome.tabs.sendMessage(tab.id, message, function(response) {
+		callback(response);
+	});
+}
+
 cryptobox.browser.sendToContentScript = function(message, callback) {
 	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.sendMessage(tab.id, message, function(response) {
-			callback(response);
-		});
+		cryptobox.browser.sendTo(tab, message, callback);
 	});
 }
 
@@ -42,6 +46,12 @@ cryptobox.main.matchedHeaderClick = function(el) {
 	window.close();
 }
 
+cryptobox.main.unmatchedHeaderClick = function(el) {
+	chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
+		chrome.extension.getBackgroundPage().fill[tab.id] = el;
+	});
+}
+
 cryptobox.main.detailsClick = function(el) {
 	var copy = function(value) {
 		return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
@@ -76,7 +86,6 @@ cryptobox.main.unlock = function(pwd, unlockCallback) {
 			var ws = new WebSocket("ws://127.0.0.1:22790");
 			ws.onopen = function() { };
 			ws.onmessage = function (evt) {
-				console.log(evt);
 				cryptobox.cfg = $.parseJSON(evt.data);
 				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 				unlockCallback($.parseJSON(text));
@@ -114,6 +123,11 @@ cryptobox.main.showData = function(data) {
 			$('.button-login-matched').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
 				cryptobox.main.matchedHeaderClick(el);
+			});
+
+			$('.button-login-unmatched').click(function() {
+				var el = $.parseJSON($(this).parent().parent().attr('json'));
+				cryptobox.main.unmatchedHeaderClick(el);
 			});
 
 			$('.button-details').click(function() {

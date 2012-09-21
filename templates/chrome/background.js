@@ -1,5 +1,8 @@
 var cryptobox = {};
 
+var data = null;
+var fill = {};
+
 <%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
 
 chrome.extension.getBackgroundPage().startTimeout = function() {
@@ -12,6 +15,7 @@ chrome.extension.getBackgroundPage().updateTimeout = function() {
 	cryptobox.lock.updateTimeout();
 }
 
+/* Clipboard copy handler */
 chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {
 	var body = document.getElementsByTagName('body') [0];
 	var ta = document.createElement('textarea');
@@ -25,4 +29,11 @@ chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {
 	sendResponse({});
 });
 
-data = null;
+/* Unmatched form fill handler */
+chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+	if (info.status == 'complete' && tabId in fill) {
+		var msg = { type: 'fillForm', data: fill[tabId] };
+		chrome.tabs.sendMessage(tabId, msg, function() { });
+		delete fill[tabId];
+	}
+});

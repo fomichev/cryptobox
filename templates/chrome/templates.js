@@ -52,7 +52,7 @@ function program5(depth0,data) {
   buffer += "\n			<tr json=\"";
   foundHelper = helpers.stringify;
   stack1 = foundHelper ? foundHelper.call(depth0, depth0, {hash:{}}) : helperMissing.call(depth0, "stringify", depth0, {hash:{}});
-  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login\" href=\"#\">";
+  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login-unmatched\" href=\"#\">";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }

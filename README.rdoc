@@ -463,21 +463,23 @@ TODO: describe here what libs used and where
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * add comments to all items under include/ describing required variables
 * look for possible ways to integrate private/include into database itself (using --- YAML separators)
-
-=== Javascript
-* FIX AND CHECK: bookmarklets
-* cleanup fill/form bookmarklets
-* fix form bookmarklet for deviantart.com, lastpass.com
 * ? login -> webform
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 
-=== Javascript Bootstrap
+=== Bookmarklets
+* FIX AND CHECK: bookmarklets
+* cleanup fill/form bookmarklets
+* fix form bookmarklet for deviantart.com, lastpass.com
+
+=== Desktop HTML
 * Check login with token
 * !!! Share as many code as possible with chrome plugin
 
-=== Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+=== Chrome extension
 - Add key binding to show popup (in overlay)
-- Add login for unmatched sites (create new tab and login there) chrome.tabs.create({'url': chrome.extension.getURL('popup.html'), 'selected': 'true'});
-- Try to support firefox also (seems to be possible to share huge amount of codebase)
-https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
 - ? Also possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
+  This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
+
+=== Firefox extension
+- Try to support firefox also (seems to be possible to share huge amount of codebase)
+  https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
