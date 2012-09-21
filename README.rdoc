@@ -299,8 +299,8 @@ cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
 put 'include' key in your database, e.g:
 
 include:
-  "login/xyz.com": "{ here goes JSON }"
-  "login/qwe.com": "{ here goes another JSON }"
+  'login/xyz.com': { here goes JSON }
+  'login/qwe.com': { here goes another JSON }
 
 == Used components
 
@@ -313,10 +313,10 @@ and additionally:
   users don't need to recompile templates)
 
 * {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
-  Used in cbserve to serve encrypted JSON to Chrome plugin
+  Used in cbserve to serve encrypted JSON to Chrome extension
 
 === Chrome extension
-* Iconic(https://github.com/somerandomdude/Iconic) - CC BY-SA 3.0
+* {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
 
 	templates/chrome/icon.png
 
@@ -449,6 +449,7 @@ TODO: describe here what libs used and where
   - comments in include/ JSON
   - cryptobox.json
   - cbserve and how it talks to extension (and also chrome.embed configure option)
+  - how to integrate include into yaml
 * revise README.rdoc and add other missing information
 * Mention somewhere: supported fields for login entry are: user, pass, secret, note
 
@@ -463,7 +464,6 @@ TODO: describe here what libs used and where
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * add comments to all items under include/ describing required variables
-* look for possible ways to integrate private/include into database itself (using --- YAML separators)
 * ? login -> webform
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 * lib/cryptobox/output code cleanup
@@ -475,15 +475,14 @@ TODO: describe here what libs used and where
 
 === Desktop HTML
 * Check login with token
+* ? Use icons http://fortawesome.github.com/Font-Awesome/
 * !!! Share as many code as possible with chrome plugin
-* TEST VISIBLE=FALSE HANDLING
 
 === Chrome extension
 - Add key binding to show popup (in overlay)
 - ? Possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
-* TEST VISIBLE=FALSE HANDLING
 
 === Firefox extension
-- Try to support firefox also (seems to be possible to share huge amount of codebase)
+- ? Try to support firefox also (seems to be possible to share huge amount of codebase)
   https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html

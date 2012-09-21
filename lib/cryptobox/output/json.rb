@@ -1,5 +1,25 @@
 require 'json'
 
+def read_include(config, y, vars, type_path)
+  if y.has_key? 'include' and y['include'].has_key? type_path
+    return y['include'][type_path]
+  end
+
+  type = type_path.split('/')[0]
+  path = if File.exist? File.join(config[:path][:db_include], type_path)
+           File.join(config[:path][:db_include], type_path)
+         elsif File.exist? File.join(config[:path][:include], type_path)
+           File.join(config[:path][:include], type_path)
+         else
+           nil
+         end
+
+  raise "Unknown entry #{type_path}" if path == nil and type != 'login'
+
+  return JSON.parse(Template.new(config, path, vars).generate) if path
+  return nil
+end
+
 def generate_json(config, db)
   verbose "-> GENERATE JSON"
 
@@ -8,38 +28,31 @@ def generate_json(config, db)
   y = YAML::load(db.plaintext)
 
   y.each do |_type, _vars|
-    # FIXME: use path separator from File?
+    next if _type == 'include'
 
     raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/
     type_path = $1
     _vars['name'] = $2
 
+    # FIXME: use path separator from File?
     type = type_path.split('/')[0]
-    path = if File.exist? File.join(config[:path][:db_include], type_path)
-             File.join(config[:path][:db_include], type_path)
-           elsif File.exist? File.join(config[:path][:include], type_path)
-             File.join(config[:path][:include], type_path)
-           end
-
-    raise "Unknown entry #{type_path}" if path == nil and type != 'login'
 
     vars = Hash.new {|hash, key| raise "Key #{key} is not found!" }
     vars.merge! _vars.symbolize_keys
     vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String } # FIXME: do this in runtime !!!
 
-    j = if path
-          JSON.parse(Template.new(config, path, vars).generate)
-        else
-          # we allow nil path only for login entries
-          puts "WARNING! didn't find include for #{type_path}"
+    j = read_include(config, y, vars, type_path)
+    if j == nil
+      # we allow nil path only for login entries
+      puts "WARNING! didn't find include for #{type_path}"
 
-          {
-            'type' => 'login',
-            'name' => type_path.sub(/login\//, ''),
-            'address' => 'http://' + type_path.sub(/login\//, ''),
-              'form' => {}
-          }
-        end
+      j = {
+        'type' => 'login',
+        'name' => type_path.sub(/login\//, ''),
+        'address' => 'http://' + type_path.sub(/login\//, ''),
+        'form' => {}
+      }
+    end
 
     j['type'] = type
     j['tag'] = ''
