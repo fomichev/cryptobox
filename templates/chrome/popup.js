@@ -41,17 +41,6 @@ cryptobox.main.show = function(div) {
 	$(div).fadeIn();
 }
 
-cryptobox.main.matchedHeaderClick = function(el) {
-	cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
-	window.close();
-}
-
-cryptobox.main.unmatchedHeaderClick = function(el) {
-	chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
-		chrome.extension.getBackgroundPage().fill[tab.id] = el;
-	});
-}
-
 cryptobox.main.detailsClick = function(el) {
 	var copy = function(value) {
 		return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
@@ -83,17 +72,22 @@ cryptobox.main.unlock = function(pwd, unlockCallback) {
 	unlockCallback($.parseJSON(text));
 	<% else %>
 		if ("WebSocket" in window) {
+			var timeout = setTimeout(function() {
+				$('button').text('<%= @text[:server_not_responding] %>');
+				$('button').addClass('btn-danger');
+			}, 1000);
+
 			var ws = new WebSocket("ws://127.0.0.1:22790");
 			ws.onopen = function() { };
 			ws.onmessage = function (evt) {
+				clearTimeout(timeout);
 				cryptobox.cfg = $.parseJSON(evt.data);
 				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
 				unlockCallback($.parseJSON(text));
 			};
 			ws.onclose = function() { };
-			// TODO add some kind of timeout here
 		} else {
-			// TODO no WebSocket support
+			$('body').html('<h1><%= @text[:no_websocket_support] %></h1>');
 		}
 	<% end %>
 }
@@ -122,12 +116,15 @@ cryptobox.main.showData = function(data) {
 
 			$('.button-login-matched').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.main.matchedHeaderClick(el);
+				cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
+				window.close();
 			});
 
 			$('.button-login-unmatched').click(function() {
 				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.main.unmatchedHeaderClick(el);
+				chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
+					chrome.extension.getBackgroundPage().fill[tab.id] = el;
+				});
 			});
 
 			$('.button-details').click(function() {
@@ -135,8 +132,9 @@ cryptobox.main.showData = function(data) {
 				cryptobox.main.detailsClick(el);
 			});
 
-
-			cryptobox.bootstrap.lockInit(function() { chrome.extension.getBackgroundPage().updateTimeout(); }, cryptobox.main.lock);
+			cryptobox.bootstrap.lockInit(function() {
+				chrome.extension.getBackgroundPage().updateTimeout(); },
+				cryptobox.main.lock);
 			cryptobox.bootstrap.filterInit();
 
 			$('#button-hide-generate').click(function() {
@@ -172,7 +170,7 @@ cryptobox.main.showData = function(data) {
 	}
 }
 
-$(document).ready(function() {
+$(function() {
 	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
 
 	if (chrome.extension.getBackgroundPage().data != null) {
@@ -197,11 +195,5 @@ $(document).ready(function() {
 
 	$('.button-copy').live('click', function() {
 		cryptobox.browser.copyToClipboard($(this).attr('value'));
-	});
-
-	$('.collaplible').live('click', function() {
-		event.preventDefault();
-
-		$(this).parent().next().toggle();
 	});
 });

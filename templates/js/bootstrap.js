@@ -2,7 +2,7 @@
 cryptobox.bootstrap = {};
 
 cryptobox.bootstrap.collapsible = function(value, copy) {
-	return '<div><a href="#" class="collaplible btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
+	return '<div><a href="#" class="collapsible btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
 }
 
 cryptobox.bootstrap.createDetails = function(entry, map) {
@@ -64,3 +64,11 @@ cryptobox.bootstrap.render = function(name, context) {
 	$('#content').html(cryptobox.ui.render(name, context));
 	$('#content').fadeIn();
 }
+
+$(function() {
+	$('.collapsible').live('click', function() {
+		event.preventDefault();
+
+		$(this).parent().next().toggle();
+	});
+});

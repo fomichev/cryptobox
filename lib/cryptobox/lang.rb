@@ -42,6 +42,8 @@ module Cryptobox
     no_login_with_token: 'Login with token is not supported!',
     button_copy: 'Copy',
     cleared_clipboard: 'Cryptobox has cleared your clipboard!',
+    server_not_responding: 'Cryptobox server is not responding!',
+    no_websocket_support:  'Your browser does not support WebSockets!',
   },
     ru: {
     title: 'Cryptobox',
@@ -83,6 +85,8 @@ module Cryptobox
     no_login_with_token: 'Логин с токеном не поддерживается!',
     button_copy: 'Копировать',
     cleared_clipboard: 'Cryptobox очистил буфер обмена!',
+    server_not_responding: 'Сервер Cryptobox не отвечает!',
+    no_websocket_support:  'Ваш браузер не поддерживает технологию WebSocket!',
   }
   }
 

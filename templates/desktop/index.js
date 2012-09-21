@@ -105,7 +105,7 @@ cryptobox.main.dialogTokenLoginInit = function() {
 	});
 }
 
-$(document).ready(function() {
+$(function() {
 	cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 
@@ -135,11 +135,5 @@ $(document).ready(function() {
 			alert("<%= @text[:incorrect_password] %> " + e);
 			return;
 		}
-	});
-
-	$('.collaplible').live('click', function() {
-		event.preventDefault();
-
-		$(this).parent().next().toggle();
 	});
 });
