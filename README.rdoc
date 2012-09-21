@@ -470,13 +470,13 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com, lastpass.com
 * ? login -> webform
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
-* consider switching to https://github.com/bitwiseshiftleft/sjcl (can we save some space? does it work faster?)
 
 === Javascript Bootstrap
 * Check login with token
 * !!! Share as many code as possible with chrome plugin
 
 === Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
+- Clean clipboard on exit only when used pasted something to it
 - Add key binding to show popup (in overlay)
 - Add login for unmatched sites (create new tab and login there) chrome.tabs.create({'url': chrome.extension.getURL('popup.html'), 'selected': 'true'});
 - Try to support firefox also (seems to be possible to share huge amount of codebase)

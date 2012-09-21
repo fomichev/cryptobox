@@ -10,7 +10,7 @@ module Cryptobox
   class Db
     FORMAT_VERSION = 4
     PBKDF2_SALT_LEN = 8
-    PBKDF2_ITERATIONS = 4096
+    PBKDF2_ITERATIONS = 1000
     AES_IV_LEN = 16
 
     attr_accessor :plaintext
