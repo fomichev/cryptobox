@@ -476,7 +476,6 @@ TODO: describe here what libs used and where
 * !!! Share as many code as possible with chrome plugin
 
 === Javascript Chrome plugin which talks to small Ruby server to get decrypted data (it tells it password, server decrypts data and passes JSON back)
-- Clean clipboard on exit only when used pasted something to it
 - Add key binding to show popup (in overlay)
 - Add login for unmatched sites (create new tab and login there) chrome.tabs.create({'url': chrome.extension.getURL('popup.html'), 'selected': 'true'});
 - Try to support firefox also (seems to be possible to share huge amount of codebase)

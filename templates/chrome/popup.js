@@ -8,8 +8,14 @@ cryptobox.browser.sendToContentScript = function(message, callback) {
 	});
 }
 
-cryptobox.browser.copy = function(text) {
+cryptobox.browser.copyToClipboard = function(text) {
+	chrome.extension.getBackgroundPage().clipboardCopyNum++;
 	chrome.extension.sendRequest({ text: text });
+}
+
+cryptobox.browser.cleanClipboard = function(text) {
+	if (chrome.extension.getBackgroundPage().clipboardCopyNum != 0)
+		cryptobox.browser.copyToClipboard('<%= @text[:cleared_clipboard] %>');
 }
 
 cryptobox.main = {};
@@ -36,16 +42,16 @@ cryptobox.main.matchedHeaderClick = function(el) {
 	window.close();
 }
 
-cryptobox.main.copyToClipboard = function(value) {
-	return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
-}
-
 cryptobox.main.detailsClick = function(el) {
+	var copy = function(value) {
+		return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
+	}
+
 	$('#div-details-body').html('');
 
 	var values = {
-		'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
-		'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+		'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, copy(el.form.vars.user)),
+		'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
 	};
 
 	cryptobox.bootstrap.createDetails($('#div-details-body'), values);
@@ -55,7 +61,7 @@ cryptobox.main.detailsClick = function(el) {
 
 cryptobox.main.lock = function() {
 	chrome.extension.getBackgroundPage().data = null;
-	cryptobox.browser.copy('<%= @text[:cleared_clipboard] %>');
+	cryptobox.browser.cleanClipboard();
 	cryptobox.bootstrap.render('locked', this);
 	cryptobox.main.show('#div-locked');
 	$("#input-password").focus();
@@ -153,6 +159,8 @@ cryptobox.main.showData = function(data) {
 }
 
 $(document).ready(function() {
+	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
+
 	if (chrome.extension.getBackgroundPage().data != null) {
 		chrome.extension.getBackgroundPage().updateTimeout();
 		cryptobox.main.showData(chrome.extension.getBackgroundPage().data);
@@ -174,7 +182,7 @@ $(document).ready(function() {
 	}
 
 	$('.button-copy').live('click', function() {
-		cryptobox.browser.copy($(this).attr('value'));
+		cryptobox.browser.copyToClipboard($(this).attr('value'));
 	});
 
 	$('.collaplible').live('click', function() {
