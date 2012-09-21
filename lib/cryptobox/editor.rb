@@ -1,13 +1,9 @@
 require 'rbconfig'
+
 $is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-
-
-$fifo_name='myfifo4.yaml'
-$initial_text=<<END
-blah blah blah
-hello
-END
-$text=''
+$fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yaml'
+$initial_text = ''
+$text = ''
 
 def mkfifo(name)
   puts "create fifo #{name}"
