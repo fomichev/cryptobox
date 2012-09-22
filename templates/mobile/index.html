@@ -10,7 +10,7 @@
 		</style>
 
 		<script type="text/javascript">
-			<%= incl(File.join('build', 'mobile', 'index.js')) %>
+			<%= incl(File.join(@config[:path][:root], 'build', 'mobile', 'index.js')) %>
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
 		</script>
 	</head>

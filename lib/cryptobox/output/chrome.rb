@@ -10,9 +10,9 @@ def generate_chrome(config)
 
   templates = [ File.join(root, 'popup.html'),
     File.join(root, 'manifest.json'),
-    File.join('build', 'chrome', 'background.js'),
-    File.join('build', 'chrome', 'content.js'),
-    File.join('build', 'chrome', 'popup.js'),
+    File.join(config[:path][:root], 'build', 'chrome', 'background.js'),
+    File.join(config[:path][:root], 'build', 'chrome', 'content.js'),
+    File.join(config[:path][:root], 'build', 'chrome', 'popup.js'),
   ]
 
   templates.each do |filename|

@@ -8,12 +8,6 @@ class Template
     @vars = vars
   end
 
-  def incl_plain(path)
-    verbose "Include plain #{path}"
-
-    "/* #{path} */\n" + IO.read(path).encode('utf-8')
-  end
-
   def incl(path)
     verbose "Include #{path}"
 
