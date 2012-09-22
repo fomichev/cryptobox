@@ -1,7 +1,6 @@
-var cryptobox = {};
-
-<%= incl(File.join(@config[:path][:templates], 'js/popover.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
+// =require js/cryptobox.js
+// =require js/popover.js
+// =require js/form.js
 
 var ta = document.createElement('textarea');
 ta.style.width = '100%';

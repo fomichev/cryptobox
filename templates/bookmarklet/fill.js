@@ -1,17 +1,17 @@
-var cryptobox = {};
-cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
+// =require extern/CryptoJS/components/core-min.js
+// =require extern/CryptoJS/components/enc-base64-min.js
+// =require extern/CryptoJS/components/cipher-core-min.js
+// =require extern/CryptoJS/components/aes-min.js
+// =require extern/CryptoJS/components/sha1-min.js
+// =require extern/CryptoJS/components/hmac-min.js
+// =require extern/CryptoJS/components/pbkdf2-min.js
 
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/aes-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/sha1-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
+// =require js/cryptobox.js
+// =require js/popover.js
+// =require js/form.js
+// =require js/cipher.js
 
-<%= incl(File.join(@config[:path][:templates], 'js/popover.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
+cryptobox.cfg = getCryptoboxConfig();
 
 function unlock(pwd, caption) {
 	formToLink = function(name, form) {

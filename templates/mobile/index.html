@@ -6,33 +6,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<style media="screen" type="text/css">
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery.mobile/jquery.mobile.min.css')) %>
+			<%= incl(File.join('build', 'mobile', 'index.css')) %>
 		</style>
 
 		<script type="text/javascript">
-			var cryptobox = {};
+			<%= incl(File.join('build', 'mobile', 'index.js')) %>
 			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
-
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery/jquery.min.js')) %>
-$(document).bind("mobileinit", function () { $.mobile.autoInitializePage = false; });
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/jquery.mobile/jquery.mobile.min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/handlebars/handlebars.runtime.js')) %>
-
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/enc-base64-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/cipher-core-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/aes-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/sha1-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/hmac-min.js')) %>
-<%= incl_plain(File.join(@config[:path][:templates], 'extern/CryptoJS/components/pbkdf2-min.js')) %>
-
-<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/ui.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/handlebars.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/cipher.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'mobile/index.js')) %>
-<%= incl(File.join(@config[:path][:templates], 'mobile/templates.js')) %>
 		</script>
 	</head>
 	<body></body>

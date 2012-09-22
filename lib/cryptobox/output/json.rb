@@ -79,7 +79,8 @@ def generate_json(config, db)
     {"iv_len" => Cryptobox::Db::AES_IV_LEN,
       "iv" => Base64.encode64(db.aes_iv).gsub(/\n/, ''),
     },
-    "ciphertext" => db.encrypt(JSON.pretty_generate result)
+    "ciphertext" => db.encrypt(JSON.pretty_generate result),
+    "lock_timeout_minutes" => config[:ui][:lock_timeout_minutes]
   }
 
 

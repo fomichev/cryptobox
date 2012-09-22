@@ -7,7 +7,7 @@ cryptobox.lock.startTimeout = function(onMove, lockCallback) {
 	var body = document.getElementsByTagName('body')[0];
 	body.addEventListener('mousemove', onMove);
 
-	cryptobox.lock._timeout = <%= @config[:ui][:lock_timeout_minutes] %>;
+	cryptobox.lock._timeout = cryptobox.cfg.lock_timeout_minutes;
 	cryptobox.lock._timeoutId = window.setInterval(function() {
 		cryptobox.lock._timeout--;
 
@@ -19,7 +19,7 @@ cryptobox.lock.startTimeout = function(onMove, lockCallback) {
 }
 
 cryptobox.lock.updateTimeout = function() {
-	cryptobox.lock._timeout = <%= @config[:ui][:lock_timeout_minutes] %>;
+	cryptobox.lock._timeout = cryptobox.cfg.lock_timeout_minutes;
 }
 
 cryptobox.lock.stopTimeout = function() {

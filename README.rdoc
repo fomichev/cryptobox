@@ -308,12 +308,18 @@ include:
 On Ruby side standard bindings to OpenSSL are used to manage database,
 and additionally:
 
-* {ExecJS}[https://github.com/sstephenson/execjs] - MIT
-  Used to compile Handlebars templates to JS (will be made optional because
-  users don't need to recompile templates)
-
 * {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
   Used in cbserve to serve encrypted JSON to Chrome extension
+
+==== The following components are required only for developers
+* {ExecJS}[https://github.com/sstephenson/execjs] - MIT
+  Used to compile Handlebars templates to JS
+
+* {Sprockets}[https://github.com/sstephenson/sprockets] - MIT
+  Compile CSS and JS
+
+* {Ruby-YUI Compressor}[https://github.com/sstephenson/sprockets] - MIT/BSD
+  Compress CSS and JS
 
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0

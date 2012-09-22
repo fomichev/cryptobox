@@ -1,6 +1,5 @@
-var cryptobox = {};
-
-<%= incl(File.join(@config[:path][:templates], 'js/form.js')) %>
+// =require js/cryptobox.js
+// =require js/form.js
 
 chrome.extension.onMessage.addListener(
 	function(msg, sender, sendResponse) {

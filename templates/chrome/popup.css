@@ -1,0 +1,17 @@
+// =require extern/bootstrap/css/bootstrap.min.css
+
+body {
+	min-width: 400px;
+}
+
+#div-locked {
+	text-align: center;
+}
+
+#div-copyright {
+	text-align: center;
+}
+
+#div-details {
+	padding: 20px;
+}

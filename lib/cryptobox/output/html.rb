@@ -1,14 +1,5 @@
 require 'fileutils'
 
-def embed_images(text, images_root)
-  text.gsub(/url\("?([^")]*)"?\)*/) do
-    verbose "Embed image #{$1}"
-    img = File.read(File.join(images_root, $1))
-
-    'url(data:image/png;base64,' + Base64.encode64(img).gsub(/\n/, '') + ')'
-  end
-end
-
 def generate_html(config)
   verbose "-> GENERATE DESKTOP HTML"
 
@@ -16,7 +7,6 @@ def generate_html(config)
   Dir.mkdir dirname unless Dir.exist? dirname
 
   t = Template.new(config, File.join(config[:path][:templates], 'desktop/index.html')).generate
-  t = embed_images(t, File.join(config[:path][:bootstrap], 'css'))
 
   File.open(config[:path][:db_html], 'w') {|f| f.write t }
 
@@ -28,7 +18,6 @@ def generate_html(config)
   Dir.mkdir dirname unless Dir.exist? dirname
 
   t = Template.new(config, File.join(config[:path][:templates], 'mobile/index.html')).generate
-  t = embed_images(t, config[:path][:jquery_mobile_css_images])
 
   File.open(config[:path][:db_mobile_html], 'w') {|f| f.write t }
 end

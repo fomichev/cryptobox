@@ -1,9 +1,8 @@
-var cryptobox = {};
+//= require js/cryptobox.js
+//= require js/lock.js
 
 var data = null;
 var fill = {};
-
-<%= incl(File.join(@config[:path][:templates], 'js/lock.js')) %>
 
 chrome.extension.getBackgroundPage().startTimeout = function() {
 	cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,

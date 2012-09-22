@@ -1,3 +1,26 @@
+// =require extern/jquery/jquery.min.js
+// =require extern/bootstrap/js/bootstrap.min.js
+// =require extern/handlebars/handlebars.runtime.js
+
+// =require extern/seedrandom/seedrandom.min.js
+// =require extern/CryptoJS/components/core-min.js
+// =require extern/CryptoJS/components/enc-base64-min.js
+// =require extern/CryptoJS/components/cipher-core-min.js
+// =require extern/CryptoJS/components/aes-min.js
+// =require extern/CryptoJS/components/sha1-min.js
+// =require extern/CryptoJS/components/hmac-min.js
+// =require extern/CryptoJS/components/pbkdf2-min.js
+
+// =require js/cryptobox.js
+// =require js/cipher.js
+// =require js/form.js
+// =require js/lock.js
+// =require js/ui.js
+// =require js/password.js
+// =require js/handlebars.js
+// =require js/bootstrap.js
+// =require chrome/templates.js
+
 cryptobox.browser = {};
 
 cryptobox.browser.sendTo = function(tab, message, callback) {
@@ -67,29 +90,24 @@ cryptobox.main.lock = function() {
 }
 
 cryptobox.main.unlock = function(pwd, unlockCallback) {
-	<% if @config[:chrome][:embed] %>
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
-	unlockCallback($.parseJSON(text));
-	<% else %>
-		if ("WebSocket" in window) {
-			var timeout = setTimeout(function() {
-				$('button').text('<%= @text[:server_not_responding] %>');
-				$('button').addClass('btn-danger');
-			}, 1000);
+	if ("WebSocket" in window) {
+		var timeout = setTimeout(function() {
+			$('button').text('<%= @text[:server_not_responding] %>');
+			$('button').addClass('btn-danger');
+		}, 1000);
 
-			var ws = new WebSocket("ws://127.0.0.1:22790");
-			ws.onopen = function() { };
-			ws.onmessage = function (evt) {
-				clearTimeout(timeout);
-				cryptobox.cfg = $.parseJSON(evt.data);
-				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
-				unlockCallback($.parseJSON(text));
-			};
-			ws.onclose = function() { };
-		} else {
-			$('body').html('<h1><%= @text[:no_websocket_support] %></h1>');
-		}
-	<% end %>
+		var ws = new WebSocket("ws://127.0.0.1:22790");
+		ws.onopen = function() { };
+		ws.onmessage = function (evt) {
+			clearTimeout(timeout);
+			cryptobox.cfg = $.parseJSON(evt.data);
+			var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+			unlockCallback($.parseJSON(text));
+		};
+		ws.onclose = function() { };
+	} else {
+		$('body').html('<h1><%= @text[:no_websocket_support] %></h1>');
+	}
 }
 
 cryptobox.main.showData = function(data) {

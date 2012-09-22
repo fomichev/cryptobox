@@ -43,7 +43,7 @@ cryptobox.form.login = function(newWindow, form, token) {
 		html += "<input type='hidden' name='" + key + "' value='" + form.fields[key] + "'/>";
 
 	html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s";
-<%#			&lt;/script&gt; screws everything up after embedding, so split it into multiple lines %>
+//			&lt;/script&gt; screws everything up after embedding, so split it into multiple lines
 	html += "cript></body></html>";
 
 	w.document.write(html);

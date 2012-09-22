@@ -1,3 +1,27 @@
+// =require extern/jquery/jquery.min.js
+// =require extern/bootstrap/js/bootstrap.min.js
+// =require extern/handlebars/handlebars.runtime.js
+
+// =require extern/seedrandom/seedrandom.min.js
+// =require extern/CryptoJS/components/core-min.js
+// =require extern/CryptoJS/components/enc-base64-min.js
+// =require extern/CryptoJS/components/cipher-core-min.js
+// =require extern/CryptoJS/components/aes-min.js
+// =require extern/CryptoJS/components/sha1-min.js
+// =require extern/CryptoJS/components/hmac-min.js
+// =require extern/CryptoJS/components/pbkdf2-min.js
+
+// =require js/cryptobox.js
+// =require js/cipher.js
+// =require js/form.js
+// =require js/lock.js
+// =require js/ui.js
+// =require js/password.js
+// =require js/handlebars.js
+// =require js/bootstrap.js
+// =require desktop/index.js
+// =require desktop/templates.js
+
 cryptobox.main = {};
 
 cryptobox.main.copyToClipboard = function(text) {
@@ -115,6 +139,7 @@ $(function() {
 			var data = cryptobox.ui.init($("#input-password").val());
 			cryptobox.bootstrap.render('unlocked', { page: data });
 			$('div.tab-pane:first').addClass('in').addClass('active');
+			$('#ul-nav li:first').addClass('active');
 			$("#input-filter").focus();
 
 			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.main.lock);

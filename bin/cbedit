@@ -64,7 +64,6 @@ if options[:edit]
 end
 
 if options[:update]
-  generate_handlebars config #TODO: should be optional?
   generate_json config, db
   generate_html config
   generate_bookmarklet config

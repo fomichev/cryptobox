@@ -4,50 +4,9 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 		<title><%= @text[:title] %></title>
 		<style type="text/css">
-			body {
-				min-width: 400px;
-			}
-
-			#div-locked {
-				text-align: center;
-			}
-
-			#div-copyright {
-				text-align: center;
-			}
-
-			#div-details {
-				padding: 20px;
-			}
-
-<%= incl_plain(File.join(@config[:path][:bootstrap], "css/bootstrap.min.css")) %>
+			<%= incl(File.join('build', 'chrome', 'popup.css')) %>
 		</style>
-		<script src="cfg.js"></script>
-
-		<script src="lib/jquery.min.js"></script>
-		<script src="lib/handlebars.runtime.js"></script>
-		<script src="lib/bootstrap.min.js"></script>
-
-		<script src="lib/seedrandom.min.js"></script>
-
-		<script src="lib/core-min.js"></script>
-		<script src="lib/enc-base64-min.js"></script>
-		<script src="lib/cipher-core-min.js"></script>
-		<script src="lib/aes-min.js"></script>
-		<script src="lib/sha1-min.js"></script>
-		<script src="lib/hmac-min.js"></script>
-		<script src="lib/pbkdf2-min.js"></script>
-
-		<script src="cipher.js"></script>
-		<script src="form.js"></script>
-		<script src="lock.js"></script>
-		<script src="ui.js"></script>
-		<script src="password.js"></script>
-		<script src="handlebars.js"></script>
-		<script src="bootstrap.js"></script>
 		<script src="popup.js"></script>
-
-		<script src="templates.js"></script>
 	</head>
 	<body>
 		<div id="content"></div>

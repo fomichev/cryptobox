@@ -1,3 +1,24 @@
+// =require extern/jquery/jquery.min.js
+// =require mobile/jquery.mobile.js
+// =require extern/jquery.mobile/jquery.mobile.min.js
+// =require extern/handlebars/handlebars.runtime.js
+
+// =require extern/CryptoJS/components/core-min.js
+// =require extern/CryptoJS/components/enc-base64-min.js
+// =require extern/CryptoJS/components/cipher-core-min.js
+// =require extern/CryptoJS/components/aes-min.js
+// =require extern/CryptoJS/components/sha1-min.js
+// =require extern/CryptoJS/components/hmac-min.js
+// =require extern/CryptoJS/components/pbkdf2-min.js
+
+// =require js/cryptobox.js
+// =require js/form.js
+// =require js/ui.js
+// =require js/handlebars.js
+// =require js/cipher.js
+// =require js/lock.js
+// =require mobile/templates.js
+
 cryptobox.main = {};
 
 cryptobox.main.lock = function() {
