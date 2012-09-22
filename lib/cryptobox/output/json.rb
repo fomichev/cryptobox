@@ -2,7 +2,7 @@ require 'json'
 
 def read_include(config, y, vars, type_path)
   if y.has_key? 'include' and y['include'].has_key? type_path
-    return y['include'][type_path]
+    return JSON.parse(Template.new(config, y['include'][type_path], vars).generate)
   end
 
   type = type_path.split('/')[0]

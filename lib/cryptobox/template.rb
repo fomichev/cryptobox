@@ -22,8 +22,12 @@ class Template
 
   def generate
     verbose "Process template #{@path}"
+    if @path.instance_of? String
+      text = File.read(@path).encode 'utf-8'
+    else
+      text = JSON.generate(@path)
+    end
 
-
-    ERB.new(File.read(@path).encode 'utf-8').result(binding)
+    ERB.new(text).result(binding)
   end
 end

@@ -467,6 +467,7 @@ TODO: describe here what libs used and where
 * ? login -> webform
 * use https://developers.google.com/closure/compiler/ to compress js (should not yield much space because amount of internal js compared to external is reaaaaly small) - try POST request to compress JS and if failed, use non-optimized
 * lib/cryptobox/output code cleanup
+* fix race in cbedit pipe (between cbedit and reader)
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
