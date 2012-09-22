@@ -6,7 +6,10 @@ def generate_chrome(config)
   Dir.mkdir config[:path][:db_chrome] unless Dir.exist? config[:path][:db_chrome]
   Dir.mkdir File.join(config[:path][:db_chrome], 'lib') unless Dir.exist? File.join(config[:path][:db_chrome], 'lib')
 
-  templates = [ File.join(config[:path][:chrome], 'popup.html'),
+  root = File.join(config[:path][:templates], 'chrome')
+
+  templates = [ File.join(root, 'popup.html'),
+    File.join(root, 'manifest.json'),
     File.join('build', 'chrome', 'background.js'),
     File.join('build', 'chrome', 'content.js'),
     File.join('build', 'chrome', 'popup.js'),
@@ -18,9 +21,7 @@ def generate_chrome(config)
     File.open(File.join(config[:path][:db_chrome], name), 'w') {|f| f.write t }
   end
 
-  copy = [ File.join(config[:path][:chrome], 'icon.png'),
-    File.join(config[:path][:chrome], 'manifest.json'),
-  ]
+  copy = [ File.join(root, 'icon.png') ]
 
   copy.each do |filename|
     name = File.basename filename

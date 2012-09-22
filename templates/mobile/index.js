@@ -62,7 +62,7 @@ $(document).ready(function() {
 			$("#input-password").val("");
 			$("#input-filter").focus();
 
-			cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout, cryptobox.main.lock);
+			cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);
 
 			$.mobile.changePage("#div-main");
 		} catch(e) {

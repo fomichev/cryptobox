@@ -65,17 +65,10 @@ module Cryptobox
       set_value user_config, :path, :db_backup, File.expand_path(File.join(@config[:path][:db], 'backup'))
       set_value user_config, :path, :db_bookmarklet_form, File.expand_path(File.join(@config[:path][:db], 'bookmarket/form.js'))
       set_value user_config, :path, :db_bookmarklet_fill, File.expand_path(File.join(@config[:path][:db], 'bookmarket/fill.js'))
-      set_value user_config, :path, :tmp, File.expand_path(File.join(@config[:path][:db], 'tmp'))
 
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
-      set_value user_config, :path, :bootstrap, File.expand_path(File.join(@config[:path][:templates], 'extern/bootstrap'))
-      set_value user_config, :path, :chrome, File.expand_path(File.join(@config[:path][:templates], 'chrome'))
       set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:templates], 'extern/clippy/build/clippy.swf'))
-
-      set_value user_config, :path, :jquery_mobile_css_images, File.expand_path(File.join(@config[:path][:templates], 'extern/jquery.mobile/'))
-
-      # todo: add text (lang)
     end
   end
 end

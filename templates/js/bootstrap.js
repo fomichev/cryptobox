@@ -50,8 +50,8 @@ cryptobox.bootstrap.dialogGenerateSubmit = function() {
 		$("#input-pronounceable").is(":checked")));
 }
 
-cryptobox.bootstrap.lockInit = function(onMove, lockCallback) {
-	cryptobox.lock.startTimeout(onMove, lockCallback);
+cryptobox.bootstrap.lockInit = function(onMove, timeout, lockCallback) {
+	cryptobox.lock.startTimeout(onMove, timeout, lockCallback);
 
 	$("#button-lock").click(function(event) {
 		event.preventDefault();

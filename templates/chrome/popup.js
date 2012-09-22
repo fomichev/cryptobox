@@ -14,7 +14,7 @@
 // =require js/cryptobox.js
 // =require js/cipher.js
 // =require js/form.js
-// =require js/lock.js
+//= require js/lock.js
 // =require js/ui.js
 // =require js/password.js
 // =require js/handlebars.js
@@ -82,7 +82,7 @@ cryptobox.main.detailsClick = function(el) {
 }
 
 cryptobox.main.lock = function() {
-	chrome.extension.getBackgroundPage().data = null;
+	chrome.extension.getBackgroundPage().cfg = null;
 	cryptobox.browser.cleanClipboard();
 	cryptobox.bootstrap.render('locked', this);
 	cryptobox.main.show('#div-locked');
@@ -152,6 +152,7 @@ cryptobox.main.showData = function(data) {
 
 			cryptobox.bootstrap.lockInit(function() {
 				chrome.extension.getBackgroundPage().updateTimeout(); },
+				chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
 				cryptobox.main.lock);
 			cryptobox.bootstrap.filterInit();
 
@@ -191,22 +192,22 @@ cryptobox.main.showData = function(data) {
 $(function() {
 	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
 
-	if (chrome.extension.getBackgroundPage().data != null) {
+	if (chrome.extension.getBackgroundPage().cfg != null) {
 		chrome.extension.getBackgroundPage().updateTimeout();
-		cryptobox.main.showData(chrome.extension.getBackgroundPage().data);
+		cryptobox.main.showData(chrome.extension.getBackgroundPage().cfg);
 	} else {
 		cryptobox.main.lock();
 
 		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
-			cryptobox.main.unlock($("#input-password").val(), function(data) {
+			cryptobox.main.unlock($("#input-password").val(), function(cfg) {
 				$("#input-password").val("");
 
+				chrome.extension.getBackgroundPage().cfg = cfg;
 				chrome.extension.getBackgroundPage().startTimeout();
-				chrome.extension.getBackgroundPage().data = data;
 
-				cryptobox.main.showData(data);
+				cryptobox.main.showData(cfg);
 			});
 		});
 	}

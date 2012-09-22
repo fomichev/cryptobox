@@ -1,12 +1,13 @@
 //= require js/cryptobox.js
 //= require js/lock.js
 
-var data = null;
+var cfg = null;
 var fill = {};
 
 chrome.extension.getBackgroundPage().startTimeout = function() {
 	cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,
-		function() { chrome.extension.getBackgroundPage().data = null; }
+			chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
+			function() { chrome.extension.getBackgroundPage().cfg = null; }
 	);
 }
 
@@ -31,7 +32,7 @@ chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {
 /* Unmatched form fill handler */
 chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
 	if (info.status == 'complete' && tabId in fill) {
-		var msg = { type: 'fillForm', data: fill[tabId] };
+		var msg = { type: 'fillForm', cfg: fill[tabId] };
 		chrome.tabs.sendMessage(tabId, msg, function() { });
 		delete fill[tabId];
 	}

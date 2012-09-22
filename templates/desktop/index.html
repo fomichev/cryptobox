@@ -5,7 +5,7 @@
 
 		<title><%= @text[:title] %></title>
 		<style type="text/css">
-			<%= incl(File.join('build', 'desktop', 'index.css')) %>
+			<%= incl(File.join(@config[:path][:root], 'build', 'desktop', 'index.css')) %>
 		</style>
 		<script type="text/javascript">
 			<%= incl(File.join('build', 'desktop', 'index.js')) %>
