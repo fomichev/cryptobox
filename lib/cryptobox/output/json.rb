@@ -3,12 +3,12 @@ require 'json'
 class JsonOutput < Output
   def initialize(config, db)
     @config, @db = config, db
-    @include_paths = [ File.join(config[:path][:db], 'include'), config[:path][:include] ]
+    @include_paths = [ File.join(config[:path][:private], 'include'), config[:path][:include] ]
   end
 
   protected
   def generate
-    target = File.join @config[:path][:db], 'cryptobox.json'
+    target = File.join @config[:path][:private], 'cryptobox.json'
     result = [ { "type" => "magic", "value" => "270389" } ]
 
     y = YAML::load(@db.plaintext)

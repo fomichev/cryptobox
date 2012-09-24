@@ -55,12 +55,12 @@ module Cryptobox
       set_value user_config, :path, :root, Dir.pwd
 
       set_value user_config, :path, :build, File.expand_path(File.join(@config[:path][:root], 'build'))
-
-      set_value user_config, :path, :db, File.expand_path(File.join(@config[:path][:root], 'private'))
-      set_value user_config, :path, :db_cipher, File.expand_path(File.join(@config[:path][:db], 'cryptobox'))
-
+      set_value user_config, :path, :private, File.expand_path(File.join(@config[:path][:root], 'private'))
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
+
+      set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox'))
+      set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
     end
   end
 end

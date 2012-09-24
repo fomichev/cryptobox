@@ -32,12 +32,12 @@ end.parse!
 
 config = Cryptobox::Config.new options[:config]
 
-if File.exist? config[:path][:db_cipher]
+if File.exist? config[:path][:cryptobox]
   exit(0) unless Cryptobox::yn "Database already exists, do you want to overwrite it?"
 end
 
-db = Cryptobox::Db.new config[:path][:db_cipher],
-                       config[:path][:db_backup],
+db = Cryptobox::Db.new config[:path][:cryptobox],
+                       config[:path][:backup],
                        config[:cryptobox][:keep_backups]
 db.create
 db.plaintext = '# Lines started with # are comments'

@@ -11,7 +11,7 @@
 
 		<script type="text/javascript">
 			<%= incl(File.join(@config[:path][:build], 'mobile', 'index.js')) %>
-			cryptobox.cfg = <%= incl(File.join(@config[:path][:db], 'cryptobox.json')) %>;
+			cryptobox.cfg = <%= incl(File.join(@config[:path][:private], 'cryptobox.json')) %>;
 		</script>
 	</head>
 	<body></body>

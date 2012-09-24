@@ -17,7 +17,7 @@ class ChromeOutput < Output
     copy = [
       File.join(@config[:path][:templates], 'chrome', 'icon.png')
     ]
-    target_prefix = File.join @config[:path][:db], 'chrome'
+    target_prefix = File.join @config[:path][:private], 'chrome'
 
     templates.each do |source|
       name = File.basename source

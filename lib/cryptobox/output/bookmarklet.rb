@@ -6,8 +6,8 @@ class FillBookmarkletOutput < Output
   protected
   def generate
     source = File.join @config[:path][:build], 'bookmarklet', 'fill.js'
-    target = File.join @config[:path][:db], 'bookmarklet', 'fill.js'
-    json = File.join @config[:path][:db], 'cryptobox.json'
+    target = File.join @config[:path][:private], 'bookmarklet', 'fill.js'
+    json = File.join @config[:path][:private], 'cryptobox.json'
 
     t = Template.new(@config, source).generate
 
@@ -29,7 +29,7 @@ class FormBookmarkletOutput < Output
   protected
   def generate
     source = File.join @config[:path][:build], 'bookmarklet', 'form.js'
-    target = File.join @config[:path][:db], 'bookmarklet', 'form.js'
+    target = File.join @config[:path][:private], 'bookmarklet', 'form.js'
 
     t = Template.new(@config, source).generate
 

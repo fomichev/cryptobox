@@ -1,6 +1,6 @@
 class Output
   def run
-    puts "-> Run #{self.class.name}"
+    verbose "-> Run #{self.class.name}"
 
     generate
   end

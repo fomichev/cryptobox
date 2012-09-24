@@ -464,7 +464,6 @@ TODO: describe here what libs used and where
 * add comments to include/ JSON
 
 === Ruby
-* config[:path][:db] => config[:path][:private]
 * ? use SHA instead of HMAC
 * create fifo somewhere in tmp (or in user's home directory) with random name
 * add RDoc and GEM support
@@ -476,6 +475,10 @@ TODO: describe here what libs used and where
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * ? login -> webform
 * fix race in cbedit pipe (between cbedit and reader)
+* because we can't use pipe on windows, create plain file and use it for communication;
+  afterwards write over with random data several times
+  http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
+* set umask on unix when creating database
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
@@ -484,6 +487,7 @@ TODO: describe here what libs used and where
 
 === Desktop HTML
 * Fix when number of entries is 0
+* add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
 * !!! Share as many code as possible with chrome plugin
