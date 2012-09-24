@@ -464,6 +464,7 @@ TODO: describe here what libs used and where
 * add comments to include/ JSON
 
 === Ruby
+* config[:path][:db] => config[:path][:private]
 * ? use SHA instead of HMAC
 * create fifo somewhere in tmp (or in user's home directory) with random name
 * add RDoc and GEM support
@@ -474,7 +475,6 @@ TODO: describe here what libs used and where
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * ? login -> webform
-* lib/cryptobox/output code cleanup
 * fix race in cbedit pipe (between cbedit and reader)
 
 === Bookmarklets

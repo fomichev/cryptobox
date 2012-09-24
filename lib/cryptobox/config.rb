@@ -54,21 +54,13 @@ module Cryptobox
 
       set_value user_config, :path, :root, Dir.pwd
 
+      set_value user_config, :path, :build, File.expand_path(File.join(@config[:path][:root], 'build'))
+
       set_value user_config, :path, :db, File.expand_path(File.join(@config[:path][:root], 'private'))
       set_value user_config, :path, :db_cipher, File.expand_path(File.join(@config[:path][:db], 'cryptobox'))
-      set_value user_config, :path, :db_json, File.expand_path(@config[:path][:db_cipher] + '.json')
-      set_value user_config, :path, :db_html, File.expand_path(File.join(@config[:path][:db], 'html/cryptobox.html'))
-      set_value user_config, :path, :db_clippy, File.expand_path(File.join(@config[:path][:db], 'html/clippy.swf'))
-      set_value user_config, :path, :db_mobile_html, File.expand_path(File.join(@config[:path][:db], 'html/m.cryptobox.html'))
-      set_value user_config, :path, :db_chrome, File.expand_path(File.join(@config[:path][:db], 'chrome'))
-      set_value user_config, :path, :db_include, File.expand_path(File.join(@config[:path][:db], 'include'))
-      set_value user_config, :path, :db_backup, File.expand_path(File.join(@config[:path][:db], 'backup'))
-      set_value user_config, :path, :db_bookmarklet_form, File.expand_path(File.join(@config[:path][:db], 'bookmarket/form.js'))
-      set_value user_config, :path, :db_bookmarklet_fill, File.expand_path(File.join(@config[:path][:db], 'bookmarket/fill.js'))
 
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
-      set_value user_config, :path, :clippy, File.expand_path(File.join(@config[:path][:templates], 'extern/clippy/build/clippy.swf'))
     end
   end
 end

@@ -54,8 +54,6 @@ module Cryptobox
 
       derive_key
 
-      puts to_base64 @key
-
       @plaintext = decrypt @ciphertext
       verify_hmac
     end

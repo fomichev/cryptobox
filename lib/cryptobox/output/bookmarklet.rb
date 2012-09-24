@@ -1,23 +1,39 @@
-def generate_bookmarklet(config)
-  verbose "-> GENERATE FILL BOOKMARKLET"
-
-  dirname = File.dirname config[:path][:db_bookmarklet_fill]
-  Dir.mkdir dirname unless Dir.exist? dirname
-
-  t = Template.new(config, File.join(config[:path][:root], 'build', 'bookmarklet', 'fill.js')).generate
-
-  File.open(config[:path][:db_bookmarklet_fill], 'w') do|f|
-    f.write t
-    f.write 'function getCryptoboxConfig() { return ' + File.read(config[:path][:db_json]) + '; }'
+class FillBookmarkletOutput < Output
+  def initialize(config)
+    @config = config
   end
 
+  protected
+  def generate
+    source = File.join @config[:path][:build], 'bookmarklet', 'fill.js'
+    target = File.join @config[:path][:db], 'bookmarklet', 'fill.js'
+    json = File.join @config[:path][:db], 'cryptobox.json'
 
-  verbose "-> GENERATE FORM BOOKMARKLET"
+    t = Template.new(@config, source).generate
 
-  dirname = File.dirname config[:path][:db_bookmarklet_form]
-  Dir.mkdir dirname unless Dir.exist? dirname
+    mkdir_for target
+    File.open(target, 'w') do|f|
+      f.write t
+      f.write 'function getCryptoboxConfig() { return '
+      f.write File.read(json)
+      f.write '; }'
+    end
+  end
+end
 
-  t = Template.new(config, File.join(config[:path][:root], 'build', 'bookmarklet', 'form.js')).generate
+class FormBookmarkletOutput < Output
+  def initialize(config)
+    @config = config
+  end
 
-  File.open(config[:path][:db_bookmarklet_form], 'w') {|f| f.write t }
+  protected
+  def generate
+    source = File.join @config[:path][:build], 'bookmarklet', 'form.js'
+    target = File.join @config[:path][:db], 'bookmarklet', 'form.js'
+
+    t = Template.new(@config, source).generate
+
+    mkdir_for target
+    File.open(target, 'w') {|f| f.write t }
+  end
 end

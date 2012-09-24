@@ -6,12 +6,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<style media="screen" type="text/css">
-			<%= incl(File.join(@config[:path][:root], 'build', 'mobile', 'index.css')) %>
+			<%= incl(File.join(@config[:path][:build], 'mobile', 'index.css')) %>
 		</style>
 
 		<script type="text/javascript">
-			<%= incl(File.join(@config[:path][:root], 'build', 'mobile', 'index.js')) %>
-			cryptobox.cfg = <%= incl(@config[:path][:db_json]) %>;
+			<%= incl(File.join(@config[:path][:build], 'mobile', 'index.js')) %>
+			cryptobox.cfg = <%= incl(File.join(@config[:path][:db], 'cryptobox.json')) %>;
 		</script>
 	</head>
 	<body></body>

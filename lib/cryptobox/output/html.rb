@@ -1,23 +1,38 @@
 require 'fileutils'
 
-def generate_html(config)
-  verbose "-> GENERATE DESKTOP HTML"
+class DesktopHtmlOutput < Output
+  def initialize(config)
+    @config = config
+  end
 
-  dirname = File.dirname config[:path][:db_html]
-  Dir.mkdir dirname unless Dir.exist? dirname
+  protected
+  def generate
+    source = File.join @config[:path][:templates], 'desktop', 'index.html'
+    target = File.join @config[:path][:db], 'html', 'cryptobox.html'
+    source_clippy = File.join(@config[:path][:templates], 'extern', 'clippy', 'build', 'clippy.swf')
+    target_clippy = File.join(@config[:path][:db], 'html', 'clippy.swf')
+    t = Template.new(@config, source).generate
 
-  t = Template.new(config, File.join(config[:path][:templates], 'desktop/index.html')).generate
+    mkdir_for target
+    File.open(target, 'w') {|f| f.write t }
 
-  File.open(config[:path][:db_html], 'w') {|f| f.write t }
+    FileUtils.cp source_clippy, target_clippy
+  end
+end
 
-  # copy clippy
-  FileUtils.cp config[:path][:clippy], config[:path][:db_clippy]
+class MobileHtmlOutput < Output
+  def initialize(config)
+    @config = config
+  end
 
-  verbose "-> GENERATE MOBILE HTML"
-  dirname = File.dirname config[:path][:db_mobile_html]
-  Dir.mkdir dirname unless Dir.exist? dirname
+  protected
+  def generate
+    source = File.join @config[:path][:templates], 'mobile', 'index.html'
+    target = File.join @config[:path][:db], 'html', 'm.cryptobox.html'
 
-  t = Template.new(config, File.join(config[:path][:templates], 'mobile/index.html')).generate
+    t = Template.new(@config, source).generate
 
-  File.open(config[:path][:db_mobile_html], 'w') {|f| f.write t }
+    mkdir_for target
+    File.open(target, 'w') {|f| f.write t }
+  end
 end
