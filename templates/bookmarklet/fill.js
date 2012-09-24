@@ -23,7 +23,7 @@ function unlock(pwd, caption) {
 			'return false;\'>' + name + '</a></div>';
 	}
 
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 

@@ -1,7 +1,7 @@
 require 'rbconfig'
 
 $is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-$fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yaml'
+$fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yml'
 $initial_text = ''
 $text = ''
 
@@ -63,6 +63,7 @@ end
 
 def cleanup(name)
   File.unlink name
+  File.unlink name + '.lnk' if $is_windows
 end
 
 def on_signal(name, t1, t2)

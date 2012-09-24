@@ -101,7 +101,7 @@ cryptobox.main.unlock = function(pwd, unlockCallback) {
 		ws.onmessage = function (evt) {
 			clearTimeout(timeout);
 			cryptobox.cfg = $.parseJSON(evt.data);
-			var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+			var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
 			unlockCallback($.parseJSON(text));
 		};
 		ws.onclose = function() { };

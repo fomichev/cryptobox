@@ -68,15 +68,16 @@ def generate_json(config, db)
     end
 
     result << j
-  end
+  end if y
 
   cfg = { "pbkdf2" =>
-    {"salt_len" => Cryptobox::Db::PBKDF2_SALT_LEN,
+    {
       "salt" => Base64.encode64(db.pbkdf2_salt).gsub(/\n/, ''),
       "iterations" => db.pbkdf2_iter
     },
     "aes" =>
-    {"iv_len" => Cryptobox::Db::AES_IV_LEN,
+    {
+      "keylen" => db.aes_keylen,
       "iv" => Base64.encode64(db.aes_iv).gsub(/\n/, ''),
     },
     "ciphertext" => db.encrypt(JSON.pretty_generate result),

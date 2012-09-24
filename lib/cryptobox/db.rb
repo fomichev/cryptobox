@@ -8,13 +8,13 @@ require 'io/console'
 
 module Cryptobox
   class Db
-    FORMAT_VERSION = 4
+    FORMAT_VERSION = 5
     PBKDF2_SALT_LEN = 8
-    PBKDF2_ITERATIONS = 1000
-    AES_IV_LEN = 16
+    PBKDF2_ITERATIONS = 2000
+    AES_KEY_LEN = 256
 
     attr_accessor :plaintext
-    attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :hmac
+    attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :aes_keylen, :hmac
 
     public
 
@@ -46,12 +46,16 @@ module Cryptobox
       @pbkdf2_salt = from_base64 db['pbkdf2_salt']
       @pbkdf2_iter = db['pbkdf2_iter'].to_i
       @aes_iv = from_base64 db['aes_iv']
+      @aes_keylen = db['aes_keylen'].to_i
       @hmac = from_base64 db['hmac']
       @ciphertext = from_base64 db['ciphertext']
 
       raise 'Unsupported format version' if db['format_version'] != FORMAT_VERSION
 
       derive_key
+
+      puts to_base64 @key
+
       @plaintext = decrypt @ciphertext
       verify_hmac
     end
@@ -65,6 +69,7 @@ module Cryptobox
       db['pbkdf2_salt'] = to_base64(@pbkdf2_salt)
       db['pbkdf2_iter'] = @pbkdf2_iter
       db['aes_iv'] = to_base64(@aes_iv)
+      db['aes_keylen'] = @aes_keylen
       db['hmac'] = to_base64(calculate_hmac)
       db['format_version'] = FORMAT_VERSION
       db['version'] = VERSION
@@ -86,7 +91,7 @@ module Cryptobox
 
     # Decrypt given ciphertext
     def decrypt(ciphertext)
-      cipher = OpenSSL::Cipher::AES256.new(:CBC)
+      cipher = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC)
       cipher.decrypt
       cipher.key = @key
       cipher.iv = @aes_iv
@@ -98,7 +103,7 @@ module Cryptobox
 
     # Encrypt given plaintext
     def encrypt(plaintext)
-      cipher = OpenSSL::Cipher::AES256.new(:CBC)
+      cipher = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC)
       cipher.encrypt
       cipher.key = @key
       cipher.iv = @aes_iv
@@ -110,9 +115,10 @@ module Cryptobox
 
     # Generate default cipher parameters (salf, iv, etc)
     def initialize_cipher_params
-      @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
+      @aes_keylen = AES_KEY_LEN
+      @aes_iv = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC).random_iv
       @pbkdf2_iter = PBKDF2_ITERATIONS
-      @aes_iv = SecureRandom.random_bytes AES_IV_LEN
+      @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
       @hmac = nil
     end
 
@@ -145,7 +151,7 @@ module Cryptobox
 
     # Get encryption key from password and store it in @key
     def derive_key
-      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, 32)
+      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, @aes_keylen / 8)
     end
 
     # Calculate and return HMAC for @plaintext and @key

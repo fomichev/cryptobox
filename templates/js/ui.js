@@ -24,7 +24,7 @@ cryptobox.ui.render = function (name, context) {
 cryptobox.ui.init = function(pwd) {
 	var result = [];
 	cryptobox.ui.measure('decrypt', function(){
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.iv);
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
 	var data = $.parseJSON(text);
 	var map = {};
 
