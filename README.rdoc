@@ -311,15 +311,23 @@ and additionally:
 * {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
   Used in cbserve to serve encrypted JSON to Chrome extension
 
+  gem install em-websocket
+
 ==== The following components are required only for developers
 * {ExecJS}[https://github.com/sstephenson/execjs] - MIT
   Used to compile Handlebars templates to JS
 
+  gem install execjs
+
 * {Sprockets}[https://github.com/sstephenson/sprockets] - MIT
   Compile CSS and JS
 
+  gem install sprockets
+
 * {Ruby-YUI Compressor}[https://github.com/sstephenson/sprockets] - MIT/BSD
   Compress CSS and JS
+
+  gem install yui-compressor
 
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
@@ -358,91 +366,87 @@ Some minimized version are obtained via http://closure-compiler.appspot.com/home
 	templates/extern/clippy
 
 == Decrypt data without cryptobox
-TODO: update! This is out of date and should be adapted to new database format!
-
 Even if you don't have cryptobox available, you may still fairly easy
 decrypt your data.
 
 Lets suppose, you have the following data encrypted:
 
-	[login/dropbox.com your_username]
-	password=your_password
+	login/dropbox.com your_username:
+	  pass: your_password
 
-With the following contents of `cryptobox.conf` file:
+With the following contents of +cryptobox+ file:
 
-	[pbkdf2]
-	salt_len = 8
-	salt = vyvhYAqR0Os=
-	iterations = 1000
-
-	[aes]
-	iv_len = 16
-	bs = 32
-	iv = O/fqt3VeY4laxfn1B7OyHQ==
-
-	[cryptobox]
-	format_version = 2
-
-You get the following cipher text:
-
-	$ cat cryptobox
-	JhDP/N2YSG54jHmJgqPqVcWRCh6VoRMqaxq3SzEoFdUwdwm9wIm9ec8DSzTf7NiNEeHTEYZsNjAp
-	wSuPGIiTkA==
+	---
+	pbkdf2_salt: FN4nebDeGcA=
+	pbkdf2_iter: 2000
+	aes_iv: K8llJdtkPBArV+LDzVd4/w==
+	aes_keylen: 256
+	hmac: NRqN9IbTNR/LM+eDfCkbOEEpz7Y=
+	format_version: 5
+	version: '0.7'
+	timestamp: '2012-09-24T09:48:26+04:00'
+	ciphertext: yP59as3mhtiQrzlr6rmWvn9RDF8Xgx+2hlcbHYD/6gIjWx0VvP0NwtCXxAgj4TqTzcz26BgtPdZHxw6Ydso5Tg==
 
 Now, let's try to decrypt it (instruction provided for Linux)!
 
 Before you proceed, I want to warn you that the following commands are not
-safe! You will pass your AES key to the `openssl` utility via command line
-(and will also store your plaintext password in the file). So make it if
+safe! You will pass your AES key to the +openssl+ utility via command line
+(and will also store your plain text password in the file). So make it if
 you really need to get your data no matter what consequences may be.
 The following text is used just to demonstrate that your data could be
 easily decrypted using standard tools.
 
 === Give me the key!
-You have to take out the value of pbkdf2.salt field of config and convert
-it to hex enconding:
+You have to take out the value of pbkdf2_salt field of config and convert
+it to hex encoding:
 
-	$ echo "vyvhYAqR0Os=" | base64 -d | xxd -ps
-	bf2be1600a91d0eb
+	$ grep pbkdf2_salt cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps
+	14de2779b0de19c0
 
 Next, go and download a Perl script which implements PBKDF2 using OpenSSL:
 
 	$ wget http://www.ict.griffith.edu.au/anthony/software/pbkdf2.pl
 
-Store your password in `pwd` file and execute Perl script (where 1000 is the
-pbkdf2.iterations from config):
+Store your password in +pwd+ file and execute Perl script:
 
 	$ cat pwd
 	hi
 
-	$ perl pbkdf2.pl bf2be1600a91d0eb 1000 < pwd > result
+	$ perl pbkdf2.pl 14de2779b0de19c0 $(grep pbkdf2_iter cryptobox | cut -d: -f2) < pwd > result
 
 	$ cat result
-	0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9df7f3405ab410f4bf431e0bb560495e87
+	e623b705687b025e2a52d6b42aa4aab21ab469cce0914508f286be30be4e7d8d384df7e767dd431bc9689360e585ad4c
 
-And because we are interested only if first 32 bytes, we need to cut the rest
-(the number 64 in the following command is 32 * 2 because each byte in hex
-encoding is represented by two characters)
+And because we are interested only if first 32 bytes (in case of AES 256),
+we need to cut the rest (the number 64 in the following command is 32 * 2
+because each byte in hex encoding is represented by two characters)
 
 	$ cat result | cut -b1-64 > secret
 	$ cat secret
-	0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9d
+	e623b705687b025e2a52d6b42aa4aab21ab469cce0914508f286be30be4e7d8d
 
 === Decrypt my data
 Now, we have a key, the only thing we need to do is to convert initialization
-vector (aes.iv) to hex and call openssl, let's do it:
+vector (aes_iv) to hex, extract ciphertext from cryptobox and call openssl,
+let's do it:
 
-	$ echo "O/fqt3VeY4laxfn1B7OyHQ==" | base64 -d | xxd -ps
-	3bf7eab7755e63895ac5f9f507b3b21d
+	$ grep aes_iv cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps > iv
+	$ cat iv
+	2bc96525db643c102b57e2c3cd5778ff
 
-	$ openssl enc -d -aes-256-cbc -K 0bd89afa21176ec9943aa5ae6a146b58a17901e50e8e6b0ab66fc12c7e094d9d -iv 3bf7eab7755e63895ac5f9f507b3b21d -base64 -in cryptobox -out plaintext
+	$ grep ciphertext cryptobox | cut -d: -f2 | tr -d ' ' | tr -d "\n" > ciphertext
+	$ cat ciphertext
+	yP59as3mhtiQrzlr6rmWvn9RDF8Xgx+2hlcbHYD/6gIjWx0VvP0NwtCXxAgj4TqTzcz26BgtPdZHxw6Ydso5Tg==$
+
+	$ openssl enc -base64 -A -d -aes-256-cbc -K $(cat secret) -iv $(cat iv) -in ciphertext -out plaintext
+
 
 	$ cat plaintext
-	[login/dropbox.com your_username]
-	password=your_password$
+	login/dropbox.com your_username:
+	  pass: your_password
 
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
-it's better to remove all temporary files and clean `bash` history.
+it's better to remove all temporary files and clean +bash+ history.
 
 == Development
 
@@ -460,13 +464,13 @@ TODO: describe here what libs used and where
 * add comments to include/ JSON
 
 === Ruby
-* create fifo somewhere in tmp (or in user's home directory) with random name 
-* make Handlebars templates compilation optional (because of ExecJS dependency)
+* ? use SHA instead of HMAC
+* create fifo somewhere in tmp (or in user's home directory) with random name
 * add RDoc and GEM support
 * Cucumber/Aruba tests
 * Add unit tests
 * ? .html -> .rhtml
-* ? generate new salt and iv on password change (or even on every `cbedit` update; in this case may even save hmac in cryptobox.conf)
+* ? generate new salt and iv on password change (or even on every +cbedit+ update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * ? login -> webform
@@ -479,6 +483,7 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Desktop HTML
+* Fix when number of entries is 0
 * Check login with token
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
 * !!! Share as many code as possible with chrome plugin
