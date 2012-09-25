@@ -6,7 +6,7 @@ Feature: User creates new database
 		If we provide valid password two times, there should be new
 		empty database.
 
-		Given database does not exist
+		Given no database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I type "hi"
 		And I type "hi"
@@ -24,7 +24,7 @@ Feature: User creates new database
 		mismatching passwords. Surely enough, there is no database
 		created.
 
-		Given database does not exist
+		Given no database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I type "one"
 		And I type "two"
@@ -38,12 +38,24 @@ Feature: User creates new database
 
 			"""
 
-#	Scenario: Override existing database
-#		We have existing database and we try to create a new one.
-#		Application have to ask us whether we want to override the
-#		existing database. We answer 'y' and we should see new
-#		database and the old one backed up.
-#
+	Scenario: Override existing database
+		We have existing database and we try to create a new one.
+		Application have to ask us whether we want to override the
+		existing database. We answer 'y' and we should see new
+		database and the old one backed up.
+
+		Given empty database
+		When I run `ruby ../../bin/cbcreate` interactively
+		And the stdout should contain:
+			"""
+			Password: 
+			Confirm password: 
+			Passwords don't match!
+
+			"""
+
+
+
 #	Scenario: Try to override existing database
 #		We have an existing database, but we accidentally try to create
 #		a new one. We say 'n' to the question asking us whether we
