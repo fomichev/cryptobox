@@ -14,7 +14,7 @@ module Cryptobox
     AES_KEY_LEN = 256
 
     attr_accessor :plaintext
-    attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :aes_keylen, :hmac
+    attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :aes_keylen
 
     public
 
@@ -47,7 +47,6 @@ module Cryptobox
       @pbkdf2_iter = db['pbkdf2_iter'].to_i
       @aes_iv = from_base64 db['aes_iv']
       @aes_keylen = db['aes_keylen'].to_i
-      @hmac = from_base64 db['hmac']
       @ciphertext = from_base64 db['ciphertext']
 
       raise 'Unsupported format version' if db['format_version'] != FORMAT_VERSION
@@ -55,12 +54,15 @@ module Cryptobox
       derive_key
 
       @plaintext = decrypt @ciphertext
-      verify_hmac
     end
 
     # Save database to @db_path
     def save
       backup
+
+      initialize_cipher_params
+      derive_key
+
       @ciphertext = encrypt @plaintext
 
       db = {}
@@ -68,7 +70,6 @@ module Cryptobox
       db['pbkdf2_iter'] = @pbkdf2_iter
       db['aes_iv'] = to_base64(@aes_iv)
       db['aes_keylen'] = @aes_keylen
-      db['hmac'] = to_base64(calculate_hmac)
       db['format_version'] = FORMAT_VERSION
       db['version'] = VERSION
       db['timestamp'] = DateTime.now.to_s
@@ -113,11 +114,10 @@ module Cryptobox
 
     # Generate default cipher parameters (salf, iv, etc)
     def initialize_cipher_params
-      @aes_keylen = AES_KEY_LEN
+      @aes_keylen = AES_KEY_LEN unless @aes_keylen
       @aes_iv = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC).random_iv
-      @pbkdf2_iter = PBKDF2_ITERATIONS
+      @pbkdf2_iter = PBKDF2_ITERATIONS unless @pbkdf2_iter
       @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
-      @hmac = nil
     end
 
     # Ask user password and return it
@@ -157,16 +157,6 @@ module Cryptobox
     # Get encryption key from password and store it in @key
     def derive_key
       @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, @aes_keylen / 8)
-    end
-
-    # Calculate and return HMAC for @plaintext and @key
-    def calculate_hmac()
-      digest = OpenSSL::Digest::Digest.new('sha1')
-      return OpenSSL::HMAC.digest(digest, @key, @plaintext)
-    end
-
-    def verify_hmac
-      raise 'Invalid password' if @hmac != calculate_hmac
     end
   end
 end

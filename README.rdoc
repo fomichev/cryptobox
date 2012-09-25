@@ -79,9 +79,6 @@ key length is 256 bits and it is derived from your master password (recommend
 way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
 using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
 (consult your lawyer about whether it's considered crime in your country).
-To check the integrity of the database, Ruby code uses
-{HMAC-MD5}[http://en.wikipedia.org/wiki/HMAC], while HTML page relies on
-specific magic field value in the JSON data.
 
 When +cbedit+ generates HTML, it asks your password, decrypts
 <tt>private/cryptbox</tt> file and merges it with JSON
@@ -462,6 +459,7 @@ TODO: describe here what libs used and where
 * revise README.rdoc and add other missing information
 * mention somewhere: supported fields for login entry are: user, pass, secret, note
 * add comments to include/ JSON
+* new pbkdf2 salt and aes iv is generated whenever database is saved
 
 === Ruby
 * create fifo somewhere in user's home directory with random name
@@ -478,9 +476,7 @@ TODO: describe here what libs used and where
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
 * set umask on unix when creating database
 * try to use 10k iterations for pbkdf2
-* generate new salt and iv on every +cbedit+ update and password change
 * add --stdin flag to cbedit to support reading db contents from standard input
-* ? use SHA1 instead of HMAC
 
 === Bookmarklets
 * cleanup fill/form bookmarklets

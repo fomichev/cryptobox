@@ -86,7 +86,13 @@ class JsonOutput < Output
     type = type_path.split('/')[0]
 
     paths = @include_paths.map {|p| File.join(p, type_path) }
-    path = paths.each {|p| break p if File.exist? p }
+    path = nil
+    paths.each do |p|
+      if File.exist? p
+        path = p
+        break
+      end
+    end
 
     raise "Unknown entry #{type_path}" if path == nil and type != 'login'
 
