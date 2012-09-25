@@ -123,10 +123,17 @@ module Cryptobox
     # Ask user password and return it
     def ask_password(prompt='Password: ')
       print prompt
-      password = STDIN.noecho(&:gets).sub(/\n$/, '')
-      puts
+      STDOUT.flush
 
-      return password
+      if STDIN.tty?
+        password = STDIN.noecho(&:gets)
+      else
+        password = STDIN.gets
+      end
+      puts
+      STDOUT.flush
+
+      return password.sub(/\n$/, '')
     end
 
     # Convert given argument to base64 encoding and strip newlines

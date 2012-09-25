@@ -39,6 +39,12 @@ end
 db = Cryptobox::Db.new config[:path][:cryptobox],
                        config[:path][:backup],
                        config[:cryptobox][:keep_backups]
+begin
 db.create
+rescue => error
+  puts error.message
+  exit 1
+end
+
 db.plaintext = '# Lines started with # are comments'
 db.save

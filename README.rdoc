@@ -464,13 +464,11 @@ TODO: describe here what libs used and where
 * add comments to include/ JSON
 
 === Ruby
-* ? use SHA instead of HMAC
 * create fifo somewhere in tmp (or in user's home directory) with random name
 * add RDoc and GEM support
 * Cucumber/Aruba tests
-* Add unit tests
+* ? Add unit tests
 * ? .html -> .rhtml
-* ? generate new salt and iv on password change (or even on every +cbedit+ update; in this case may even save hmac in cryptobox.conf)
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
 * ? login -> webform
@@ -479,6 +477,9 @@ TODO: describe here what libs used and where
   afterwards write over with random data several times
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
 * set umask on unix when creating database
+* try to use 10k iterations for pbkdf2
+* generate new salt and iv on password change (or even on every +cbedit+ update; in this case may even save hmac in cryptobox.conf)
+* ? use SHA1 instead of HMAC
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
