@@ -13,3 +13,15 @@ Given /^empty database$/ do
     And a file named "private/cryptobox" should exist
   }
 end
+
+When /^I enter correct password$/ do
+  steps %{
+  When I type "hi"
+  }
+end
+
+When /^I enter incorrect password$/ do
+  steps %{
+  When I type "ih"
+  }
+end
