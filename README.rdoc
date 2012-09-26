@@ -476,7 +476,6 @@ TODO: describe here what libs used and where
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
 * set umask on unix when creating database
 * try to use 10k iterations for pbkdf2
-* add --stdin flag to cbedit to support reading db contents from standard input
 
 === Bookmarklets
 * cleanup fill/form bookmarklets

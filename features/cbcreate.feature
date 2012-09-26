@@ -56,7 +56,7 @@ Feature: User creates new database
 		And I type "password"
 		And I type "password"
 		Then the exit status should be 0
-		And the number of backups is 1
+		And the number of backups should be 1
 		And the database can be unlocked with "password"
 		And the database can not be unlocked with "hi"
 		And the stdout should contain exactly:
@@ -76,7 +76,7 @@ Feature: User creates new database
 		Given empty database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I type "n"
-		And the number of backups is 0
+		And the number of backups should be 0
 		Then the exit status should be 0
 		And the database can be unlocked with "hi"
 		And the stdout should contain exactly:

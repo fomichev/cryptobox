@@ -13,7 +13,8 @@ $verbose = false
 options = {
   update: true,
   edit: true,
-  stdout: false
+  stdout: false,
+  stdin: false
 }
 
 OptionParser.new do |opts|
@@ -30,6 +31,9 @@ OptionParser.new do |opts|
   end
   opts.on("--stdout", "Print decrypted data to standard output") do |v|
     options[:stdout] = v
+  end
+  opts.on("--stdin", "Read decrypted data from standard input") do |v|
+    options[:stdin] = v
   end
   opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
@@ -56,10 +60,15 @@ if options[:stdout]
 end
 
 if options[:edit]
-  new_plaintext = edit config[:ui][:editor], db.plaintext
-  exit if new_plaintext == db.plaintext
+  if options[:stdin]
+    db.plaintext = $stdin.read
+  else
+    new_plaintext = edit config[:ui][:editor], db.plaintext
+    exit if new_plaintext == db.plaintext
 
-  db.plaintext = new_plaintext
+    db.plaintext = new_plaintext
+  end
+
   db.save
 end
 
