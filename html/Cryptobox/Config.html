@@ -89,6 +89,8 @@
         
           <li class="file"><a href="../README_rdoc.html">README.rdoc</a></li>
         
+          <li class="file"><a href="../bin/cbedit.html">cbedit</a></li>
+        
         </ul>
       </div>
       
@@ -116,9 +118,23 @@
         
           <li><a href="../Array.html">Array</a></li>
         
+          <li><a href="../ChromeOutput.html">ChromeOutput</a></li>
+        
+          <li><a href="../DesktopHtmlOutput.html">DesktopHtmlOutput</a></li>
+        
+          <li><a href="../FillBookmarkletOutput.html">FillBookmarkletOutput</a></li>
+        
+          <li><a href="../FormBookmarkletOutput.html">FormBookmarkletOutput</a></li>
+        
           <li><a href="../Hash.html">Hash</a></li>
         
+          <li><a href="../JsonOutput.html">JsonOutput</a></li>
+        
+          <li><a href="../MobileHtmlOutput.html">MobileHtmlOutput</a></li>
+        
           <li><a href="../Object.html">Object</a></li>
+        
+          <li><a href="../Output.html">Output</a></li>
         
           <li><a href="../Template.html">Template</a></li>
         
@@ -174,7 +190,7 @@
             
             <div class="method-source-code" id="new-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/config.rb, line 6</span>
+<span class="ruby-comment"># File lib/cryptobox/config.rb, line 5</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">path</span>)
   <span class="ruby-identifier">paths</span> = <span class="ruby-identifier">path</span> <span class="ruby-operator">?</span> [ <span class="ruby-identifier">path</span> ] <span class="ruby-operator">:</span> [ <span class="ruby-string">'.cryptoboxrc.yml'</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-constant">ENV</span>[<span class="ruby-string">'HOME'</span>], <span class="ruby-string">'.cryptoboxrc.yml'</span>) ]
   <span class="ruby-identifier">paths</span> = <span class="ruby-identifier">paths</span>.<span class="ruby-identifier">select</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-identifier">f</span> }
@@ -216,7 +232,7 @@
             
             <div class="method-source-code" id="5B-5D-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/config.rb, line 21</span>
+<span class="ruby-comment"># File lib/cryptobox/config.rb, line 20</span>
 <span class="ruby-keyword">def</span> <span class="ruby-operator">[]</span>(<span class="ruby-identifier">var</span>)
   <span class="ruby-keyword">return</span> <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">var</span>]
 <span class="ruby-keyword">end</span></pre>
@@ -249,9 +265,9 @@
             
             <div class="method-source-code" id="load_config-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/config.rb, line 25</span>
+<span class="ruby-comment"># File lib/cryptobox/config.rb, line 24</span>
     <span class="ruby-keyword">def</span> <span class="ruby-identifier">load_config</span>(<span class="ruby-identifier">path</span>)
-      <span class="ruby-ivar">@config</span> = { <span class="ruby-identifier">ui</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">cryptobox</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">path</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">text</span><span class="ruby-operator">:</span> {} }
+      <span class="ruby-ivar">@config</span> = { <span class="ruby-identifier">ui</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">cryptobox</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">chrome</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">path</span><span class="ruby-operator">:</span> {}, <span class="ruby-identifier">text</span><span class="ruby-operator">:</span> {} }
 
       <span class="ruby-identifier">user_config</span> = <span class="ruby-identifier">path</span> <span class="ruby-operator">?</span> <span class="ruby-constant">YAML</span>.<span class="ruby-identifier">load_file</span>(<span class="ruby-identifier">path</span>).<span class="ruby-identifier">symbolize_keys</span> <span class="ruby-operator">:</span> {}
 
@@ -259,48 +275,37 @@
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:default_password_length</span>, <span class="ruby-value">16</span>
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:lock_timeout_minutes</span>, <span class="ruby-value">5</span>
 
+      <span class="ruby-keyword">if</span> <span class="ruby-constant">RUBY_PLATFORM</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/(win|w)32$/</span>
+        <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:editor</span>, <span class="ruby-string">'gvim -n -f'</span>
+      <span class="ruby-comment"># else if on mac =&gt; use mvim</span>
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:editor</span>, <span class="ruby-string">'vim -n -f'</span>
+      <span class="ruby-keyword">end</span>
 
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:editor</span>, <span class="ruby-string">'vim -n -f'</span>
+
 <span class="ruby-comment">#      set_value user_config, :ui, :editor, 'mvim -n -f'</span>
 <span class="ruby-comment">#      set_value user_config, :ui, :editor, 'gvim -n -f'</span>
 <span class="ruby-comment">#editor=ENV['EDITOR']</span>
 <span class="ruby-comment">#editor='gvim -n -f'</span>
 <span class="ruby-comment">#editor='mvim -n -f'</span>
 <span class="ruby-comment">#editor='vim -n'</span>
-<span class="ruby-comment">#      set_value user_config, :ui, :lang, :en</span>
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:lang</span>, <span class="ruby-value">:ru</span>
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:ui</span>, <span class="ruby-value">:lang</span>, <span class="ruby-value">:en</span>
+<span class="ruby-comment">#      set_value user_config, :ui, :lang, :ru</span>
 
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:cryptobox</span>, <span class="ruby-value">:version</span>, <span class="ruby-constant">VERSION</span>
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:cryptobox</span>, <span class="ruby-value">:date_format</span>, <span class="ruby-string">'%H:%M %d.%m.%Y'</span>
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:cryptobox</span>, <span class="ruby-value">:date</span>, <span class="ruby-constant">DateTime</span>.<span class="ruby-identifier">now</span>.<span class="ruby-identifier">strftime</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:cryptobox</span>][<span class="ruby-value">:date_format</span>])
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:cryptobox</span>, <span class="ruby-value">:keep_backups</span>, <span class="ruby-keyword">true</span>
 
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:root</span>, <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">pwd</span>
 
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:root</span>], <span class="ruby-string">'private'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_cipher</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'cryptobox'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_json</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_cipher</span>] <span class="ruby-operator">+</span> <span class="ruby-string">'.json'</span>)
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_html</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'html/cryptobox.html'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_clippy</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'html/clippy.swf'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_mobile_html</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'html/m.cryptobox.html'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_chrome</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'chrome'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_chrome_cfg</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'chrome/cfg.js'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_include</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'include'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_backup</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'backup'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_bookmarklet_form</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'bookmarket/form.js'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:db_bookmarklet_fill</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'bookmarket/fill.js'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:tmp</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db</span>], <span class="ruby-string">'tmp'</span>))
-
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:build</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:root</span>], <span class="ruby-string">'build'</span>))
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:private</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:root</span>], <span class="ruby-string">'private'</span>))
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:include</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:root</span>], <span class="ruby-string">'include'</span>))
       <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:templates</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:root</span>], <span class="ruby-string">'templates'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:html</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:templates</span>], <span class="ruby-string">'html'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:bookmarklet</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:templates</span>], <span class="ruby-string">'bookmarklet'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:chrome</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:templates</span>], <span class="ruby-string">'chrome'</span>))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:clippy</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:html</span>], <span class="ruby-string">'/extern/clippy/build/clippy.swf'</span>))
 
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:jquery_ui_css_images</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:html</span>], <span class="ruby-string">'/extern/jquery-ui/css/'</span>, <span class="ruby-ivar">@config</span>[<span class="ruby-value">:ui</span>][<span class="ruby-value">:jquery_ui_theme</span>]))
-      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:jquery_mobile_css_images</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:html</span>], <span class="ruby-string">'/extern/jquery-mobile/'</span>))
-
-      <span class="ruby-comment"># todo: add text (lang)</span>
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:cryptobox</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:private</span>], <span class="ruby-string">'cryptobox'</span>))
+      <span class="ruby-identifier">set_value</span> <span class="ruby-identifier">user_config</span>, <span class="ruby-value">:path</span>, <span class="ruby-value">:backup</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">expand_path</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:private</span>], <span class="ruby-string">'backup'</span>))
     <span class="ruby-keyword">end</span></pre>
             </div><!-- load_config-source -->
             
@@ -331,7 +336,7 @@
             
             <div class="method-source-code" id="set_value-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/config.rb, line 13</span>
+<span class="ruby-comment"># File lib/cryptobox/config.rb, line 12</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">set_value</span>(<span class="ruby-identifier">user_config</span>, <span class="ruby-identifier">group</span>, <span class="ruby-identifier">variable</span>, <span class="ruby-identifier">default</span>=<span class="ruby-string">''</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">user_config</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">group</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">user_config</span>[<span class="ruby-identifier">group</span>].<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">variable</span>
     <span class="ruby-ivar">@config</span>[<span class="ruby-identifier">group</span>][<span class="ruby-identifier">variable</span>] = <span class="ruby-identifier">user_config</span>[<span class="ruby-identifier">group</span>][<span class="ruby-identifier">variable</span>]

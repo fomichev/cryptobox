@@ -5,7 +5,7 @@
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 
-  <title>Class: Array</title>
+  <title>Class: Output</title>
 
   <link rel="stylesheet" href="./rdoc.css" type="text/css" media="screen" />
 
@@ -34,8 +34,8 @@
         <div class="section-body">
           <ul>
           
-            <li><a href="./lib/cryptobox/util_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
-              class="thickbox" title="lib/cryptobox/util.rb">lib/cryptobox/util.rb</a></li>
+            <li><a href="./lib/cryptobox/output/output_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+              class="thickbox" title="lib/cryptobox/output/output.rb">lib/cryptobox/output/output.rb</a></li>
           
           </ul>
         </div>
@@ -65,9 +65,7 @@
         <h3 class="section-header">Methods</h3>
         <ul class="link-list">
           
-          <li><a href="#method-i-stringify_keys">#stringify_keys</a></li>
-          
-          <li><a href="#method-i-symbolize_keys">#symbolize_keys</a></li>
+          <li><a href="#method-i-run">#run</a></li>
           
         </ul>
       </div>
@@ -143,7 +141,7 @@
   </div>
 
   <div id="documentation">
-    <h1 class="class">Array</h1>
+    <h1 class="class">Output</h1>
 
     <div id="description" class="description">
       
@@ -167,12 +165,12 @@
         <h3 class="section-header">Public Instance Methods</h3>
 
       
-        <div id="stringify_keys-method" class="method-detail ">
-          <a name="method-i-stringify_keys"></a>
+        <div id="run-method" class="method-detail ">
+          <a name="method-i-run"></a>
 
           
           <div class="method-heading">
-            <span class="method-name">stringify_keys</span><span
+            <span class="method-name">run</span><span
               class="method-args">()</span>
             <span class="method-click-advice">click to toggle source</span>
           </div>
@@ -184,53 +182,22 @@
             
 
             
-            <div class="method-source-code" id="stringify_keys-source">
+            <div class="method-source-code" id="run-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/util.rb, line 45</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">stringify_keys</span>
-  <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-identifier">stringify</span> <span class="ruby-keyword">self</span>
+<span class="ruby-comment"># File lib/cryptobox/output/output.rb, line 2</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">run</span>
+  <span class="ruby-identifier">verbose</span> <span class="ruby-node">&quot;-&gt; Run #{self.class.name}&quot;</span>
+
+  <span class="ruby-identifier">generate</span>
 <span class="ruby-keyword">end</span></pre>
-            </div><!-- stringify_keys-source -->
+            </div><!-- run-source -->
             
           </div>
 
           
 
           
-        </div><!-- stringify_keys-method -->
-
-      
-        <div id="symbolize_keys-method" class="method-detail ">
-          <a name="method-i-symbolize_keys"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">symbolize_keys</span><span
-              class="method-args">()</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="symbolize_keys-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/util.rb, line 41</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">symbolize_keys</span>
-  <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-identifier">symbolize</span> <span class="ruby-keyword">self</span>
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- symbolize_keys-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- symbolize_keys-method -->
+        </div><!-- run-method -->
 
       
       </div><!-- public-instance-method-details -->

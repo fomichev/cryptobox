@@ -5,7 +5,7 @@
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 
-  <title>Class: Array</title>
+  <title>Class: DesktopHtmlOutput</title>
 
   <link rel="stylesheet" href="./rdoc.css" type="text/css" media="screen" />
 
@@ -34,8 +34,8 @@
         <div class="section-body">
           <ul>
           
-            <li><a href="./lib/cryptobox/util_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
-              class="thickbox" title="lib/cryptobox/util.rb">lib/cryptobox/util.rb</a></li>
+            <li><a href="./lib/cryptobox/output/html_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
+              class="thickbox" title="lib/cryptobox/output/html.rb">lib/cryptobox/output/html.rb</a></li>
           
           </ul>
         </div>
@@ -50,7 +50,7 @@
       <div id="parent-class-section" class="section">
         <h3 class="section-header">Parent</h3>
         
-        <p class="link"><a href="Object.html">Object</a></p>
+        <p class="link"><a href="Output.html">Output</a></p>
         
       </div>
       
@@ -65,9 +65,9 @@
         <h3 class="section-header">Methods</h3>
         <ul class="link-list">
           
-          <li><a href="#method-i-stringify_keys">#stringify_keys</a></li>
+          <li><a href="#method-c-new">::new</a></li>
           
-          <li><a href="#method-i-symbolize_keys">#symbolize_keys</a></li>
+          <li><a href="#method-i-generate">#generate</a></li>
           
         </ul>
       </div>
@@ -143,7 +143,7 @@
   </div>
 
   <div id="documentation">
-    <h1 class="class">Array</h1>
+    <h1 class="class">DesktopHtmlOutput</h1>
 
     <div id="description" class="description">
       
@@ -163,16 +163,55 @@
 
       <!-- Methods -->
       
-      <div id="public-instance-method-details" class="method-section section">
-        <h3 class="section-header">Public Instance Methods</h3>
+      <div id="public-class-method-details" class="method-section section">
+        <h3 class="section-header">Public Class Methods</h3>
 
       
-        <div id="stringify_keys-method" class="method-detail ">
-          <a name="method-i-stringify_keys"></a>
+        <div id="new-method" class="method-detail ">
+          <a name="method-c-new"></a>
 
           
           <div class="method-heading">
-            <span class="method-name">stringify_keys</span><span
+            <span class="method-name">new</span><span
+              class="method-args">(config)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+          
+
+          <div class="method-description">
+            
+            
+            
+
+            
+            <div class="method-source-code" id="new-source">
+<pre>
+<span class="ruby-comment"># File lib/cryptobox/output/html.rb, line 4</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">config</span>)
+  <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">config</span>
+<span class="ruby-keyword">end</span></pre>
+            </div><!-- new-source -->
+            
+          </div>
+
+          
+
+          
+        </div><!-- new-method -->
+
+      
+      </div><!-- public-class-method-details -->
+    
+      <div id="protected-instance-method-details" class="method-section section">
+        <h3 class="section-header">Protected Instance Methods</h3>
+
+      
+        <div id="generate-method" class="method-detail ">
+          <a name="method-i-generate"></a>
+
+          
+          <div class="method-heading">
+            <span class="method-name">generate</span><span
               class="method-args">()</span>
             <span class="method-click-advice">click to toggle source</span>
           </div>
@@ -184,56 +223,32 @@
             
 
             
-            <div class="method-source-code" id="stringify_keys-source">
+            <div class="method-source-code" id="generate-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/util.rb, line 45</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">stringify_keys</span>
-  <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-identifier">stringify</span> <span class="ruby-keyword">self</span>
+<span class="ruby-comment"># File lib/cryptobox/output/html.rb, line 9</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate</span>
+  <span class="ruby-identifier">source</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span> <span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:templates</span>], <span class="ruby-string">'desktop'</span>, <span class="ruby-string">'index.html'</span>
+  <span class="ruby-identifier">target</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span> <span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:private</span>], <span class="ruby-string">'html'</span>, <span class="ruby-string">'cryptobox.html'</span>
+  <span class="ruby-identifier">source_clippy</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:templates</span>], <span class="ruby-string">'extern'</span>, <span class="ruby-string">'clippy'</span>, <span class="ruby-string">'build'</span>, <span class="ruby-string">'clippy.swf'</span>)
+  <span class="ruby-identifier">target_clippy</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-ivar">@config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:private</span>], <span class="ruby-string">'html'</span>, <span class="ruby-string">'clippy.swf'</span>)
+  <span class="ruby-identifier">t</span> = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@config</span>, <span class="ruby-identifier">source</span>).<span class="ruby-identifier">generate</span>
+
+  <span class="ruby-identifier">mkdir_for</span> <span class="ruby-identifier">target</span>
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">target</span>, <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">t</span> }
+
+  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">cp</span> <span class="ruby-identifier">source_clippy</span>, <span class="ruby-identifier">target_clippy</span>
 <span class="ruby-keyword">end</span></pre>
-            </div><!-- stringify_keys-source -->
+            </div><!-- generate-source -->
             
           </div>
 
           
 
           
-        </div><!-- stringify_keys-method -->
+        </div><!-- generate-method -->
 
       
-        <div id="symbolize_keys-method" class="method-detail ">
-          <a name="method-i-symbolize_keys"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">symbolize_keys</span><span
-              class="method-args">()</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="symbolize_keys-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/util.rb, line 41</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">symbolize_keys</span>
-  <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-identifier">symbolize</span> <span class="ruby-keyword">self</span>
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- symbolize_keys-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- symbolize_keys-method -->
-
-      
-      </div><!-- public-instance-method-details -->
+      </div><!-- protected-instance-method-details -->
     
     </div><!-- 5Buntitled-5D -->
   

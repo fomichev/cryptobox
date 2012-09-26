@@ -37,15 +37,6 @@
             <li><a href="./lib/cryptobox/editor_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
               class="thickbox" title="lib/cryptobox/editor.rb">lib/cryptobox/editor.rb</a></li>
           
-            <li><a href="./lib/cryptobox/output/bookmarklet_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
-              class="thickbox" title="lib/cryptobox/output/bookmarklet.rb">lib/cryptobox/output/bookmarklet.rb</a></li>
-          
-            <li><a href="./lib/cryptobox/output/html_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
-              class="thickbox" title="lib/cryptobox/output/html.rb">lib/cryptobox/output/html.rb</a></li>
-          
-            <li><a href="./lib/cryptobox/output/json_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
-              class="thickbox" title="lib/cryptobox/output/json.rb">lib/cryptobox/output/json.rb</a></li>
-          
             <li><a href="./lib/cryptobox_rb.html?TB_iframe=true&amp;height=550&amp;width=785"
               class="thickbox" title="lib/cryptobox.rb">lib/cryptobox.rb</a></li>
           
@@ -83,14 +74,6 @@
           
           <li><a href="#method-i-edit">#edit</a></li>
           
-          <li><a href="#method-i-embed_images">#embed_images</a></li>
-          
-          <li><a href="#method-i-generate_bookmarklet">#generate_bookmarklet</a></li>
-          
-          <li><a href="#method-i-generate_html">#generate_html</a></li>
-          
-          <li><a href="#method-i-generate_json">#generate_json</a></li>
-          
           <li><a href="#method-i-mkfifo">#mkfifo</a></li>
           
           <li><a href="#method-i-on_signal">#on_signal</a></li>
@@ -119,6 +102,8 @@
         
           <li class="file"><a href="./README_rdoc.html">README.rdoc</a></li>
         
+          <li class="file"><a href="./bin/cbedit.html">cbedit</a></li>
+        
         </ul>
       </div>
       
@@ -146,9 +131,23 @@
         
           <li><a href="./Array.html">Array</a></li>
         
+          <li><a href="./ChromeOutput.html">ChromeOutput</a></li>
+        
+          <li><a href="./DesktopHtmlOutput.html">DesktopHtmlOutput</a></li>
+        
+          <li><a href="./FillBookmarkletOutput.html">FillBookmarkletOutput</a></li>
+        
+          <li><a href="./FormBookmarkletOutput.html">FormBookmarkletOutput</a></li>
+        
           <li><a href="./Hash.html">Hash</a></li>
         
+          <li><a href="./JsonOutput.html">JsonOutput</a></li>
+        
+          <li><a href="./MobileHtmlOutput.html">MobileHtmlOutput</a></li>
+        
           <li><a href="./Object.html">Object</a></li>
+        
+          <li><a href="./Output.html">Output</a></li>
         
           <li><a href="./Template.html">Template</a></li>
         
@@ -204,9 +203,10 @@
             
             <div class="method-source-code" id="cleanup-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 68</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 64</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">cleanup</span>(<span class="ruby-identifier">name</span>)
   <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span> <span class="ruby-identifier">name</span>
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span> <span class="ruby-identifier">name</span> <span class="ruby-operator">+</span> <span class="ruby-string">'.lnk'</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">$is_windows</span>
 <span class="ruby-keyword">end</span></pre>
             </div><!-- cleanup-source -->
             
@@ -237,7 +237,7 @@
             
             <div class="method-source-code" id="done-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 53</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 49</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">done</span>(<span class="ruby-identifier">initial_text</span>, <span class="ruby-identifier">text</span>)
   <span class="ruby-keyword">if</span> <span class="ruby-identifier">text</span> <span class="ruby-operator">==</span> <span class="ruby-string">'__no_save__'</span>
     <span class="ruby-identifier">puts</span> <span class="ruby-string">'no save'</span>
@@ -281,7 +281,7 @@
             
             <div class="method-source-code" id="edit-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 79</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 76</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">edit</span>(<span class="ruby-identifier">editor</span>, <span class="ruby-identifier">i_t</span>)
   <span class="ruby-identifier">$initial_text</span> = <span class="ruby-identifier">i_t</span>
 
@@ -327,250 +327,6 @@
         </div><!-- edit-method -->
 
       
-        <div id="embed_images-method" class="method-detail ">
-          <a name="method-i-embed_images"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">embed_images</span><span
-              class="method-args">(text, images_root)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="embed_images-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/output/html.rb, line 3</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">embed_images</span>(<span class="ruby-identifier">text</span>, <span class="ruby-identifier">images_root</span>)
-  <span class="ruby-identifier">text</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/url\(([^)]*)\)*/</span>) <span class="ruby-keyword">do</span>
-    <span class="ruby-identifier">verbose</span> <span class="ruby-node">&quot;Embed image #{$1}&quot;</span>
-    <span class="ruby-identifier">img</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">read</span>(<span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">images_root</span>, <span class="ruby-node">$1</span>))
-
-    <span class="ruby-string">'url(data:image/png;base64,'</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">img</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\n/</span>, <span class="ruby-string">''</span>) <span class="ruby-operator">+</span> <span class="ruby-string">')'</span>
-  <span class="ruby-keyword">end</span>
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- embed_images-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- embed_images-method -->
-
-      
-        <div id="generate_bookmarklet-method" class="method-detail ">
-          <a name="method-i-generate_bookmarklet"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">generate_bookmarklet</span><span
-              class="method-args">(config)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="generate_bookmarklet-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/output/bookmarklet.rb, line 1</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_bookmarklet</span>(<span class="ruby-identifier">config</span>)
-  <span class="ruby-identifier">verbose</span> <span class="ruby-string">&quot;-&gt; GENERATE FILL BOOKMARKLET&quot;</span>
-
-  <span class="ruby-identifier">dirname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_bookmarklet_fill</span>]
-  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span> <span class="ruby-identifier">dirname</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-identifier">dirname</span>
-
-  <span class="ruby-identifier">t</span> = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">config</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:bookmarklet</span>], <span class="ruby-string">'fill.js'</span>)).<span class="ruby-identifier">generate</span>
-
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_bookmarklet_fill</span>], <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">t</span> }
-
-  <span class="ruby-identifier">verbose</span> <span class="ruby-string">&quot;-&gt; GENERATE FORM BOOKMARKLET&quot;</span>
-
-  <span class="ruby-identifier">dirname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_bookmarklet_form</span>]
-  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span> <span class="ruby-identifier">dirname</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-identifier">dirname</span>
-
-  <span class="ruby-identifier">t</span> = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">config</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:bookmarklet</span>], <span class="ruby-string">'form.js'</span>)).<span class="ruby-identifier">generate</span>
-
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_bookmarklet_form</span>], <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">t</span> }
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- generate_bookmarklet-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- generate_bookmarklet-method -->
-
-      
-        <div id="generate_html-method" class="method-detail ">
-          <a name="method-i-generate_html"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">generate_html</span><span
-              class="method-args">(config)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="generate_html-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/output/html.rb, line 12</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_html</span>(<span class="ruby-identifier">config</span>)
-  <span class="ruby-identifier">verbose</span> <span class="ruby-string">&quot;-&gt; GENERATE DESKTOP HTML&quot;</span>
-
-  <span class="ruby-identifier">dirname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_html</span>]
-  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span> <span class="ruby-identifier">dirname</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-identifier">dirname</span>
-
-  <span class="ruby-identifier">t</span> = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">config</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:html</span>], <span class="ruby-string">'desktop/index.html'</span>)).<span class="ruby-identifier">generate</span>
-  <span class="ruby-identifier">t</span> = <span class="ruby-identifier">embed_images</span>(<span class="ruby-identifier">t</span>, <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:jquery_ui_css_images</span>])
-
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_html</span>], <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">t</span> }
-
-  <span class="ruby-comment"># copy clippy</span>
-  <span class="ruby-constant">FileUtils</span>.<span class="ruby-identifier">cp</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:clippy</span>], <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_clippy</span>]
-
-  <span class="ruby-identifier">verbose</span> <span class="ruby-string">&quot;-&gt; GENERATE MOBILE HTML&quot;</span>
-  <span class="ruby-identifier">dirname</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">dirname</span> <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_mobile_html</span>]
-  <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">mkdir</span> <span class="ruby-identifier">dirname</span> <span class="ruby-keyword">unless</span> <span class="ruby-constant">Dir</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-identifier">dirname</span>
-
-  <span class="ruby-identifier">t</span> = <span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">config</span>, <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:html</span>], <span class="ruby-string">'mobile/index.html'</span>)).<span class="ruby-identifier">generate</span>
-  <span class="ruby-identifier">t</span> = <span class="ruby-identifier">embed_images</span>(<span class="ruby-identifier">t</span>, <span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:jquery_mobile_css_images</span>])
-
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_mobile_html</span>], <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-identifier">t</span> }
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- generate_html-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- generate_html-method -->
-
-      
-        <div id="generate_json-method" class="method-detail ">
-          <a name="method-i-generate_json"></a>
-
-          
-          <div class="method-heading">
-            <span class="method-name">generate_json</span><span
-              class="method-args">(config, db)</span>
-            <span class="method-click-advice">click to toggle source</span>
-          </div>
-          
-
-          <div class="method-description">
-            
-            
-            
-
-            
-            <div class="method-source-code" id="generate_json-source">
-<pre>
-<span class="ruby-comment"># File lib/cryptobox/output/json.rb, line 3</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_json</span>(<span class="ruby-identifier">config</span>, <span class="ruby-identifier">db</span>)
-  <span class="ruby-identifier">verbose</span> <span class="ruby-string">&quot;-&gt; GENERATE JSON&quot;</span>
-
-  <span class="ruby-identifier">result</span> = [ { <span class="ruby-string">&quot;type&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;magic&quot;</span>, <span class="ruby-string">&quot;value&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;270389&quot;</span> } ]
-
-  <span class="ruby-identifier">y</span> = <span class="ruby-constant">YAML</span><span class="ruby-operator">::</span><span class="ruby-identifier">load</span>(<span class="ruby-identifier">db</span>.<span class="ruby-identifier">plaintext</span>)
-
-  <span class="ruby-identifier">y</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">_type</span>, <span class="ruby-identifier">_vars</span><span class="ruby-operator">|</span>
-    <span class="ruby-comment"># FIXME: use path separator from File?</span>
-
-    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Wrong entry '#{_type}' format!&quot;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">_type</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^([^\s]+)\s(.+)/</span>
-    <span class="ruby-identifier">type_path</span> = <span class="ruby-node">$1</span>
-    <span class="ruby-identifier">_vars</span>[<span class="ruby-string">'name'</span>] = <span class="ruby-node">$2</span>
-
-    <span class="ruby-identifier">type</span> = <span class="ruby-identifier">type_path</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">'/'</span>)[<span class="ruby-value">0</span>]
-    <span class="ruby-identifier">path</span> = <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_include</span>], <span class="ruby-identifier">type_path</span>)
-             <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_include</span>], <span class="ruby-identifier">type_path</span>)
-           <span class="ruby-keyword">elsif</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exist?</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:include</span>], <span class="ruby-identifier">type_path</span>)
-             <span class="ruby-constant">File</span>.<span class="ruby-identifier">join</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:include</span>], <span class="ruby-identifier">type_path</span>)
-           <span class="ruby-keyword">end</span>
-
-    <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Unknown entry #{type_path}&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span> <span class="ruby-keyword">and</span> <span class="ruby-identifier">type</span> <span class="ruby-operator">!=</span> <span class="ruby-string">'login'</span>
-
-    <span class="ruby-identifier">vars</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">hash</span>, <span class="ruby-identifier">key</span><span class="ruby-operator">|</span> <span class="ruby-identifier">raise</span> <span class="ruby-node">&quot;Key #{key} is not found!&quot;</span> }
-    <span class="ruby-identifier">vars</span>.<span class="ruby-identifier">merge!</span> <span class="ruby-identifier">_vars</span>.<span class="ruby-identifier">symbolize_keys</span>
-    <span class="ruby-identifier">vars</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">vars</span>[<span class="ruby-identifier">key</span>] = <span class="ruby-identifier">value</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\n/</span>, <span class="ruby-string">'\n'</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/&quot;/</span>, <span class="ruby-string">'\&quot;'</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">vars</span>[<span class="ruby-identifier">key</span>].<span class="ruby-identifier">instance_of?</span> <span class="ruby-constant">String</span> } <span class="ruby-comment"># FIXME: do this in runtime !!!</span>
-
-    <span class="ruby-identifier">j</span> = <span class="ruby-keyword">if</span> <span class="ruby-identifier">path</span>
-          <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-constant">Template</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">config</span>, <span class="ruby-identifier">path</span>, <span class="ruby-identifier">vars</span>).<span class="ruby-identifier">generate</span>)
-        <span class="ruby-keyword">else</span>
-          <span class="ruby-comment"># we allow nil path only for login entries</span>
-          <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;WARNING! didn't find include for #{type_path}&quot;</span>
-
-          {
-            <span class="ruby-string">'type'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">'login'</span>,
-            <span class="ruby-string">'name'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">type_path</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/login\//</span>, <span class="ruby-string">''</span>),
-            <span class="ruby-string">'address'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">'http://'</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">type_path</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp">/login\//</span>, <span class="ruby-string">''</span>),
-              <span class="ruby-string">'form'</span> =<span class="ruby-operator">&gt;</span> {}
-          }
-        <span class="ruby-keyword">end</span>
-
-    <span class="ruby-identifier">j</span>[<span class="ruby-string">'type'</span>] = <span class="ruby-identifier">type</span>
-    <span class="ruby-identifier">j</span>[<span class="ruby-string">'tag'</span>] = <span class="ruby-string">'__default__'</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">j</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-string">'tag'</span>
-    <span class="ruby-identifier">j</span>[<span class="ruby-string">'visible'</span>] = <span class="ruby-keyword">true</span>
-    <span class="ruby-identifier">j</span>[<span class="ruby-string">'visible'</span>] = <span class="ruby-identifier">vars</span>[<span class="ruby-value">:visible</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">vars</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-value">:visible</span>
-
-    <span class="ruby-keyword">case</span> <span class="ruby-identifier">type</span>
-    <span class="ruby-keyword">when</span> <span class="ruby-string">'login'</span>
-      <span class="ruby-identifier">j</span>[<span class="ruby-string">'vars'</span>] = { <span class="ruby-string">'user'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">vars</span>[<span class="ruby-value">:name</span>], <span class="ruby-string">'pass'</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">vars</span>[<span class="ruby-value">:pass</span>] }
-      <span class="ruby-identifier">j</span>[<span class="ruby-string">'vars'</span>][<span class="ruby-string">'secret'</span>] = <span class="ruby-identifier">vars</span>[<span class="ruby-value">:secret</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">vars</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-value">:secret</span>
-      <span class="ruby-identifier">j</span>[<span class="ruby-string">'vars'</span>][<span class="ruby-string">'note'</span>] = <span class="ruby-identifier">vars</span>[<span class="ruby-value">:note</span>] <span class="ruby-keyword">if</span> <span class="ruby-identifier">vars</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-value">:note</span>
-    <span class="ruby-keyword">end</span>
-
-    <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">j</span>
-  <span class="ruby-keyword">end</span>
-
-  <span class="ruby-identifier">cfg</span> = { <span class="ruby-string">&quot;pbkdf2&quot;</span> =<span class="ruby-operator">&gt;</span>
-    {<span class="ruby-string">&quot;salt_len&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-constant">Db</span><span class="ruby-operator">::</span><span class="ruby-constant">PBKDF2_SALT_LEN</span>,
-      <span class="ruby-string">&quot;salt&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">db</span>.<span class="ruby-identifier">pbkdf2_salt</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\n/</span>, <span class="ruby-string">''</span>),
-      <span class="ruby-string">&quot;iterations&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">db</span>.<span class="ruby-identifier">pbkdf2_iter</span>
-    },
-    <span class="ruby-string">&quot;aes&quot;</span> =<span class="ruby-operator">&gt;</span>
-    {<span class="ruby-string">&quot;iv_len&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-constant">Db</span><span class="ruby-operator">::</span><span class="ruby-constant">AES_IV_LEN</span>,
-      <span class="ruby-string">&quot;iv&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-constant">Base64</span>.<span class="ruby-identifier">encode64</span>(<span class="ruby-identifier">db</span>.<span class="ruby-identifier">aes_iv</span>).<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/\n/</span>, <span class="ruby-string">''</span>),
-    },
-    <span class="ruby-string">&quot;ciphertext&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">db</span>.<span class="ruby-identifier">encrypt</span>(<span class="ruby-constant">JSON</span>.<span class="ruby-identifier">pretty_generate</span> <span class="ruby-identifier">result</span>)
-  }
-
-
-  <span class="ruby-identifier">cfg</span>[<span class="ruby-string">&quot;page&quot;</span>] = {}
-  <span class="ruby-constant">Cryptobox</span><span class="ruby-operator">::</span><span class="ruby-constant">I18N_PAGE</span>[<span class="ruby-identifier">config</span>[<span class="ruby-value">:ui</span>][<span class="ruby-value">:lang</span>]].<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">k</span>, <span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">cfg</span>[<span class="ruby-string">&quot;page&quot;</span>][<span class="ruby-identifier">k</span>.<span class="ruby-identifier">to_s</span>] = <span class="ruby-identifier">v</span> }
-
-  <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">:path</span>][<span class="ruby-value">:db_json</span>], <span class="ruby-string">'w'</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">write</span> <span class="ruby-constant">JSON</span>.<span class="ruby-identifier">pretty_generate</span> <span class="ruby-identifier">cfg</span> }
-<span class="ruby-keyword">end</span></pre>
-            </div><!-- generate_json-source -->
-            
-          </div>
-
-          
-
-          
-        </div><!-- generate_json-method -->
-
-      
         <div id="mkfifo-method" class="method-detail ">
           <a name="method-i-mkfifo"></a>
 
@@ -590,7 +346,7 @@
             
             <div class="method-source-code" id="mkfifo-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 12</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 8</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">mkfifo</span>(<span class="ruby-identifier">name</span>)
   <span class="ruby-identifier">puts</span> <span class="ruby-node">&quot;create fifo #{name}&quot;</span>
   <span class="ruby-constant">File</span>.<span class="ruby-identifier">unlink</span> <span class="ruby-identifier">name</span> <span class="ruby-keyword">rescue</span> <span class="ruby-keyword">nil</span>
@@ -626,7 +382,7 @@
             
             <div class="method-source-code" id="on_signal-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 72</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 69</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">on_signal</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">t1</span>, <span class="ruby-identifier">t2</span>)
   <span class="ruby-identifier">t1</span>.<span class="ruby-identifier">kill</span>
   <span class="ruby-identifier">t2</span>.<span class="ruby-identifier">kill</span>
@@ -662,7 +418,7 @@
             
             <div class="method-source-code" id="open_editor-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 19</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 15</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">open_editor</span>(<span class="ruby-identifier">editor</span>, <span class="ruby-identifier">fifo_name</span>)
   <span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;open editor&quot;</span>
 
@@ -705,7 +461,7 @@
             
             <div class="method-source-code" id="read_back-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 38</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 34</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">read_back</span>(<span class="ruby-identifier">fifo_name</span>, <span class="ruby-identifier">initial_text</span>)
   <span class="ruby-keyword">return</span> <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">do</span>
     <span class="ruby-identifier">puts</span> <span class="ruby-keyword">__LINE__</span>
@@ -749,9 +505,9 @@
             
             <div class="method-source-code" id="verbose-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox.rb, line 16</span>
+<span class="ruby-comment"># File lib/cryptobox.rb, line 18</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">verbose</span>(<span class="ruby-identifier">m</span>)
-  <span class="ruby-constant">STDERR</span>.<span class="ruby-identifier">puts</span>(<span class="ruby-identifier">m</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">$verbose</span>
+  <span class="ruby-identifier">$stderr</span>.<span class="ruby-identifier">puts</span>(<span class="ruby-identifier">m</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">$verbose</span>
 <span class="ruby-keyword">end</span></pre>
             </div><!-- verbose-source -->
             
@@ -782,7 +538,7 @@
             
             <div class="method-source-code" id="write_initial-source">
 <pre>
-<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 33</span>
+<span class="ruby-comment"># File lib/cryptobox/editor.rb, line 29</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">write_initial</span>(<span class="ruby-identifier">fifo_name</span>, <span class="ruby-identifier">text</span>)
   <span class="ruby-identifier">puts</span> <span class="ruby-string">&quot;write data&quot;</span>
   <span class="ruby-constant">File</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">fifo_name</span>, <span class="ruby-identifier">text</span>)

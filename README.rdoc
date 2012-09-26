@@ -1,14 +1,14 @@
 = Cryptobox - Passwords storage solution
 
 Author:: Stanislav Fomichev (mailto:s@fomichev.me)
-Copyright:: Copyright (c) 2012 by Stanislav Fomichev
+Copyright:: (c) 2012 by Stanislav Fomichev
 License:: MIT
 
 == Overview
 
 Cryptobox is a bunch of Ruby scripts that help you manage your
-passwords database and other sensitive data. The idea is simple: there is
-some encrypted file (<tt>private/cryptobox</tt>) where sensitive information is
+passwords and other sensitive data. The idea is simple: there is some encrypted
+file (<tt>private/cryptobox</tt>) where the sensitive information is
 stored. To edit it you use special executable (+cbedit+) which will open editor
 and let you update passwords/bookmarks/notes/etc. When the editor is
 closed, +cbedit+ will create beautiful and easy to navigate HTML page with
@@ -23,37 +23,38 @@ in the plain text and exists in the HTML page only in the encrypted form.
 
 There's no gem distribution so far, thus the only possible solution is to make
 a git clone.
-So to install cryptobox, make git clone of this repository and add
+So to install cryptobox, make a git clone of this repository and add
 <tt><path to your clone>/bin</tt> directory to the PATH environment
 variable.
 
 Please note, that the required version of Ruby is 1.9! 1.8 will not work
-because of the threading model (and who knows what other issues are).
-You can get Ruby for Windows from http://www.ruby-lang.org; for Max OS X you
-can use +brew+ to get Ruby; and on Linux system use the whatever package
-manager is installed on your system to install it.
+because of the threading model (and who knows what the other issues are).
+You can get Ruby for Windows from http://ruby-lang.org; on Max OS X you
+can use brew[http://mxcl.github.com/homebrew/] to get Ruby; and on Linux
+system use whatever package manager is installed on your system to install it.
 
 == Use
 
-* Create database (creates empty <tt>private/cryptobox</tt>)
+* Create new database (creates empty <tt>private/cryptobox</tt>):
 
 	$ cbcreate
 
 Upon database creation, PBKDB2 salt and AES IV will be generated. That
-guarantees that even two databases with equal content will be encrypted to
+guarantees that even two databases with the same content will be encrypted to
 different cipher text.
 
 * Edit your database (it will also update html page at
   <tt>private/html/cryptobox.html</tt> and at
-  <tt>private/html/m.cryptobox.html</tt>)
+  <tt>private/html/m.cryptobox.html</tt>):
 
 	$ cbedit
 
-Whenever you edit cryptobox database, the backup file (<tt>private/backup/cryptobox</tt>)
-is created with the previous version of your database. So if some unexpected
-error happens, you can always restore your previous database contents.
+Whenever you edit cryptobox database, the backup file (under
+<tt>private/backup</tt>) is created with the previous version of your database.
+So if some unexpected error happens, you can always restore your previous
+database contents.
 
-* Change password (every couple of months)
+* Change password (every couple of months):
 
 	$ cbpasswd
 
@@ -61,22 +62,21 @@ As in +cbedit+ command, backup file will be created (or updated) whenever
 you change the password.
 
 == Features
-* Secure storage of sensitive information
-* Desktop and mobile HTML pages for ease of use
-* One-click login for sites without authenticity tokens (read more below)
+* Secure storage of sensitive information;
+* Desktop and mobile HTML pages for ease of use;
+* One-click login for sites without authenticity tokens (read more below);
 * More-than-one-click login for sites with authenticity tokens (that still
-  saves you from manually copy-pasting your passwords)
+  saves you from manually copy-pasting your passwords);
 * Really small amount of code. You can get through it probably within an hour
-  or two (to ensure that your data is safe)
-* Works on every platform with modern browser (everywhere)
-* Chrome extension (planned) or browser bookmarklet to login to currently
-  displayed page
+  or two (to ensure that your data is safe);
+* Works on every platform with modern browser (everywhere);
+* Chrome extension or browser bookmarklet to login to currently displayed page.
 
 === Guts
 All information is stored in the <tt>private/cryptobox</tt> file,
 encrypted via AES[http://en.wikipedia.org/wiki/Advanced_Encryption_Standard];
-key length is 256 bits and it is derived from your master password (recommend
-way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
+key length is 128 bits (by default) and it is derived from your master password
+(recommend way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
 using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
 (consult your lawyer about whether it's considered crime in your country).
 
@@ -90,16 +90,17 @@ plain text.
 
 The steps +cbedit+ does are:
 
-* TODO: describe how it uses pipes to run editor and what it does instead on Windows
-* Reads <tt>private/cryptobox</tt> and decrypts it in memory
+* TODO: describe how it uses pipes to run editor and what it does instead on Windows;
+* Reads <tt>private/cryptobox</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
-  <tt>include/</tt> and merges it with entry's variables (username, password, etc)
-* Merges all JSON entries into one string and encrypts it with AES
+  <tt>include/</tt> and merges it with entry's variables (username, password, etc);
+* Merges all JSON entries into one string and encrypts it with AES;
 * Embeds this encrypted data into pre-baked HTML page (look at <tt>templates/html/</tt> for
-more details)
+  more details);
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
-under <tt>private/html</tt> directory (cryptobox.html - is a desktop
-version; m.cryptobox.html - is a mobile one)
+  under <tt>private/html</tt> directory (cryptobox.html - is a desktop
+  version; m.cryptobox.html - is a mobile one);
+* TODO: describe bookmarklets and chrome extension.
 
 === Form bookmarklet
 Some sites use authenticity token which they place into the HTML you get;
@@ -115,20 +116,25 @@ and press 'OK' you'll be automatically logged in (using provided authenticity
 token and your username/password).
 
 When you're adding such form to the logins storage (<tt>include/login</tt>), you
-should set token field value to +__token__+; that will lead to pop-up dialog
-box on login asking you to provide form data (you may have multiple tokens
-within forms).
+should set token field value to <tt>__token__</tt>; that will lead to a pop-up
+dialog box on login asking you to provide the form data (you may have multiple
+tokens within forms).
 
-TODO: Describe how to get this bookmark; also describe login bookmark.
+TODO: Describe how to get this bookmarklet; also describe login bookmarklet.
 
-<tt>javascript:(function(){s=document.createElement('SCRIPT');s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';document.getElementsByTagName('head')[0].appendChild(s);})();</tt>
+	javascript:(function(){s=document.createElement('SCRIPT');
+	s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';
+	document.getElementsByTagName('head')[0].appendChild(s);})();
 
 === Fill bookmarklet
 TODO: describe what and why
 
+=== Chrome extension
+TODO: add details here
+
 == Database format
 YAML format is used for database. More information with examples can be found
-at the [appropriate page](http://yaml.org).
+at the {appropriate page}[http://yaml.org].
 
 Your sensitive information is stored in the form of entries; there may be a
 number of entries, each describing particular login, bookmark, secure note or
@@ -136,35 +142,36 @@ other information.
 
 Entry has the following structure (fields in square brackets are optional):
 
-<tt>
-<entry type>  <entry name>:
-  [tag: <tag>]
-  [fisible: false]
-  <variable1>: <value1>
-  <variableN>: <valueN>
-  <multiline>: <line1>
-               <line2>
-</tt>
+  <entry type>  <entry name>:
+    [tag: <tag>]
+    [visible: false]
+    <variable1>: <value1>
+    <variableN>: <valueN>
+    <multiline>: <line1>
+                 <line2>
 
-You don't need to quote anything; just put variable name on the left side of
-colon and variable value on the right side of color without any quotes.
+You don't need to quote anything (unless you have spaces or tabs at the
+beginning or at the end of your password/username); just put variable name on
+the left side of a colon and variable value on the right side of a colon
+without any quotes.
 
 Entry type is a relative path to a file inside the <tt>include/</tt> directory.
 And the first component in this path (until the first / of end of string) will
 form a tab in the HTML page. So, for example, if you have <tt>login/google.com</tt>
 and <tt>login/yahoo.com</tt>, there will be a +login+ page (or +Logins+
-because of pre-defined translations) in the HTML document
+because of predefined translations) in the HTML document
 containing two entries. If you have several +note+ entries, they will
 be located on anther tab. Be aware that you can't have two entries with the
 same <tt>entry type</tt> and <tt>entry name</tt>!
 
 Each file in the <tt>include/</tt> directory is a JSON file which describes the
-format and layout of entry. Variables from the entry will be substituted with
-<tt><%= @vars[:name] %></tt> inside the JSON file and will form particular
+format and layout of the entry. Variables from the entry will be substituted
+with <tt><%= @vars[:NAME] %></tt> inside the JSON file and will form particular
 login/bookmark/etc. There is some special handling for the login entries,
-where it's expected to have +form+ information with
+where it's expected to have form fields information in
 <tt><%= @vars[:name] %></tt> and <tt><%= @vars[:pass] %></tt> variables.
-For the other entries, there will be probably only +text+ variable that will
+For the other entries, there will be probably only +text+ (and +mtext+ for
+mobile version if special handling required) variable that will
 somehow format other variables from the entry.
 
 Entry name has special meaning for login entry type: it should contain your
@@ -176,14 +183,14 @@ be placed close to each other on the HTML page). You don't have to
 use tag variable, it's usage is optional (and intended to help you with
 the clutter).
 
-You can use <tt>visible :false</tt> to remove some entries from the final HTML
+You can use <tt>visible: false</tt> to remove some entries from the final HTML
 page (this is handy for the entries you want to keep and be able to access at
 some point but don't want it to clutter your HTML).
 For Chrome extension +visible+ attribute controls whether login will appear
 in the unmatched section (so it will hide it from the list but will still
 allow you to use hidden logins on the sites that you know).
 
-Comments are started with # and ended at the end of the line.
+Comments are started with # and continue till the end of the line.
 
 === Is it possible to import database from other password managers?
 No, there is probably no easy way to automate it (taking into account the
@@ -206,57 +213,58 @@ I think it's pretty straightforward. You can use aforesaid +form+ bookmarklet
 on your target site. The only caveat is that it can have multiple forms on one
 page, so watch out and select the one you need (don't copy leading [ and
 trailing ], JSON data should start with { and end with }). Afterwards,
-look through the JSON and place <tt>&lg;%= @vars[:name] %&gt;</tt> and
+look through the JSON and place <tt><%= @vars[:name] %></tt> and
 <tt><%= @vars[:pass] %></tt> into appropriate
-form fields (look for other logins JSON data in <tt>include/login</tt>, it will
-become clear from the example what to do). Better yet, you can fill in the
-form in the browser with the mentioned values and run the bookmarklet;
+form fields (look for the other logins' JSON data in <tt>include/login</tt>,
+it will become clear from the example what to do). Better yet, you can fill
+in the form in the browser with the mentioned values and run the bookmarklet;
 this way, you don't need to dig into the JSON and find out were to put
 these marks, they will already be in place.
 
 == Database example
 
-<tt>
-# this is a comment
-login/dropbox.com s@fomichev.me:
-  pass: who knows
+  # this is a comment
+  login/dropbox.com s@fomichev.me:
+    pass: who knows
 
-login/gmail.com s@fomichev.me:
-  pass: really don''t know
+  login/gmail.com s@fomichev.me:
+    pass: really don''t know
 
-login/gmail.com 2s@fomichev.me:
-  pass: 2really don''t know
+  login/gmail.com 2s@fomichev.me:
+    pass: 2really don''t know
 
-identity test:
-  firstname: my name
-  passport: qwer
-	    blah blah blah
+  identity test:
+    firstname: my name
+    passport: qwer
+        blah blah blah
 
-	    blah blah
+        blah blah
 
-note test:
-  text: test
+  note test:
+    text: test
 
-note test test test:
-  text: test
-	multiline
+  note test test test:
+    text: test
+    multiline
 
-app Abc:
-  key: 123
+  app Abc:
+    key: 123
 
-app Def:
-  key: 456
+  app Def:
+    key: 456
 
-card bank name:
-  cardholder: Jonh Smith
-  number: 1234 5678 9012 3456
-  pin: 1234
-  cvv: 123
+  card bank name:
+    cardholder: Jonh Smith
+    number: 1234 5678 9012 3456
+    pin: 1234
+    cvv: 123
 
-bookmark Google:
-  url: http://google.com
-  comment: Google search
-</tt>
+  bookmark Google:
+    url: http://google.com
+    comment: Google search
+
+TODO: make more meaningful example and comment it here or directly in the
+example
 
 == Configuration
 You can configure cryptobox via configuration file called <tt>.cryptoboxrc</tt>.
@@ -269,35 +277,31 @@ the tools via <tt>-c</tt> command line option.
 Configuration file is simple YAML file with the following
 possible variables:
 
-<tt>
-path:
-  db: <path to cryptobox database directory>
-  db_bookmarklet_login: <where to store login bookmarklet>
-  db_bookmarklet_form: <where to store form bookmarklet>
+	path:
+	  root: <path to cryptobox database directory>
 
-ui:
-  editor: <full path to your editor>
-  lang: <select language; currently supported are en and ru>
-
-security:
-  lock_timeout_minutes: <web site lock timeout in minutes>
-  default_password_length: <default password length in generate dialog>
-</tt>
+	ui:
+	  editor: <full path to your editor>
+	  lang: <select language; currently supported are en and ru>
+	  lock_timeout_minutes: <web site lock timeout in minutes>
+	  default_password_length: <default password length in generate dialog>
 
 TODO: describe all possible configuration options!
+TODO: note that when specifying editor it shout be run in foreground (don't
+fork), like vim -f
 
-All the options are optional. You can dig default values in
+All the options are optional. You can dig the default values in
 the <tt>lib/cryptobox/config.rb</tt> file.
 
 == Embed include into database
 
-cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
+	cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
 
-put 'include' key in your database, e.g:
+Put 'include' key in your database, e.g:
 
-include:
-  'login/xyz.com': { here goes JSON }
-  'login/qwe.com': { here goes another JSON }
+	include:
+	  'login/xyz.com': { here goes JSON }
+	  'login/qwe.com': { here goes another JSON }
 
 == Used components
 
@@ -329,38 +333,37 @@ and additionally:
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
 
-	templates/chrome/icon.png
+  templates/chrome/icon.png
 
 === JavaScript
-Some minimized version are obtained via http://closure-compiler.appspot.com/home
 
 * {CryptoJS 3.0.2}[https://code.google.com/p/crypto-js/] - New BSD License
 
-	templates/extern/CryptoJS
+  templates/extern/CryptoJS
 
 * {Random Seed 2.0}[http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html] - BSD
 
-	templates/extern/seedrandom
+  templates/extern/seedrandom
 
 * {jQuery 1.7.2}[http://jquery.com] - MIT
 
-	templates/extern/jquery
+  templates/extern/jquery
 
 * {Twitter Bootstrap 2.1.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
 
-	templates/extern/bootstrap
+  templates/extern/bootstrap
 
 * {Handlebars 1.0.rc.1}[https://github.com/wycats/handlebars.js] - MIT
 
-	templates/extern/handlebars
+  templates/extern/handlebars
 
 * {jQuery Mobile 1.1.0}[http://jquerymobile.com] - MIT
 
-	templates/extern/jquery-mobile
+  templates/extern/jquery-mobile
 
 * {Clippy 7329b72360}[https://github.com/mojombo/clippy] - MIT
 
-	templates/extern/clippy
+  templates/extern/clippy
 
 == Decrypt data without cryptobox
 Even if you don't have cryptobox available, you may still fairly easy
@@ -378,13 +381,12 @@ With the following contents of +cryptobox+ file:
 	pbkdf2_iter: 2000
 	aes_iv: K8llJdtkPBArV+LDzVd4/w==
 	aes_keylen: 256
-	hmac: NRqN9IbTNR/LM+eDfCkbOEEpz7Y=
 	format_version: 5
 	version: '0.7'
 	timestamp: '2012-09-24T09:48:26+04:00'
 	ciphertext: yP59as3mhtiQrzlr6rmWvn9RDF8Xgx+2hlcbHYD/6gIjWx0VvP0NwtCXxAgj4TqTzcz26BgtPdZHxw6Ydso5Tg==
 
-Now, let's try to decrypt it (instruction provided for Linux)!
+Now, let's try to decrypt it (instructions are provided for Linux)!
 
 Before you proceed, I want to warn you that the following commands are not
 safe! You will pass your AES key to the +openssl+ utility via command line
@@ -476,6 +478,8 @@ TODO: describe here what libs used and where
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
 * set umask on unix when creating database
 * try to use 10k iterations for pbkdf2
+* don't use minimized version, add normal ones (for debugging); we anyway have
+  YUI step which minimizes them
 
 === Bookmarklets
 * cleanup fill/form bookmarklets

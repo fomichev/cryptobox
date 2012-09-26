@@ -11,7 +11,7 @@ module Cryptobox
     FORMAT_VERSION = 5
     PBKDF2_SALT_LEN = 8
     PBKDF2_ITERATIONS = 2000
-    AES_KEY_LEN = 256
+    AES_KEY_LEN = 128
 
     attr_accessor :plaintext
     attr_reader :pbkdf2_salt, :pbkdf2_iter, :aes_iv, :aes_keylen
