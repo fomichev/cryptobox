@@ -29,7 +29,7 @@ module Cryptobox
 
     # Create empty database, ask user to confirm if it already exists
     def create
-      password2 = ask_password 'Confirm password: '
+      password2 = ask_password 'Confirm password:'
       raise "Passwords don't match!" if @password != password2
 
       dirname = File.dirname @db_path
@@ -83,8 +83,8 @@ module Cryptobox
 
     # Ask user for password and generate new encryption key
     def change_password
-      password = ask_password 'New password: '
-      password2 = ask_password 'Confirm password: '
+      password = ask_password 'New password:'
+      password2 = ask_password 'Confirm password:'
       raise "Passwords don't match!" if password != password2
 
       @password = password
@@ -122,7 +122,7 @@ module Cryptobox
     end
 
     # Ask user password and return it
-    def ask_password(prompt='Password: ')
+    def ask_password(prompt='Password:')
       print prompt
       $stdout.flush
 

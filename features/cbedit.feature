@@ -14,7 +14,7 @@ Feature: user edits database
 		And the number of backups should be 1
 		And the stdout should contain exactly:
 			"""
-			Password: 
+			Password:
 			login/dropbox.com user:
 			  pass: pass
 

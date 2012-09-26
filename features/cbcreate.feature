@@ -15,8 +15,8 @@ Feature: User creates new database
 		And the database can be unlocked with "hi"
 		And the stdout should contain exactly:
 			"""
-			Password: 
-			Confirm password: 
+			Password:
+			Confirm password:
 
 			"""
 
@@ -33,8 +33,8 @@ Feature: User creates new database
 		And the exit status should be 1
 		And the stdout should contain exactly:
 			"""
-			Password: 
-			Confirm password: 
+			Password:
+			Confirm password:
 
 			"""
 		And the stderr should contain exactly:
@@ -62,8 +62,8 @@ Feature: User creates new database
 		And the stdout should contain exactly:
 			"""
 			Database already exists, do you want to overwrite it? [y/n]: 
-			Password: 
-			Confirm password: 
+			Password:
+			Confirm password:
 
 			"""
 

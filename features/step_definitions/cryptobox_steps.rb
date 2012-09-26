@@ -36,10 +36,9 @@ When /^I enter incorrect password$/ do
   }
 end
 
-When /^the number of backups should be (\d+)$/ do |expected_number|
+When /^the number of backups should be (#{NUMBER})$/ do |expected_number|
   backup_dir = File.join(@dirs, 'private', 'backup')
 
-  expected_number = expected_number.to_i
   Dir.exist?(backup_dir).should be_true if expected_number > 0
 
   if Dir.exist?(backup_dir)
@@ -50,6 +49,10 @@ end
 
 Then /^the database can be unlocked with "(.*?)"$/ do |pwd|
   Dir.chdir(@dirs[0]) do
+
+#    status = execute('cbedit --no-edit --no-update', [ pwd ])
+#    status.should == 0
+
     i, o, e, thr = Open3.popen3('ruby ../../bin/cbedit --no-edit --no-update')
     i.puts pwd
     o.read
