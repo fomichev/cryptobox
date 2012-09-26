@@ -484,6 +484,7 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Desktop HTML
+* delete magic type from JSON because converting to utf8 is enough check for decryption
 * Fix black screen when auto locked
 * Fix when number of entries is 0
 * add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/

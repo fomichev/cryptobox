@@ -16,5 +16,5 @@ module Cryptobox
 end
 
 def verbose(m)
-  STDERR.puts(m) if $verbose
+  $stderr.puts(m) if $verbose
 end

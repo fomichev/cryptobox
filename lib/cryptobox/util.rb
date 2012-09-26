@@ -14,7 +14,7 @@ module Cryptobox
   def self.yn(prompt)
     loop do
       print "#{prompt} [y/n]: "
-      STDOUT.flush
+      $stdout.flush
       case gets.strip.downcase
       when 'y', 'yes'
         puts

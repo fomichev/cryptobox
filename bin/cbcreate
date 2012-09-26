@@ -42,7 +42,8 @@ db = Cryptobox::Db.new config[:path][:cryptobox],
 begin
 db.create
 rescue => error
-  puts error.message
+  $stdout.flush
+  $stderr.puts error.message
   exit 1
 end
 

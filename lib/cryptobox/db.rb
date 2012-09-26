@@ -35,7 +35,10 @@ module Cryptobox
       dirname = File.dirname @db_path
       Dir.mkdir dirname unless Dir.exist? dirname
 
-      initialize_cipher_params
+      @aes_keylen = AES_KEY_LEN
+      @pbkdf2_iter = PBKDF2_ITERATIONS
+
+      generate_cipher_params
       derive_key
     end
 
@@ -60,7 +63,7 @@ module Cryptobox
     def save
       backup
 
-      initialize_cipher_params
+      generate_cipher_params
       derive_key
 
       @ciphertext = encrypt @plaintext
@@ -113,25 +116,23 @@ module Cryptobox
     private
 
     # Generate default cipher parameters (salf, iv, etc)
-    def initialize_cipher_params
-      @aes_keylen = AES_KEY_LEN unless @aes_keylen
+    def generate_cipher_params
       @aes_iv = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC).random_iv
-      @pbkdf2_iter = PBKDF2_ITERATIONS unless @pbkdf2_iter
       @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
     end
 
     # Ask user password and return it
     def ask_password(prompt='Password: ')
       print prompt
-      STDOUT.flush
+      $stdout.flush
 
-      if STDIN.tty?
-        password = STDIN.noecho(&:gets)
+      if $stdin.tty?
+        password = $stdin.noecho(&:gets)
       else
-        password = STDIN.gets
+        password = $stdin.gets
       end
       puts
-      STDOUT.flush
+      $stdout.flush
 
       return password.sub(/\n$/, '')
     end

@@ -51,13 +51,13 @@ db = Cryptobox::Db.new config[:path][:cryptobox],
 db.load
 
 if options[:stdout]
-  STDOUT.puts db.plaintext
-  exit 0
+  $stdout.puts db.plaintext
+  exit
 end
 
 if options[:edit]
   new_plaintext = edit config[:ui][:editor], db.plaintext
-  exit(0) if new_plaintext == db.plaintext
+  exit if new_plaintext == db.plaintext
 
   db.plaintext = new_plaintext
   db.save

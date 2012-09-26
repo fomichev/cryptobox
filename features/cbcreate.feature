@@ -10,8 +10,9 @@ Feature: User creates new database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I enter correct password
 		And I enter correct password
-		Then the exit status should be 0
-		And a file named "private/cryptobox" should exist
+		Then a file named "private/cryptobox" should exist
+		And the exit status should be 0
+		And the database can be unlocked with "hi"
 		And the stdout should contain exactly:
 			"""
 			Password: 
@@ -28,12 +29,16 @@ Feature: User creates new database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I enter correct password
 		And I enter incorrect password
-		Then the exit status should be 1
-		And a file named "private/cryptobox" should not exist
-		And the stdout should contain:
+		Then a file named "private/cryptobox" should not exist
+		And the exit status should be 1
+		And the stdout should contain exactly:
 			"""
 			Password: 
 			Confirm password: 
+
+			"""
+		And the stderr should contain exactly:
+			"""
 			Passwords don't match!
 
 			"""
@@ -45,19 +50,17 @@ Feature: User creates new database
 		database and the old one backed up.
 
 		Given empty database
+		And the database can be unlocked with "hi"
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I type "y"
 		And I type "password"
 		And I type "password"
-		# todo:
-		# check that backup exist - And number of backups is 1
-		# check that the new database is actually new:
-		#   try to `cbedit --no-edit --no-update with old password` should fail
-		#   try to `cbedit ^^ with new password` should succeed
-		Then the stdout should contain:
+		Then the exit status should be 0
+		And the number of backups is 1
+		And the database can be unlocked with "password"
+		And the database can not be unlocked with "hi"
+		And the stdout should contain exactly:
 			"""
-			Password: 
-			Confirm password: 
 			Database already exists, do you want to overwrite it? [y/n]: 
 			Password: 
 			Confirm password: 
@@ -73,13 +76,11 @@ Feature: User creates new database
 		Given empty database
 		When I run `ruby ../../bin/cbcreate` interactively
 		And I type "n"
-		# todo:
-		# check that backup does not exist - And number of backups is 0
-		# check that the new database has not changed
-		Then the stdout should contain:
+		And the number of backups is 0
+		Then the exit status should be 0
+		And the database can be unlocked with "hi"
+		And the stdout should contain exactly:
 			"""
-			Password: 
-			Confirm password: 
 			Database already exists, do you want to overwrite it? [y/n]: 
 
 			"""
@@ -91,7 +92,8 @@ Feature: User creates new database
 		Given empty database
 		When I run `ruby ../../bin/cbedit --stdout` interactively
 		And I enter correct password
-		Then the stdout should contain:
+		Then the exit status should be 0
+		And the stdout should contain:
 			"""
 			# Lines started with # are comments
 			"""
