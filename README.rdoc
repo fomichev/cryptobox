@@ -458,16 +458,21 @@ TODO: describe here what libs used and where
   - cryptobox.json
   - cbserve and how it talks to extension
   - how to integrate include into yaml
+  - in vim to read database :r !cbedit --stdout (enter password and press enter)
+           to save database :w !cbedit --stdin
 * revise README.rdoc and add other missing information
 * mention somewhere: supported fields for login entry are: user, pass, secret, note
 * add comments to include/ JSON
 * new pbkdf2 salt and aes iv is generated whenever database is saved
 
+=== Tests
+* Apparently tests remove `private/' directory, find where
+* Cucumber/Aruba tests
+* ? Add unit tests
+
 === Ruby
 * create fifo somewhere in user's home directory with random name
 * add RDoc and GEM support
-* Cucumber/Aruba tests
-* ? Add unit tests
 * ? .html -> .rhtml
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
@@ -487,6 +492,8 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Desktop HTML
+* when click on site address in `details', open new window (don't go in current window)
+* decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * delete magic type from JSON because converting to utf8 is enough check for decryption
 * Fix black screen when auto locked
 * Fix when number of entries is 0

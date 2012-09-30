@@ -15,7 +15,9 @@ Rake::RDocTask.new do |rd|
 end
 
 Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format progress"
+#  t.cucumber_opts = "features --format progress"
+  t.cucumber_opts = "features/cbcreate.feature --format progress"
+#  t.cucumber_opts = "features/desktop.feature --format progress"
 #  t.cucumber_opts = "features --format pretty"
   t.fork = false
 end

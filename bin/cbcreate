@@ -9,13 +9,18 @@ require 'optparse'
 require 'cryptobox'
 
 $verbose = false
-options = {}
+options = {
+  interactive: true
+}
 
 OptionParser.new do |opts|
   opts.banner = "Usage: #{File.basename($PROGRAM_NAME)} [options]"
 
   opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
     $verbose = v
+  end
+  opts.on("--[no-]interactive", "Open /dev/tty to read password") do |v|
+    options[:interactive] = v
   end
   opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
@@ -38,9 +43,10 @@ end
 
 db = Cryptobox::Db.new config[:path][:cryptobox],
                        config[:path][:backup],
-                       config[:cryptobox][:keep_backups]
+                       config[:cryptobox][:keep_backups],
+                       Cryptobox::ask_password('Password:', options[:interactive])
 begin
-db.create
+db.create Cryptobox::ask_password('Confirm password:', options[:interactive])
 rescue => error
   $stdout.flush
   $stderr.puts error.message

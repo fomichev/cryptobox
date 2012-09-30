@@ -25,6 +25,27 @@ module Cryptobox
       end
     end
   end
+
+  # Ask user password and return it
+  def self.ask_password(prompt, interactive)
+    i, o = $stdin, $stdout
+    i = o = open('/dev/tty', 'w+') if interactive
+
+    o.print prompt
+    o.flush
+
+    if i.tty?
+      password = i.noecho(&:gets)
+    else
+      password = i.gets
+    end
+    o.puts
+    o.flush
+
+    i.close if interactive
+
+    return password.sub(/\n$/, '')
+  end
 end
 
 class Hash

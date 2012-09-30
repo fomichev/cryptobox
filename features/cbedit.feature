@@ -8,7 +8,7 @@ Feature: user edits database
 			login/dropbox.com user:
 			  pass: pass
 			"""
-		And I run `ruby ../../bin/cbedit --stdout` interactively
+		And I run `ruby ../../bin/cbedit --stdout --no-interactive` interactively
 		And I enter correct password
 		Then the exit status should be 0
 		And the number of backups should be 1
@@ -27,6 +27,6 @@ Feature: user edits database
 #			login/dropbox.com user:
 #			  pass: pass
 #			"""
-#		And I run `ruby ../../bin/cbedit --no-edit` interactively
+#		And I run `ruby ../../bin/cbedit --no-edit --no-interactive` interactively
 #		And I enter correct password
 #		Then the exit status should be 0

@@ -20,16 +20,15 @@ module Cryptobox
 
     # @db_path - path to cryptobox database
     # @backup_path - use given path as backup directory
-    def initialize(db_path, backup_path, keep_backups)
+    def initialize(db_path, backup_path, keep_backups, password)
       @db_path = db_path
       @backup_path = backup_path
       @keep_backups = keep_backups
-      @password = ask_password
+      @password = password
     end
 
     # Create empty database, ask user to confirm if it already exists
-    def create
-      password2 = ask_password 'Confirm password:'
+    def create(password2)
       raise "Passwords don't match!" if @password != password2
 
       dirname = File.dirname @db_path
@@ -82,9 +81,7 @@ module Cryptobox
     end
 
     # Ask user for password and generate new encryption key
-    def change_password
-      password = ask_password 'New password:'
-      password2 = ask_password 'Confirm password:'
+    def change_password(password, password2)
       raise "Passwords don't match!" if password != password2
 
       @password = password
@@ -119,22 +116,6 @@ module Cryptobox
     def generate_cipher_params
       @aes_iv = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC).random_iv
       @pbkdf2_salt = SecureRandom.random_bytes PBKDF2_SALT_LEN
-    end
-
-    # Ask user password and return it
-    def ask_password(prompt='Password:')
-      print prompt
-      $stdout.flush
-
-      if $stdin.tty?
-        password = $stdin.noecho(&:gets)
-      else
-        password = $stdin.gets
-      end
-      puts
-      $stdout.flush
-
-      return password.sub(/\n$/, '')
     end
 
     # Convert given argument to base64 encoding and strip newlines

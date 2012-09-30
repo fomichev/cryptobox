@@ -14,7 +14,8 @@ options = {
   update: true,
   edit: true,
   stdout: false,
-  stdin: false
+  stdin: false,
+  interactive: true
 }
 
 OptionParser.new do |opts|
@@ -35,6 +36,9 @@ OptionParser.new do |opts|
   opts.on("--stdin", "Read decrypted data from standard input") do |v|
     options[:stdin] = v
   end
+  opts.on("--[no-]interactive", "Open /dev/tty to read password") do |v|
+    options[:interactive] = v
+  end
   opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
   end
@@ -51,7 +55,8 @@ end.parse!
 config = Cryptobox::Config.new options[:config]
 db = Cryptobox::Db.new config[:path][:cryptobox],
                        config[:path][:backup],
-                       config[:cryptobox][:keep_backups]
+                       config[:cryptobox][:keep_backups],
+                       Cryptobox::ask_password('Password:', options[:interactive])
 db.load
 
 if options[:stdout]

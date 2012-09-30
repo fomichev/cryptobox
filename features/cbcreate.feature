@@ -7,7 +7,7 @@ Feature: User creates new database
 		empty database.
 
 		Given no database
-		When I run `ruby ../../bin/cbcreate` interactively
+		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
 		And I enter correct password
 		And I enter correct password
 		Then a file named "private/cryptobox" should exist
@@ -26,7 +26,7 @@ Feature: User creates new database
 		created.
 
 		Given no database
-		When I run `ruby ../../bin/cbcreate` interactively
+		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
 		And I enter correct password
 		And I enter incorrect password
 		Then a file named "private/cryptobox" should not exist
@@ -51,7 +51,7 @@ Feature: User creates new database
 
 		Given empty database
 		And the database can be unlocked with "hi"
-		When I run `ruby ../../bin/cbcreate` interactively
+		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
 		And I type "y"
 		And I type "password"
 		And I type "password"
@@ -74,7 +74,7 @@ Feature: User creates new database
 		not see database update and new backup.
 
 		Given empty database
-		When I run `ruby ../../bin/cbcreate` interactively
+		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
 		And I type "n"
 		And the number of backups should be 0
 		Then the exit status should be 0
@@ -90,7 +90,7 @@ Feature: User creates new database
 		comments", check it.
 
 		Given empty database
-		When I run `ruby ../../bin/cbedit --stdout` interactively
+		When I run `ruby ../../bin/cbedit --stdout --no-interactive` interactively
 		And I enter correct password
 		Then the exit status should be 0
 		And the stdout should contain:
