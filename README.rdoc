@@ -501,7 +501,6 @@ TODO: describe here what libs used and where
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
   Also, add --no-pipe cbedit argument to be able to fallback to plain file as
   exchange method (also add smart wiping of this file)
-* create fifo somewhere in user's home directory with random name
 * add RDoc and GEM support
 * add some validation for DB and include/
 * add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)

@@ -1,15 +1,12 @@
 require 'rbconfig'
 
 $is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
-$fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yml'
-$initial_text = ''
 $text = ''
 
 def mkfifo(name)
   puts "create fifo #{name}"
   File.unlink name rescue nil
   system "mkfifo -m 600 #{name}"
-  #	system "mkfifo --mode=0600 #{name}"
 end
 
 def open_editor(editor, fifo_name)
@@ -63,48 +60,69 @@ end
 
 def cleanup(name)
   File.unlink name
-  File.unlink name + '.lnk' if $is_windows
 end
 
 def on_signal(name, t1, t2)
   t1.kill
-  t2.kill
+  t2.kill if t2
   cleanup name
   exit 1
 end
 
-def edit(editor, i_t)
-  $initial_text = i_t
+def edit_fifo(fifo_name, editor, initial_text)
+  mkfifo fifo_name
+  editor_thread = open_editor editor, fifo_name
+  write_initial fifo_name, initial_text
+  readback_thread = read_back fifo_name, initial_text
 
-  puts __LINE__
-  mkfifo $fifo_name
-  puts __LINE__
-  editor_thread = open_editor editor, $fifo_name
-  puts __LINE__
-  write_initial $fifo_name, $initial_text
-  puts __LINE__
-  readback_thread = read_back $fifo_name, $initial_text
-  puts __LINE__
-
-  trap("INT") { on_signal $fifo_name, editor_thread, readback_thread }
-  trap("ABRT") { on_signal $fifo_name, editor_thread, readback_thread }
-  trap("QUIT") { on_signal $fifo_name, editor_thread, readback_thread } unless $is_windows
+  trap("INT") { on_signal fifo_name, editor_thread, readback_thread }
+  trap("ABRT") { on_signal fifo_name, editor_thread, readback_thread }
+  trap("QUIT") { on_signal fifo_name, editor_thread, readback_thread } unless $is_windows
 
   # wait for editor
-  puts __LINE__
   editor_thread.join
   readback_thread.join 1 # 1 second should be enough to read from fifo
   readback_thread.kill
 
-  puts __LINE__
-  # remove fifo
-  cleanup $fifo_name
-  puts __LINE__
+  cleanup fifo_name
 
-  unless $text.empty?
-    result = done $initial_text, $text
+  $text
+end
+
+def edit_file(fifo_name, editor, initial_text)
+  File.open(fifo_name, 'w') { |f| f.write initial_text }
+
+  editor_thread = open_editor editor, fifo_name
+
+  trap("INT") { on_signal fifo_name, editor_thread, nil }
+  trap("ABRT") { on_signal fifo_name, editor_thread, nil }
+  trap("QUIT") { on_signal fifo_name, editor_thread, nil } unless $is_windows
+
+  editor_thread.join
+
+  text = File.read(fifo_name)
+  # TODO: rewrite file data with random pattern
+  cleanup fifo_name
+
+  text
+end
+
+def edit(home, editor, initial_text)
+  fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yml'
+  text = nil
+
+  Dir.chdir(home) do
+    if $is_windows
+      text = edit_file(fifo_name, editor, initial_text)
+    else
+      text = edit_fifo(fifo_name, editor, initial_text)
+    end
   end
 
-  return $initial_text if result == nil
-  return $text
+  unless text.empty?
+    result = done initial_text, text
+  end
+
+  return initial_text if result == nil
+  return text
 end

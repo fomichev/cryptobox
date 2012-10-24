@@ -32,9 +32,11 @@ module Cryptobox
 
       if RUBY_PLATFORM =~ /(win|w)32$/
         set_value user_config, :ui, :editor, 'gvim -n -f'
+        set_value user_config, :path, :home, "#{ENV['HOMEDRIVE']}#{ENV['HOMEPATH']}"
       # else if on mac => use mvim
       else
         set_value user_config, :ui, :editor, 'vim -n -f'
+        set_value user_config, :path, :home, Dir.home
       end
 
 

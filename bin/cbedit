@@ -68,7 +68,7 @@ if options[:edit]
   if options[:stdin]
     db.plaintext = $stdin.read
   else
-    new_plaintext = edit config[:ui][:editor], db.plaintext
+    new_plaintext = edit config[:path][:home], config[:ui][:editor], db.plaintext
     exit if new_plaintext == db.plaintext
 
     db.plaintext = new_plaintext
