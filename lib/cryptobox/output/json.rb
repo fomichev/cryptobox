@@ -11,23 +11,8 @@ class JsonOutput < Output
     target = File.join @config[:path][:private], 'cryptobox.json'
     result = [ { "type" => "magic", "value" => "270389" } ]
 
-    y = YAML::load(@db.plaintext)
-
-    y.each do |_type, _vars|
-      next if _type == 'include'
-
-      raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/
-        type_path = $1
-      _vars['name'] = $2
-
-      # FIXME: use path separator from File?
-      type = type_path.split('/')[0]
-
-      vars = Hash.new {|hash, key| raise "Key #{key} is not found!" }
-      vars.merge! _vars.symbolize_keys
-      vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String } # FIXME: do this in runtime !!!
-
-      j = read_include(y, vars, type_path)
+    @db.each do |vars, includes|
+      j = read_include(includes, vars, vars[:type_path])
       if j == nil
         # we allow nil path only for login entries
         puts "WARNING! didn't find include for #{type_path}"
@@ -40,13 +25,13 @@ class JsonOutput < Output
         }
       end
 
-      j['type'] = type
+      j['type'] = vars[:type]
       j['tag'] = ''
       j['tag'] = vars[:tag] if vars.has_key? :tag
       j['visible'] = true
       j['visible'] = vars[:visible] if vars.has_key? :visible
 
-      case type
+      case vars[:type]
       when 'login'
         j['form']['vars'] = { 'user' => vars[:name], 'pass' => vars[:pass] }
         j['form']['vars']['secret'] = vars[:secret] if vars.has_key? :secret
@@ -54,7 +39,7 @@ class JsonOutput < Output
       end
 
       result << j
-    end if y
+    end
 
     cfg = { "pbkdf2" =>
       {
@@ -70,7 +55,6 @@ class JsonOutput < Output
       "lock_timeout_minutes" => @config[:ui][:lock_timeout_minutes]
     }
 
-
     cfg["page"] = {}
     Cryptobox::I18N_PAGE[@config[:ui][:lang]].each {|k, v| cfg["page"][k.to_s] = v }
 
@@ -78,9 +62,9 @@ class JsonOutput < Output
   end
 
   private
-  def read_include(y, vars, type_path)
-    if y.has_key? 'include' and y['include'].has_key? type_path
-      return JSON.parse(Template.new(@config, y['include'][type_path], vars).generate)
+  def read_include(includes, vars, type_path)
+    if includes.has_key? type_path
+      return JSON.parse(Template.new(@config, includes[type_path], vars).generate)
     end
 
     type = type_path.split('/')[0]

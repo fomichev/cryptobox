@@ -142,13 +142,23 @@ other information.
 
 Entry has the following structure (fields in square brackets are optional):
 
-  <entry type>  <entry name>:
-    [tag: <tag>]
-    [visible: false]
-    <variable1>: <value1>
-    <variableN>: <valueN>
-    <multiline>: <line1>
-                 <line2>
+	<entry type>:
+	  - <entry name>:
+	      [tag: <tag>]
+	      [visible: false]
+	      <variable1>: <value1>
+	      <variableN>: <valueN>
+	      <multiline>: <line1>
+
+	                   <line2>
+	  - <another entry with different name but the same type>:
+	      [tag: <tag>]
+	      [visible: false]
+	      <variable1>: <value1>
+	      <variableN>: <valueN>
+	      <multiline>: <line1>
+
+	                   <line2>
 
 You don't need to quote anything (unless you have spaces or tabs at the
 beginning or at the end of your password/username); just put variable name on
@@ -223,45 +233,53 @@ these marks, they will already be in place.
 
 == Database example
 
-  # this is a comment
-  login/dropbox.com s@fomichev.me:
-    pass: who knows
+	# this is a comment
+	login/dropbox.com:
+	  - s@fomichev.me:
+	      pass: who knows
 
-  login/gmail.com s@fomichev.me:
-    pass: really don''t know
+	login/gmail.com:
+	  - s@fomichev.me:
+	      pass: really don''t know
 
-  login/gmail.com 2s@fomichev.me:
-    pass: 2really don''t know
+	  - 2s@fomichev.me:
+	      pass: 2really don''t know
 
-  identity test:
-    firstname: my name
-    passport: qwer
-        blah blah blah
+	identity:
+	  - test:
+	      firstname: my name
+	      passport: qwer
+	                blah blah blah
 
-        blah blah
+	                blah blah
 
-  note test:
-    text: test
+	note:
+	  - test:
+	      text: test
+	  - test test test:
+	      text: test
+	            multiline
 
-  note test test test:
-    text: test
-    multiline
+	app:
+	  - Abc:
+	      key: 123
+	  - Def:
+	      key: 456
 
-  app Abc:
-    key: 123
+	card:
+	  - CryptoBank:
+	      cardholder: Jonh Smith
+	      number: 1234 5678 9012 3456
+	      pin: 1234
+	      cvv: 123
 
-  app Def:
-    key: 456
-
-  card bank name:
-    cardholder: Jonh Smith
-    number: 1234 5678 9012 3456
-    pin: 1234
-    cvv: 123
-
-  bookmark Google:
-    url: http://google.com
-    comment: Google search
+	bookmark:
+	  - Google:
+	      url: http://google.com
+	      comment: Google search
+	  - Yahoo:
+	      url: http://yahoo.com
+	      comment: Yahoo search
 
 TODO: make more meaningful example and comment it here or directly in the
 example
@@ -472,7 +490,6 @@ TODO: describe here what libs used and where
 * ? Add unit tests
 
 === Ruby
-* use Db.each in JSON generator
 * because we can't use pipe on windows, create plain file and use it for communication;
   afterwards write over with random data several times
   http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
@@ -496,12 +513,12 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Desktop HTML
+* delete magic type from JSON because converting to utf8 is enough check for decryption
 * Fix black screen (from dialog) when auto locked
 * Fix when number of entries is 0
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
 * when click on site address in `details', open new window (don't go in current window)
 * decouple bootstrap CSS settings from HTML (create additional meaningful containers)
-* delete magic type from JSON because converting to utf8 is enough check for decryption
 * add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
 * ? Use icons http://fortawesome.github.com/Font-Awesome/

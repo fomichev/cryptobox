@@ -114,6 +114,8 @@ module Cryptobox
     def each
       y = YAML::load(plaintext)
 
+      includes = y.has_key?('include') ? y['include'] : {}
+
       y.each do |_type, _vars|
         next if _type == 'include'
 
@@ -131,7 +133,7 @@ module Cryptobox
         vars.merge! _vars.symbolize_keys
         vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String } # FIXME: do this in runtime !!!
 
-        yield vars
+        yield vars, includes
       end
     end
 

@@ -55,7 +55,7 @@ db = Cryptobox::Db.new config[:path][:cryptobox],
 db.load
 
 entries = []
-db.each do |vars|
+db.each do |vars, _|
   add = true
 
   if options[:filter].size != 0

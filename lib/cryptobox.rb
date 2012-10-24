@@ -12,7 +12,6 @@ require 'cryptobox/output/chrome'
 
 module Cryptobox
   VERSION = "0.7"
-
 end
 
 def verbose(m)
