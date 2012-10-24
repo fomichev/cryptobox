@@ -140,6 +140,8 @@ $(function() {
 	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
 		try {
+			$("#div-alert").fadeOut();
+
 			var data = cryptobox.ui.init($("#input-password").val());
 			cryptobox.bootstrap.render('unlocked', { page: data });
 			$('div.tab-pane:first').addClass('in').addClass('active');
@@ -161,7 +163,8 @@ $(function() {
 				cryptobox.main.detailsClick(el);
 			});
 		} catch(e) {
-			alert("<%= @text[:incorrect_password] %> " + e);
+			$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
+			$("#div-alert").fadeIn();
 			return;
 		}
 	});

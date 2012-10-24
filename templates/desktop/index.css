@@ -12,3 +12,8 @@
 #div-locked {
 	text-align: center;
 }
+
+#div-alert {
+	margin-top: 10px;
+	display: none;
+}

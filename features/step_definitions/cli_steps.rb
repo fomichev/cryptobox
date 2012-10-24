@@ -1,8 +1,6 @@
 require 'fileutils'
 require 'open3'
 
-require 'aruba'
-
 include CryptoboxWorld
 
 Given /^no database$/ do
@@ -21,6 +19,9 @@ Given /^empty database$/ do
 
     File.exist?(DB_FILE).should be_true
   end
+end
+
+Given /^default database$/ do
 end
 
 When /^I enter correct password$/ do
