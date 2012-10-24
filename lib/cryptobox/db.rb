@@ -8,7 +8,7 @@ require 'io/console'
 
 module Cryptobox
   class Db
-    FORMAT_VERSION = 5
+    FORMAT_VERSION = 6
     PBKDF2_SALT_LEN = 8
     PBKDF2_ITERATIONS = 2000
     AES_KEY_LEN = 128
@@ -116,24 +116,30 @@ module Cryptobox
 
       includes = y.has_key?('include') ? y['include'] : {}
 
-      y.each do |_type, _vars|
-        next if _type == 'include'
+      y.each do |type_path, entries|
+        next if type_path == 'include'
 
-        raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/
+#        type = type_path.split(File::PATH_SEPARATOR)[0]
+        type = type_path.split("/")[0]
 
-        type_path = $1
-        # FIXME: use path separator from File?
-        type = type_path.split('/')[0]
+        entries.each do |entry|
+          raise "Wrong number!!!" if entry.keys.size != 1
 
-        _vars['name'] = $2
-        _vars['type_path'] = type_path
-        _vars['type'] = type
+          name = entry.keys[0]
 
-        vars = Hash.new {|hash, key| raise "Key #{key} is not found!" }
-        vars.merge! _vars.symbolize_keys
-        vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String } # FIXME: do this in runtime !!!
+          vars = Hash.new {|hash, key| raise "Key #{key} is not found!" }
 
-        yield vars, includes
+          vars[:name] = name
+          vars[:type_path] = type_path
+          vars[:type] = type
+
+          vars.merge! entry[name].symbolize_keys
+
+          # FIXME: do this in runtime !!!
+          vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String }
+
+          yield vars, includes
+        end
       end
     end
 

@@ -281,6 +281,9 @@ these marks, they will already be in place.
 	      url: http://yahoo.com
 	      comment: Yahoo search
 
+	include:
+	  login/dropbox.com: { "name": "Dropbox 123", "address": "https://www.dropbox.com/", "form": { "action":"https://www.dropbox.com/login", "method": "post", "fields": { "login_email": "OOO <%= @vars[:name] %>", "login_password": "ZZZ <%= @vars[:pass] %>", "remember_me": "on", "cont": "/home" } } }
+
 TODO: make more meaningful example and comment it here or directly in the
 example
 
@@ -488,6 +491,9 @@ TODO: describe here what libs used and where
 * Apparently tests remove `private/' directory, find where
 * Cucumber/Aruba tests
 * ? Add unit tests
+
+== GLOBAL
+* rework JSON output {"login" => [/* logins */], "app" => [/* apps */], etc }
 
 === Ruby
 * because we can't use pipe on windows, create plain file and use it for communication;
