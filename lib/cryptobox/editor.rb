@@ -1,5 +1,7 @@
 require 'rbconfig'
+require 'securerandom'
 
+$is_pipe = false
 $is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
 $text = ''
 
@@ -58,7 +60,59 @@ def done(initial_text, text)
   return text
 end
 
+# http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
+def override_data(fifo_name, size)
+  def override_with_pattern(fifo_name, size, pattern)
+    i = pattern.cycle unless pattern.instance_of? Proc
+
+    File.open(fifo_name, "wb") do |f|
+      size.times do
+        if pattern.instance_of? Proc
+          c = pattern.call
+        else
+          c = i.next
+        end
+
+        f.write [ c ].pack("C")
+      end
+    end
+  end
+
+  4.times { override_with_pattern(fifo_name, size, Proc.new { SecureRandom.random_number(256) } ) }
+
+  override_with_pattern(fifo_name, size, [ 0x55 ] )
+  override_with_pattern(fifo_name, size, [ 0xAA ] )
+  override_with_pattern(fifo_name, size, [ 0x92, 0x49, 0x24 ] )
+  override_with_pattern(fifo_name, size, [ 0x49, 0x24, 0x92 ] )
+  override_with_pattern(fifo_name, size, [ 0x24, 0x92, 0x49 ] )
+  override_with_pattern(fifo_name, size, [ 0x00 ] )
+  override_with_pattern(fifo_name, size, [ 0x11 ] )
+  override_with_pattern(fifo_name, size, [ 0x22 ] )
+  override_with_pattern(fifo_name, size, [ 0x33 ] )
+  override_with_pattern(fifo_name, size, [ 0x44 ] )
+  override_with_pattern(fifo_name, size, [ 0x55 ] )
+  override_with_pattern(fifo_name, size, [ 0x66 ] )
+  override_with_pattern(fifo_name, size, [ 0x77 ] )
+  override_with_pattern(fifo_name, size, [ 0x88 ] )
+  override_with_pattern(fifo_name, size, [ 0x99 ] )
+  override_with_pattern(fifo_name, size, [ 0xAA ] )
+  override_with_pattern(fifo_name, size, [ 0xBB ] )
+  override_with_pattern(fifo_name, size, [ 0xCC ] )
+  override_with_pattern(fifo_name, size, [ 0xDD ] )
+  override_with_pattern(fifo_name, size, [ 0xEE ] )
+  override_with_pattern(fifo_name, size, [ 0xFF ] )
+  override_with_pattern(fifo_name, size, [ 0x92, 0x49, 0x24 ] )
+  override_with_pattern(fifo_name, size, [ 0x49, 0x24, 0x92 ] )
+  override_with_pattern(fifo_name, size, [ 0x24, 0x92, 0x49 ] )
+  override_with_pattern(fifo_name, size, [ 0x6D, 0xB6, 0xDB ] )
+  override_with_pattern(fifo_name, size, [ 0xB6, 0xDB, 0x6D ] )
+  override_with_pattern(fifo_name, size, [ 0xDB, 0x6D, 0xB6 ] )
+
+  4.times { override_with_pattern(fifo_name, size, Proc.new { SecureRandom.random_number(256) } ) }
+end
+
 def cleanup(name)
+  override_data(name, File.size(name)) unless $is_pipe
   File.unlink name
 end
 
@@ -107,14 +161,16 @@ def edit_file(fifo_name, editor, initial_text)
   text
 end
 
-def edit(home, editor, initial_text)
-  fifo_name = (0...8).map{65.+(rand(25)).chr}.join + '.yml'
+def edit(home, editor, initial_text, use_pipe)
+  fifo_name = (0...8).map{65.+(SecureRandom.random_number(25)).chr}.join + '.yml'
   text = nil
 
   Dir.chdir(home) do
-    if $is_windows
+    if $is_windows or use_pipe == false
+      $is_pipe = false
       text = edit_file(fifo_name, editor, initial_text)
     else
+      $is_pipe = true
       text = edit_fifo(fifo_name, editor, initial_text)
     end
   end

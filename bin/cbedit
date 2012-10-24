@@ -15,6 +15,7 @@ options = {
   edit: true,
   stdout: false,
   stdin: false,
+  pipe: true,
   interactive: true
 }
 
@@ -38,6 +39,9 @@ OptionParser.new do |opts|
   end
   opts.on("--[no-]interactive", "Open /dev/tty to read password") do |v|
     options[:interactive] = v
+  end
+  opts.on("-p", "--[no-]pipe", "Use named fifo for data exchange with editor") do |v|
+    options[:pipe] = v
   end
   opts.on("-c", "--config PATH", "Configuration file path") do |path|
     options[:config] = path
@@ -68,7 +72,7 @@ if options[:edit]
   if options[:stdin]
     db.plaintext = $stdin.read
   else
-    new_plaintext = edit config[:path][:home], config[:ui][:editor], db.plaintext
+    new_plaintext = edit config[:path][:home], config[:ui][:editor], db.plaintext, options[:pipe]
     exit if new_plaintext == db.plaintext
 
     db.plaintext = new_plaintext

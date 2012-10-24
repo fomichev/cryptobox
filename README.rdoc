@@ -91,6 +91,9 @@ plain text.
 The steps +cbedit+ does are:
 
 * TODO: describe how it uses pipes to run editor and what it does instead on Windows;
+  - http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
+  - cbedit --no-pipe
+
 * Reads <tt>private/cryptobox</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
   <tt>include/</tt> and merges it with entry's variables (username, password, etc);
@@ -492,6 +495,7 @@ TODO: describe here what libs used and where
            to save database :w !cbedit --stdin
   - cbcat
   - web form aliases
+  - cbedit --no-pipe
 * revise README.rdoc and add other missing information
 * mention somewhere: supported fields for web form entry are: user, pass, secret, note
 * add comments to include/ JSON
@@ -503,11 +507,6 @@ TODO: describe here what libs used and where
 * ? Add unit tests
 
 === Ruby
-* because we can't use pipe on windows, create plain file and use it for communication;
-  afterwards write over with random data several times
-  http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
-  Also, add --no-pipe cbedit argument to be able to fallback to plain file as
-  exchange method (also add smart wiping of this file)
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in cbedit pipe (between cbedit and reader)
