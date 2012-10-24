@@ -36,7 +36,7 @@ function unlock(pwd, caption) {
 			continue;
 		}
 
-		if (el.type != 'login')
+		if (el.type != 'webform')
 			continue;
 
 		var address = cryptobox.form.sitename(document.URL);

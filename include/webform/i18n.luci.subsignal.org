@@ -1,0 +1,18 @@
+{
+	"name": "LuCI Translation Portal",
+	"address": "https://luci.subsignal.org//pootle/accounts/login/",
+	"form":
+	{
+		"action": "https://luci.subsignal.org/pootle/accounts/login/",
+		"method": "post",
+		"fields":
+		{
+			"csrfmiddlewaretoken": "__token__",
+			"username": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
+			"language": "",
+			"login": "Login",
+			"next": ""
+		}
+	}
+}

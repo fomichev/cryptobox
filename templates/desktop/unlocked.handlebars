@@ -33,7 +33,7 @@
 						{{#each item}}
 						<tr json="{{stringify this}}">
 						<td>
-							{{#if_eq type to='login'}}
+							{{#if_eq type to='webform'}}
 							<a class="button-login" href="#">{{name}} ({{form.vars.user}})</a>
 							{{else}}
 							{{name}}

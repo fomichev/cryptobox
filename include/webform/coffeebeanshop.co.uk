@@ -1,0 +1,15 @@
+{
+	"name": "Coffee Bean Shop Ltd",
+	"address": "https://www.coffeebeanshop.co.uk/login.php",
+	"form":
+	{
+		"action": "https://www.coffeebeanshop.co.uk/login.php?action=process",
+		"method": "post",
+		"fields":
+		{
+			"formid": "__token__",
+			"email_address": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>"
+		}
+	}
+}

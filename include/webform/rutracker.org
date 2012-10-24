@@ -1,0 +1,16 @@
+{
+	"name": "RuTracker.org",
+	"address": "http://rutracker.org/forum/index.php",
+	"form":
+	{
+		"action": "http://login.rutracker.org/forum/login.php",
+		"method": "post",
+		"fields":
+		{
+			"login_username": "<%= @vars[:name] %>",
+			"login_password": "<%= @vars[:pass] %>",
+			"ses_short": "1",
+			"login": "Вход"
+		}
+	}
+}

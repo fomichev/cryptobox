@@ -1,0 +1,20 @@
+{
+	"name": "Gitorious",
+	"address": "https://gitorious.org/sessions",
+	"form":
+	{
+		"action": "https://gitorious.org/sessions",
+		"method": "post",
+		"fields":
+		{
+			"authenticity_token": "__token__",
+			"email": "<%= @vars[:name] %>",
+			"password": "<%= @vars[:pass] %>",
+			"remember_me": "1",
+			"commit": "Log in",
+			"openid_url": "",
+			"openid_remember_me": "1",
+			"commit": "Log in"
+		}
+	}
+}

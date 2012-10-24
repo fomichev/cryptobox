@@ -92,7 +92,7 @@ module Cryptobox
 
   I18N_PAGE = {
     en: {
-    login: 'Logins',
+    webform: 'Sites',
     card: 'Credit cards',
     note: 'Notes',
     app: 'Applications',
@@ -101,7 +101,7 @@ module Cryptobox
     identity: 'Identities'
   },
     ru: {
-    login: 'Логины',
+    webform: 'Сайты',
     card: 'Кредитные карты',
     note: 'Заметки',
     app: 'Приложения',

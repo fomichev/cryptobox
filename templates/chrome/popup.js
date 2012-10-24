@@ -117,7 +117,7 @@ cryptobox.main.showData = function(data) {
 			var unmatched = [];
 
 			for (var i = 0; i < data.length; i++) {
-				if (data[i].type == 'login') {
+				if (data[i].type == 'webform') {
 					if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url)) {
 						matched.push(data[i]);
 					} else {

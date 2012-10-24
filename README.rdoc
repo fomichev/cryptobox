@@ -115,7 +115,7 @@ button for token based sites, you'll be asked for this data. After you paste it
 and press 'OK' you'll be automatically logged in (using provided authenticity
 token and your username/password).
 
-When you're adding such form to the logins storage (<tt>include/login</tt>), you
+When you're adding such form to the web forms storage (<tt>include/webform</tt>), you
 should set token field value to <tt>__token__</tt>; that will lead to a pop-up
 dialog box on login asking you to provide the form data (you may have multiple
 tokens within forms).
@@ -137,7 +137,7 @@ YAML format is used for database. More information with examples can be found
 at the {appropriate page}[http://yaml.org].
 
 Your sensitive information is stored in the form of entries; there may be a
-number of entries, each describing particular login, bookmark, secure note or
+number of entries, each describing particular web form, bookmark, secure note or
 other information.
 
 Entry has the following structure (fields in square brackets are optional):
@@ -167,8 +167,8 @@ without any quotes.
 
 Entry type is a relative path to a file inside the <tt>include/</tt> directory.
 And the first component in this path (until the first / of end of string) will
-form a tab in the HTML page. So, for example, if you have <tt>login/google.com</tt>
-and <tt>login/yahoo.com</tt>, there will be a +login+ page (or +Logins+
+form a tab in the HTML page. So, for example, if you have <tt>webform/google.com</tt>
+and <tt>webform/yahoo.com</tt>, there will be a +webform+ page (or +Sites+
 because of predefined translations) in the HTML document
 containing two entries. If you have several +note+ entries, they will
 be located on anther tab. Be aware that you can't have two entries with the
@@ -177,14 +177,14 @@ same <tt>entry type</tt> and <tt>entry name</tt>!
 Each file in the <tt>include/</tt> directory is a JSON file which describes the
 format and layout of the entry. Variables from the entry will be substituted
 with <tt><%= @vars[:NAME] %></tt> inside the JSON file and will form particular
-login/bookmark/etc. There is some special handling for the login entries,
+web form/bookmark/etc. There is some special handling for the +webform+ entries,
 where it's expected to have form fields information in
 <tt><%= @vars[:name] %></tt> and <tt><%= @vars[:pass] %></tt> variables.
 For the other entries, there will be probably only +text+ (and +mtext+ for
 mobile version if special handling required) variable that will
 somehow format other variables from the entry.
 
-Entry name has special meaning for login entry type: it should contain your
+Entry name has special meaning for +webform+ entry type: it should contain your
 username. For the other entry types, entry name is just the caption of
 the entry.
 
@@ -196,16 +196,16 @@ the clutter).
 You can use <tt>visible: false</tt> to remove some entries from the final HTML
 page (this is handy for the entries you want to keep and be able to access at
 some point but don't want it to clutter your HTML).
-For Chrome extension +visible+ attribute controls whether login will appear
+For Chrome extension +visible+ attribute controls whether web form will appear
 in the unmatched section (so it will hide it from the list but will still
-allow you to use hidden logins on the sites that you know).
+allow you to login to hidden sites that you know).
 
 Comments are started with # and continue till the end of the line.
 
 === Is it possible to import database from other password managers?
 No, there is probably no easy way to automate it (taking into account the
 number of existing formats); you have to create (or use pre-created) JSON
-form layout in the <tt>include/login</tt> directory (via provided bookmarklet)
+form layout in the <tt>include/webform</tt> directory (via provided bookmarklet)
 and then add entry with your username/password to <tt>private/cryptobox</tt>
 manually.
 
@@ -218,14 +218,14 @@ format is YAML, so probably all languages have some support of it and +cbedit+
 tool have useful <tt>--stdout</tt> argument which you can use to pipe your
 plain text database to other tools safely.
 
-== Extending / Adding new login (includes)
+== Extending / Adding new web form (includes)
 I think it's pretty straightforward. You can use aforesaid +form+ bookmarklet
 on your target site. The only caveat is that it can have multiple forms on one
 page, so watch out and select the one you need (don't copy leading [ and
 trailing ], JSON data should start with { and end with }). Afterwards,
 look through the JSON and place <tt><%= @vars[:name] %></tt> and
 <tt><%= @vars[:pass] %></tt> into appropriate
-form fields (look for the other logins' JSON data in <tt>include/login</tt>,
+form fields (look for the other web forms' JSON data in <tt>include/webform</tt>,
 it will become clear from the example what to do). Better yet, you can fill
 in the form in the browser with the mentioned values and run the bookmarklet;
 this way, you don't need to dig into the JSON and find out were to put
@@ -234,11 +234,11 @@ these marks, they will already be in place.
 == Database example
 
 	# this is a comment
-	login/dropbox.com:
+	webform/dropbox.com:
 	  - s@fomichev.me:
 	      pass: who knows
 
-	login/gmail.com:
+	webform/gmail.com:
 	  - s@fomichev.me:
 	      pass: really don''t know
 
@@ -282,7 +282,7 @@ these marks, they will already be in place.
 	      comment: Yahoo search
 
 	include:
-	  login/dropbox.com: { "name": "Dropbox 123", "address": "https://www.dropbox.com/", "form": { "action":"https://www.dropbox.com/login", "method": "post", "fields": { "login_email": "OOO <%= @vars[:name] %>", "login_password": "ZZZ <%= @vars[:pass] %>", "remember_me": "on", "cont": "/home" } } }
+	  webform/dropbox.com: { "name": "Dropbox 123", "address": "https://www.dropbox.com/", "form": { "action":"https://www.dropbox.com/login", "method": "post", "fields": { "login_email": "OOO <%= @vars[:name] %>", "login_password": "ZZZ <%= @vars[:pass] %>", "remember_me": "on", "cont": "/home" } } }
 
 TODO: make more meaningful example and comment it here or directly in the
 example
@@ -321,8 +321,8 @@ the <tt>lib/cryptobox/config.rb</tt> file.
 Put 'include' key in your database, e.g:
 
 	include:
-	  'login/xyz.com': { here goes JSON }
-	  'login/qwe.com': { here goes another JSON }
+	  'webform/xyz.com': { here goes JSON }
+	  'webform/qwe.com': { here goes another JSON }
 
 == Used components
 
@@ -392,20 +392,21 @@ decrypt your data.
 
 Lets suppose, you have the following data encrypted:
 
-	login/dropbox.com your_username:
-	  pass: your_password
+	webform/dropbox.com:
+	- your_username:
+	    pass: your_password
 
 With the following contents of +cryptobox+ file:
 
 	---
-	pbkdf2_salt: FN4nebDeGcA=
+	pbkdf2_salt: O4ERPqXt+Ro=
 	pbkdf2_iter: 2000
-	aes_iv: K8llJdtkPBArV+LDzVd4/w==
-	aes_keylen: 256
-	format_version: 5
-	version: '0.7'
-	timestamp: '2012-09-24T09:48:26+04:00'
-	ciphertext: yP59as3mhtiQrzlr6rmWvn9RDF8Xgx+2hlcbHYD/6gIjWx0VvP0NwtCXxAgj4TqTzcz26BgtPdZHxw6Ydso5Tg==
+	aes_iv: V6WEGmrqOG21yc0h/uLqfg==
+	aes_keylen: 128
+	format_version: 6
+	version: '0.8'
+	timestamp: '2012-10-24T13:41:00+04:00'
+	ciphertext: TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
 
 Now, let's try to decrypt it (instructions are provided for Linux)!
 
@@ -418,10 +419,10 @@ easily decrypted using standard tools.
 
 === Give me the key!
 You have to take out the value of pbkdf2_salt field of config and convert
-it to hex encoding:
+it to hex encoding (ensure that file has UNIX line endings):
 
 	$ grep pbkdf2_salt cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps
-	14de2779b0de19c0
+	3b81113ea5edf91a
 
 Next, go and download a Perl script which implements PBKDF2 using OpenSSL:
 
@@ -432,10 +433,10 @@ Store your password in +pwd+ file and execute Perl script:
 	$ cat pwd
 	hi
 
-	$ perl pbkdf2.pl 14de2779b0de19c0 $(grep pbkdf2_iter cryptobox | cut -d: -f2) < pwd > result
+	$ perl pbkdf2.pl 3b81113ea5edf91a $(grep pbkdf2_iter cryptobox | cut -d: -f2) < pwd > result
 
 	$ cat result
-	e623b705687b025e2a52d6b42aa4aab21ab469cce0914508f286be30be4e7d8d384df7e767dd431bc9689360e585ad4c
+	0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937b323478b4c4a4bc8091150a12c9e8d9f
 
 And because we are interested only if first 32 bytes (in case of AES 256),
 we need to cut the rest (the number 64 in the following command is 32 * 2
@@ -443,7 +444,7 @@ because each byte in hex encoding is represented by two characters)
 
 	$ cat result | cut -b1-64 > secret
 	$ cat secret
-	e623b705687b025e2a52d6b42aa4aab21ab469cce0914508f286be30be4e7d8d
+	0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937
 
 === Decrypt my data
 Now, we have a key, the only thing we need to do is to convert initialization
@@ -452,18 +453,18 @@ let's do it:
 
 	$ grep aes_iv cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps > iv
 	$ cat iv
-	2bc96525db643c102b57e2c3cd5778ff
+	57a5841a6aea386db5c9cd21fee2ea7e
 
 	$ grep ciphertext cryptobox | cut -d: -f2 | tr -d ' ' | tr -d "\n" > ciphertext
 	$ cat ciphertext
-	yP59as3mhtiQrzlr6rmWvn9RDF8Xgx+2hlcbHYD/6gIjWx0VvP0NwtCXxAgj4TqTzcz26BgtPdZHxw6Ydso5Tg==$
+	TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
 
-	$ openssl enc -base64 -A -d -aes-256-cbc -K $(cat secret) -iv $(cat iv) -in ciphertext -out plaintext
-
+	$ openssl enc -base64 -A -d -aes-$(grep aes_keylen cryptobox | cut -d: -f2 | tr -d ' ')-cbc -K $(cat secret) -iv $(cat iv) -in ciphertext -out plaintext
 
 	$ cat plaintext
-	login/dropbox.com your_username:
-	  pass: your_password
+	webform/dropbox.com:
+	- your_username:
+	    pass: your_password
 
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
 it's better to remove all temporary files and clean +bash+ history.
@@ -475,7 +476,7 @@ TODO: describe here what libs used and where
 == Todo
 === Documentation
 * describe the following features
-  - broken logins (do they still work? recheck!)
+  - broken web forms (do they still work? recheck!)
   - cryptobox.json
   - cbserve and how it talks to extension
   - how to integrate include into yaml
@@ -483,7 +484,7 @@ TODO: describe here what libs used and where
            to save database :w !cbedit --stdin
   - cbcat
 * revise README.rdoc and add other missing information
-* mention somewhere: supported fields for login entry are: user, pass, secret, note
+* mention somewhere: supported fields for web form entry are: user, pass, secret, note
 * add comments to include/ JSON
 * new pbkdf2 salt and aes iv is generated whenever database is saved
 
@@ -493,7 +494,7 @@ TODO: describe here what libs used and where
 * ? Add unit tests
 
 == GLOBAL
-* rework JSON output {"login" => [/* logins */], "app" => [/* apps */], etc }
+* rework JSON output {"webform" => [/* web forms */], "app" => [/* apps */], etc }
 
 === Ruby
 * because we can't use pipe on windows, create plain file and use it for communication;
@@ -503,14 +504,13 @@ TODO: describe here what libs used and where
   exchange method (also add smart wiping of this file)
 * add RDoc and GEM support
 * add some validation for DB and include/
-* add support for aliases (alias=login/xyz login/qwe login/asd - will generate 3 additional entries in HTML)
+* add support for aliases (alias=webform/xyz webform/qwe webform/asd - will generate 3 additional entries in HTML)
 * fix race in cbedit pipe (between cbedit and reader)
 * cbcreate: set umask on unix when creating database
 * try to use 10k iterations for pbkdf2
 * don't use minimized version, add normal ones (for debugging); we anyway have
   YUI step which minimizes them
 * ? .html -> .rhtml
-* ? login -> webform
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
@@ -531,7 +531,7 @@ TODO: describe here what libs used and where
 
 === Chrome extension
 - Add key binding to show popup (in overlay)
-- ? Possibly add feature to plugin to create new login entries in the database (by just appending to plaintext in cbserve)
+- ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
 
 === Firefox extension

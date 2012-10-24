@@ -70,7 +70,7 @@ function program7(depth0,data,depth2) {
   buffer += "\n				";
   stack1 = depth2.id;
   stack2 = {};
-  stack2['to'] = "login";
+  stack2['to'] = "webform";
   foundHelper = helpers.if_eq;
   stack1 = foundHelper ? foundHelper.call(depth0, stack1, {hash:stack2,inverse:self.program(10, program10, data),fn:self.program(8, program8, data)}) : helperMissing.call(depth0, "if_eq", stack1, {hash:stack2,inverse:self.program(10, program10, data),fn:self.program(8, program8, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -141,7 +141,7 @@ function program14(depth0,data) {
   buffer += escapeExpression(stack1) + "</h1>\n				<a data-rel=\"back\" href=\"#\" data-icon=\"back\"><%= @text[:button_back] %></a>\n				<a class=\"button-lock\" href=\"#\" data-icon=\"delete\"><%= @text[:button_lock] %></a>\n			</div>\n			<div data-role=\"content\">\n				";
   stack1 = depth0.type;
   stack2 = {};
-  stack2['to'] = "login";
+  stack2['to'] = "webform";
   foundHelper = helpers.if_eq;
   stack1 = foundHelper ? foundHelper.call(depth0, stack1, {hash:stack2,inverse:self.program(20, program20, data),fn:self.program(15, program15, data)}) : helperMissing.call(depth0, "if_eq", stack1, {hash:stack2,inverse:self.program(20, program20, data),fn:self.program(15, program15, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }

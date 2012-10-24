@@ -1,0 +1,14 @@
+{
+	"name": "Coursera",
+	"address": "https://www.coursera.org/account/signin",
+	"form":
+	{
+		"action": "",
+		"method": "post",
+		"fields":
+		{
+			"signin-email": "<%= @vars[:name] %>",
+			"signin-password": "<%= @vars[:pass] %>"
+		}
+	}
+}

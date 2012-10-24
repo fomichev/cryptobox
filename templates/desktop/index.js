@@ -51,7 +51,7 @@ cryptobox.main.headerClick = function(el) {
 }
 
 cryptobox.main.detailsClick = function(el) {
-	if (el.type == 'login') {
+	if (el.type == 'webform') {
 		$('#div-details .modal-body').html('');
 
 		var values = {

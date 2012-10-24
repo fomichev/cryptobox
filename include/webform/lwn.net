@@ -1,0 +1,16 @@
+{
+	"name": "LWN.net",
+	"address": "https://lwn.net/login",
+	"form":
+	{
+		"action": "https://lwn.net/login",
+		"method": "post",
+		"fields":
+		{
+			"Username": "<%= @vars[:name] %>",
+			"Password": "<%= @vars[:pass] %>",
+			"target": "/",
+			"submit": "Log in"
+		}
+	}
+}

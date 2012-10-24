@@ -26,7 +26,7 @@
 			<li data-role="list-divider">{{name}}</li>
 			{{/if}}
 			{{#each item}}
-				{{#if_eq ../../id to='login'}}
+				{{#if_eq ../../id to='webform'}}
 				<li><a href="#page-{{id}}">{{name}} ({{form.vars.user}})</a></li>
 				{{else}}
 				<li><a href="#page-{{id}}">{{name}}</a></li>
@@ -47,7 +47,7 @@
 				<a class="button-lock" href="#" data-icon="delete"><%= @text[:button_lock] %></a>
 			</div>
 			<div data-role="content">
-				{{#if_eq type to='login'}}
+				{{#if_eq type to='webform'}}
 				<a class="button-login" href="#" data-role="button" json="{{stringify this}}"><%= @text[:log_in] %></a>
 				<a href={{address}} data-role="button"><%= @text[:goto] %></a>
 				<div data-role="collapsible"><h3><%= @text[:username] %></h3><p>{{form.vars.user}}</p></div>
