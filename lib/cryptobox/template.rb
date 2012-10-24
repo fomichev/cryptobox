@@ -11,7 +11,8 @@ class Template
   def incl(path)
     verbose "Include #{path}"
 
-    "/* #{path} */\n" + ERB.new(File.read(path).encode('utf-8')).result(binding)
+#    "/* #{path} */\n" + 
+    ERB.new(File.read(path).encode('utf-8')).result(binding)
   end
 
   def generate

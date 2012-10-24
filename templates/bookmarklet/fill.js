@@ -1,10 +1,10 @@
-// =require extern/CryptoJS/components/core-min.js
-// =require extern/CryptoJS/components/enc-base64-min.js
-// =require extern/CryptoJS/components/cipher-core-min.js
-// =require extern/CryptoJS/components/aes-min.js
-// =require extern/CryptoJS/components/sha1-min.js
-// =require extern/CryptoJS/components/hmac-min.js
-// =require extern/CryptoJS/components/pbkdf2-min.js
+// =require extern/CryptoJS/components/core.js
+// =require extern/CryptoJS/components/enc-base64.js
+// =require extern/CryptoJS/components/cipher-core.js
+// =require extern/CryptoJS/components/aes.js
+// =require extern/CryptoJS/components/sha1.js
+// =require extern/CryptoJS/components/hmac.js
+// =require extern/CryptoJS/components/pbkdf2.js
 
 // =require js/cryptobox.js
 // =require js/popover.js

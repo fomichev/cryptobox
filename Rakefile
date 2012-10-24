@@ -103,6 +103,9 @@ task :sprockets do
       content = css.compress(content) if filename =~ /\.css$/
       content = embed_images(content, images_dirs) if filename =~ /\.css$/
 
+      # replace </script> with <\/script>
+      content.gsub!(/\<\/script\>/, '<\/script>')
+
       f.write(content)
     end
   end
