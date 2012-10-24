@@ -139,6 +139,13 @@ module Cryptobox
           vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String }
 
           yield vars, includes
+
+          # for each alias yield a result with different type_path
+          vars[:alias].split(/\s+/).each do |alias_type_path|
+            vars[:type_path] = alias_type_path
+
+            yield vars, includes
+          end if vars.has_key? :alias
         end
       end
     end

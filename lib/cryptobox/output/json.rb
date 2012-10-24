@@ -14,13 +14,13 @@ class JsonOutput < Output
     @db.each do |vars, includes|
       j = read_include(includes, vars, vars[:type_path])
       if j == nil
-        # we allow nil path only for login entries
+        # we allow nil path only for webform entries
         puts "WARNING! didn't find include for #{type_path}"
 
         j = {
-          'type' => 'login',
-          'name' => type_path.sub(/login\//, ''),
-          'address' => 'http://' + type_path.sub(/login\//, ''),
+          'type' => 'webform',
+          'name' => type_path.sub(/webform\//, ''),
+          'address' => 'http://' + type_path.sub(/webform\//, ''),
           'form' => {}
         }
       end
@@ -32,7 +32,7 @@ class JsonOutput < Output
       j['visible'] = vars[:visible] if vars.has_key? :visible
 
       case vars[:type]
-      when 'login'
+      when 'webform'
         j['form']['vars'] = { 'user' => vars[:name], 'pass' => vars[:pass] }
         j['form']['vars']['secret'] = vars[:secret] if vars.has_key? :secret
         j['form']['vars']['note'] = vars[:note] if vars.has_key? :note
@@ -78,7 +78,7 @@ class JsonOutput < Output
       end
     end
 
-    raise "Unknown entry #{type_path}" if path == nil and type != 'login'
+    raise "Unknown entry #{type_path}" if path == nil and type != 'webform'
 
     return JSON.parse(Template.new(@config, path, vars).generate) if path
     return nil

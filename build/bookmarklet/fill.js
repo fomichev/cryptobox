@@ -1,1 +1,356 @@
-var CryptoJS=CryptoJS||function(w,d){var x={},u=x.lib={},t=u.Base=function(){function f(){}return{extend:function(h){f.prototype=this;var i=new f;h&&i.mixIn(h);i.$super=this;return i},create:function(){var h=this.extend();h.init.apply(h,arguments);return h},init:function(){},mixIn:function(h){for(var i in h){h.hasOwnProperty(i)&&(this[i]=h[i])}h.hasOwnProperty("toString")&&(this.toString=h.toString)},clone:function(){return this.$super.extend(this)}}}(),v=u.WordArray=t.extend({init:function(h,f){h=this.words=h||[];this.sigBytes=f!=d?f:4*h.length},toString:function(f){return(f||c).stringify(this)},concat:function(h){var f=this.words,k=h.words,j=this.sigBytes,h=h.sigBytes;this.clamp();if(j%4){for(var i=0;i<h;i++){f[j+i>>>2]|=(k[i>>>2]>>>24-8*(i%4)&255)<<24-8*((j+i)%4)}}else{if(65535<k.length){for(i=0;i<h;i+=4){f[j+i>>>2]=k[i>>>2]}}else{f.push.apply(f,k)}}this.sigBytes+=h;return this},clamp:function(){var h=this.words,f=this.sigBytes;h[f>>>2]&=4294967295<<32-8*(f%4);h.length=w.ceil(f/4)},clone:function(){var f=t.clone.call(this);f.words=this.words.slice(0);return f},random:function(h){for(var f=[],i=0;i<h;i+=4){f.push(4294967296*w.random()|0)}return v.create(f,h)}}),s=x.enc={},c=s.Hex={stringify:function(h){for(var f=h.words,h=h.sigBytes,k=[],j=0;j<h;j++){var i=f[j>>>2]>>>24-8*(j%4)&255;k.push((i>>>4).toString(16));k.push((i&15).toString(16))}return k.join("")},parse:function(h){for(var f=h.length,j=[],i=0;i<f;i+=2){j[i>>>3]|=parseInt(h.substr(i,2),16)<<24-4*(i%8)}return v.create(j,f/2)}},e=s.Latin1={stringify:function(h){for(var f=h.words,h=h.sigBytes,j=[],i=0;i<h;i++){j.push(String.fromCharCode(f[i>>>2]>>>24-8*(i%4)&255))}return j.join("")},parse:function(h){for(var f=h.length,j=[],i=0;i<f;i++){j[i>>>2]|=(h.charCodeAt(i)&255)<<24-8*(i%4)}return v.create(j,f)}},b=s.Utf8={stringify:function(h){try{return decodeURIComponent(escape(e.stringify(h)))}catch(f){throw Error("Malformed UTF-8 data")}},parse:function(f){return e.parse(unescape(encodeURIComponent(f)))}},g=u.BufferedBlockAlgorithm=t.extend({reset:function(){this._data=v.create();this._nDataBytes=0},_append:function(f){"string"==typeof f&&(f=b.parse(f));this._data.concat(f);this._nDataBytes+=f.sigBytes},_process:function(i){var h=this._data,n=h.words,m=h.sigBytes,l=this.blockSize,k=m/(4*l),k=i?w.ceil(k):w.max((k|0)-this._minBufferSize,0),i=k*l,m=w.min(4*i,m);if(i){for(var j=0;j<i;j+=l){this._doProcessBlock(n,j)}j=n.splice(0,i);h.sigBytes-=m}return v.create(j,m)},clone:function(){var f=t.clone.call(this);f._data=this._data.clone();return f},_minBufferSize:0});u.Hasher=g.extend({init:function(){this.reset()},reset:function(){g.reset.call(this);this._doReset()},update:function(f){this._append(f);this._process();return this},finalize:function(f){f&&this._append(f);this._doFinalize();return this._hash},clone:function(){var f=g.clone.call(this);f._hash=this._hash.clone();return f},blockSize:16,_createHelper:function(f){return function(h,i){return f.create(i).finalize(h)}},_createHmacHelper:function(f){return function(h,i){return a.HMAC.create(f,i).finalize(h)}}});var a=x.algo={};return x}(Math);(function(){var b=CryptoJS,a=b.lib.WordArray;b.enc.Base64={stringify:function(h){var l=h.words,k=h.sigBytes,n=this._map;h.clamp();for(var h=[],i=0;i<k;i+=3){for(var m=(l[i>>>2]>>>24-8*(i%4)&255)<<16|(l[i+1>>>2]>>>24-8*((i+1)%4)&255)<<8|l[i+2>>>2]>>>24-8*((i+2)%4)&255,j=0;4>j&&i+0.75*j<k;j++){h.push(n.charAt(m>>>6*(3-j)&63))}}if(l=n.charAt(64)){for(;h.length%4;){h.push(l)}}return h.join("")},parse:function(i){var i=i.replace(/\s/g,""),n=i.length,m=this._map,p=m.charAt(64);p&&(p=i.indexOf(p),-1!=p&&(n=p));for(var p=[],j=0,o=0;o<n;o++){if(o%4){var l=m.indexOf(i.charAt(o-1))<<2*(o%4),k=m.indexOf(i.charAt(o))>>>6-2*(o%4);p[j>>>2]|=(l|k)<<24-8*(j%4);j++}}return a.create(p,j)},_map:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}})();CryptoJS.lib.Cipher||function(a){var z=CryptoJS,A=z.lib,x=A.Base,w=A.WordArray,d=A.BufferedBlockAlgorithm,c=z.enc.Base64,D=z.algo.EvpKDF,m=A.Cipher=d.extend({cfg:x.extend(),createEncryptor:function(f,e){return this.create(this._ENC_XFORM_MODE,f,e)},createDecryptor:function(f,e){return this.create(this._DEC_XFORM_MODE,f,e)},init:function(f,e,g){this.cfg=this.cfg.extend(g);this._xformMode=f;this._key=e;this.reset()},reset:function(){d.reset.call(this);this._doReset()},process:function(e){this._append(e);return this._process()},finalize:function(e){e&&this._append(e);return this._doFinalize()},keySize:4,ivSize:4,_ENC_XFORM_MODE:1,_DEC_XFORM_MODE:2,_createHelper:function(){return function(e){return{encrypt:function(f,i,g){return("string"==typeof i?b:y).encrypt(e,f,i,g)},decrypt:function(f,i,g){return("string"==typeof i?b:y).decrypt(e,f,i,g)}}}}()});A.StreamCipher=m.extend({_doFinalize:function(){return this._process(!0)},blockSize:1});var v=z.mode={},C=A.BlockCipherMode=x.extend({createEncryptor:function(f,e){return this.Encryptor.create(f,e)},createDecryptor:function(f,e){return this.Decryptor.create(f,e)},init:function(f,e){this._cipher=f;this._iv=e}}),v=v.CBC=function(){function f(j,i,g){var k=this._iv;k?this._iv=a:k=this._prevBlock;for(var l=0;l<g;l++){j[i+l]^=k[l]}}var e=C.extend();e.Encryptor=e.extend({processBlock:function(i,k){var g=this._cipher,j=g.blockSize;f.call(this,i,k,j);g.encryptBlock(i,k);this._prevBlock=i.slice(k,k+j)}});e.Decryptor=e.extend({processBlock:function(g,l){var k=this._cipher,i=k.blockSize,j=g.slice(l,l+i);k.decryptBlock(g,l);f.call(this,g,l,i);this._prevBlock=j}});return e}(),B=(z.pad={}).Pkcs7={pad:function(i,g){for(var n=4*g,n=n-i.sigBytes%n,l=n<<24|n<<16|n<<8|n,k=[],j=0;j<n;j+=4){k.push(l)}n=w.create(k,n);i.concat(n)},unpad:function(e){e.sigBytes-=e.words[e.sigBytes-1>>>2]&255}};A.BlockCipher=m.extend({cfg:m.cfg.extend({mode:v,padding:B}),reset:function(){m.reset.call(this);var f=this.cfg,e=f.iv,f=f.mode;if(this._xformMode==this._ENC_XFORM_MODE){var g=f.createEncryptor}else{g=f.createDecryptor,this._minBufferSize=1}this._mode=g.call(f,this,e&&e.words)},_doProcessBlock:function(f,e){this._mode.processBlock(f,e)},_doFinalize:function(){var f=this.cfg.padding;if(this._xformMode==this._ENC_XFORM_MODE){f.pad(this._data,this.blockSize);var e=this._process(!0)}else{e=this._process(!0),f.unpad(e)}return e},blockSize:4});var h=A.CipherParams=x.extend({init:function(e){this.mixIn(e)},toString:function(e){return(e||this.formatter).stringify(this)}}),v=(z.format={}).OpenSSL={stringify:function(f){var e=f.ciphertext,f=f.salt,e=(f?w.create([1398893684,1701076831]).concat(f).concat(e):e).toString(c);return e=e.replace(/(.{64})/g,"$1\n")},parse:function(f){var f=c.parse(f),e=f.words;if(1398893684==e[0]&&1701076831==e[1]){var g=w.create(e.slice(2,4));e.splice(0,4);f.sigBytes-=16}return h.create({ciphertext:f,salt:g})}},y=A.SerializableCipher=x.extend({cfg:x.extend({format:v}),encrypt:function(g,f,k,j){var j=this.cfg.extend(j),i=g.createEncryptor(k,j),f=i.finalize(f),i=i.cfg;return h.create({ciphertext:f,key:k,iv:i.iv,algorithm:g,mode:i.mode,padding:i.padding,blockSize:g.blockSize,formatter:j.format})},decrypt:function(f,e,i,g){g=this.cfg.extend(g);e=this._parse(e,g.format);return f.createDecryptor(i,g).finalize(e.ciphertext)},_parse:function(f,e){return"string"==typeof f?e.parse(f):f}}),z=(z.kdf={}).OpenSSL={compute:function(f,e,i,g){g||(g=w.random(8));f=D.create({keySize:e+i}).compute(f,g);i=w.create(f.words.slice(e),4*i);f.sigBytes=4*e;return h.create({key:f,iv:i,salt:g})}},b=A.PasswordBasedCipher=y.extend({cfg:y.cfg.extend({kdf:z}),encrypt:function(f,e,i,g){g=this.cfg.extend(g);i=g.kdf.compute(i,f.keySize,f.ivSize);g.iv=i.iv;f=y.encrypt.call(this,f,e,i.key,g);f.mixIn(i);return f},decrypt:function(f,e,i,g){g=this.cfg.extend(g);e=this._parse(e,g.format);i=g.kdf.compute(i,f.keySize,f.ivSize,e.salt);g.iv=i.iv;return y.decrypt.call(this,f,e,i.key,g)}})}();(function(){var a=CryptoJS,m=a.lib.BlockCipher,e=a.algo,f=[],l=[],k=[],j=[],i=[],h=[],d=[],b=[],A=[],n=[];(function(){for(var u=[],t=0;256>t;t++){u[t]=128>t?t<<1:t<<1^283}for(var v=0,q=0,t=0;256>t;t++){var s=q^q<<1^q<<2^q<<3^q<<4,s=s>>>8^s&255^99;f[v]=s;l[s]=v;var r=u[v],g=u[r],p=u[g],o=257*u[s]^16843008*s;k[v]=o<<24|o>>>8;j[v]=o<<16|o>>>16;i[v]=o<<8|o>>>24;h[v]=o;o=16843009*p^65537*g^257*r^16843008*v;d[s]=o<<24|o>>>8;b[s]=o<<16|o>>>16;A[s]=o<<8|o>>>24;n[s]=o;v?(v=r^u[u[u[p^r]]],q^=u[u[q]]):v=q=1}})();var c=[0,1,2,4,8,16,32,64,128,27,54],e=e.AES=m.extend({_doReset:function(){for(var g=this._key,s=g.words,o=g.sigBytes/4,g=4*((this._nRounds=o+6)+1),p=this._keySchedule=[],r=0;r<g;r++){if(r<o){p[r]=s[r]}else{var q=p[r-1];r%o?6<o&&4==r%o&&(q=f[q>>>24]<<24|f[q>>>16&255]<<16|f[q>>>8&255]<<8|f[q&255]):(q=q<<8|q>>>24,q=f[q>>>24]<<24|f[q>>>16&255]<<16|f[q>>>8&255]<<8|f[q&255],q^=c[r/o|0]<<24);p[r]=p[r-o]^q}}s=this._invKeySchedule=[];for(o=0;o<g;o++){r=g-o,q=o%4?p[r]:p[r-4],s[o]=4>o||4>=r?q:d[f[q>>>24]]^b[f[q>>>16&255]]^A[f[q>>>8&255]]^n[f[q&255]]}},encryptBlock:function(g,o){this._doCryptBlock(g,o,this._keySchedule,k,j,i,h,f)},decryptBlock:function(g,p){var o=g[p+1];g[p+1]=g[p+3];g[p+3]=o;this._doCryptBlock(g,p,this._invKeySchedule,d,b,A,n,l);o=g[p+1];g[p+1]=g[p+3];g[p+3]=o},_doCryptBlock:function(J,I,K,F,H,G,E,D){for(var C=this._nRounds,z=J[I]^K[0],y=J[I+1]^K[1],x=J[I+2]^K[2],B=J[I+3]^K[3],w=4,s=1;s<C;s++){var v=F[z>>>24]^H[y>>>16&255]^G[x>>>8&255]^E[B&255]^K[w++],u=F[y>>>24]^H[x>>>16&255]^G[B>>>8&255]^E[z&255]^K[w++],t=F[x>>>24]^H[B>>>16&255]^G[z>>>8&255]^E[y&255]^K[w++],B=F[B>>>24]^H[z>>>16&255]^G[y>>>8&255]^E[x&255]^K[w++],z=v,y=u,x=t}v=(D[z>>>24]<<24|D[y>>>16&255]<<16|D[x>>>8&255]<<8|D[B&255])^K[w++];u=(D[y>>>24]<<24|D[x>>>16&255]<<16|D[B>>>8&255]<<8|D[z&255])^K[w++];t=(D[x>>>24]<<24|D[B>>>16&255]<<16|D[z>>>8&255]<<8|D[y&255])^K[w++];B=(D[B>>>24]<<24|D[z>>>16&255]<<16|D[y>>>8&255]<<8|D[x&255])^K[w++];J[I]=v;J[I+1]=u;J[I+2]=t;J[I+3]=B},keySize:8});a.AES=m._createHelper(e)})();(function(){var f=CryptoJS,g=f.lib,a=g.WordArray,g=g.Hasher,e=[],b=f.algo.SHA1=g.extend({_doReset:function(){this._hash=a.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(r,j){for(var t=this._hash.words,p=t[0],o=t[1],l=t[2],k=t[3],q=t[4],s=0;80>s;s++){if(16>s){e[s]=r[j+s]|0}else{var n=e[s-3]^e[s-8]^e[s-14]^e[s-16];e[s]=n<<1|n>>>31}n=(p<<5|p>>>27)+q+e[s];n=20>s?n+((o&l|~o&k)+1518500249):40>s?n+((o^l^k)+1859775393):60>s?n+((o&l|o&k|l&k)-1894007588):n+((o^l^k)-899497514);q=k;k=l;l=o<<30|o>>>2;o=p;p=n}t[0]=t[0]+p|0;t[1]=t[1]+o|0;t[2]=t[2]+l|0;t[3]=t[3]+k|0;t[4]=t[4]+q|0},_doFinalize:function(){var j=this._data,k=j.words,h=8*this._nDataBytes,i=8*j.sigBytes;k[i>>>5]|=128<<24-i%32;k[(i+64>>>9<<4)+15]=h;j.sigBytes=4*k.length;this._process()}});f.SHA1=g._createHelper(b);f.HmacSHA1=g._createHmacHelper(b)})();(function(){var b=CryptoJS,a=b.enc.Utf8;b.algo.HMAC=b.lib.Base.extend({init:function(r,q){r=this._hasher=r.create();"string"==typeof q&&(q=a.parse(q));var p=r.blockSize,n=4*p;q.sigBytes>n&&(q=r.finalize(q));for(var m=this._oKey=q.clone(),l=this._iKey=q.clone(),k=m.words,j=l.words,o=0;o<p;o++){k[o]^=1549556828,j[o]^=909522486}m.sigBytes=l.sigBytes=n;this.reset()},reset:function(){var c=this._hasher;c.reset();c.update(this._iKey)},update:function(c){this._hasher.update(c);return this},finalize:function(d){var c=this._hasher,d=c.finalize(d);c.reset();return c.finalize(this._oKey.clone().concat(d))}})})();(function(){var c=CryptoJS,f=c.lib,i=f.Base,e=f.WordArray,f=c.algo,h=f.HMAC,g=f.PBKDF2=i.extend({cfg:i.extend({keySize:4,hasher:f.SHA1,iterations:1}),init:function(b){this.cfg=this.cfg.extend(b)},compute:function(F,E){for(var D=this.cfg,A=h.create(D.hasher,F),z=e.create(),C=e.create([1]),v=z.words,s=C.words,u=D.keySize,D=D.iterations;v.length<u;){var y=A.update(E).finalize(C);A.reset();for(var x=y.words,o=x.length,w=y,t=1;t<D;t++){w=A.finalize(w);A.reset();for(var l=w.words,B=0;B<o;B++){x[B]^=l[B]}}z.concat(y);s[0]++}z.sigBytes=4*u;return z}});c.PBKDF2=function(j,d,k){return g.create(k).compute(j,d)}})();var cryptobox={};cryptobox.popover={};cryptobox.popover.show=function(c,a,d){var e=document.createElement("div");document.body.appendChild(e);e.style.position="absolute";e.style.zIndex=99999;e.style.top=0;e.style.left=0;e.style.width=c;e.style.height=a;var f=document.createElement("div");e.appendChild(f);f.style.paddingTop="20px";f.style.paddingLeft="20px";f.style.paddingRight="40px";f.style.paddingBottom="20px";var b=document.createElement("div");f.appendChild(b);b.style.color="#fff";b.style.background="#000";b.style.opacity=0.8;b.style.width="100%";b.style.height="100%";b.style.padding="10px";b.style.border="0 none";b.style.borderRadius="6px";b.style.boxShadow="0 0 8px rgba(0,0,0,.8)";b.appendChild(d);e.onclick=function(g){g.stopPropagation()};document.body.onclick=function(){e.parentNode.removeChild(e)}};cryptobox.form={};cryptobox.form.withToken=function(b){if(b.action=="__token__"){return true}for(var a in b.fields){if(b.fields[a]=="__token__"){return true}}return false};cryptobox.form.login=function(f,e,d){if(e.broken){return}if(d!=undefined){if(e.action=="__token__"){e.action=d.form.action}for(var c in e.fields){if(e.fields[c]=="__token__"){e.fields[c]=d.form.fields[c]}}}var a=null;if(f){a=window.open(e.action,e.name);if(!a){return}}else{a=window;document.close();document.open()}var b="";b+="<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='"+e.method+"' action='"+e.action+"'>";for(var c in e.fields){b+="<input type='hidden' name='"+c+"' value='"+e.fields[c]+"'/>"}b+="</form><script type='text/javascript'>document.getElementById('formid').submit()</s";b+="cript></body></html>";a.document.write(b);return a};cryptobox.form.fill=function(c){var a=document.querySelectorAll("input[type=text], input[type=password]");for(var b=0;b<a.length;b++){var d=null;for(var e in c.fields){if(e==a[b].attributes.name.value){d=c.fields[e]}}if(d){a[b].value=d}}};cryptobox.form.sitename=function(a){return a.replace(/[^/]+\/\/([^/]+).+/,"$1").replace(/^www./,"")};cryptobox.form.toJson=function(){var k=document.URL;var c=document.title;var l="";for(var g=0;g<document.forms.length;g++){var d=document.forms[g];var h="";for(var f=0;f<d.elements.length;f++){var e=d.elements[f];if(e.name==""){continue}if(h==""){h='\t\t\t"'+e.name+'": "'+e.value+'"'}else{h+=',\n\t\t\t"'+e.name+'": "'+e.value+'"'}}var b=d.method;if(b!="get"){b="post"}var a='\t\t"action": "'+d.action+'",\n\t\t"method": "'+b+'",\n\t\t"fields":\n\t\t{\n'+h+"\n\t\t}";if(l==""){l+="[\n"}else{l+=",\n"}l+='{\n\t"type":"login",\n\t"name": "'+c+'",\n\t"address": "'+k+'",\n\t"form":\n\t{\n'+a+"\n\t}\n}\n"}if(l){l+="]"}return l};cryptobox.cipher={};cryptobox.cipher.decrypt=function(g,d,h,f,e,c){var b=CryptoJS.PBKDF2(g,CryptoJS.enc.Base64.parse(d),{keySize:e/32,iterations:f});var a=CryptoJS.AES.decrypt(h,b,{mode:CryptoJS.mode.CBC,iv:CryptoJS.enc.Base64.parse(c),padding:CryptoJS.pad.Pkcs7});return a.toString(CryptoJS.enc.Utf8)};cryptobox.cfg=getCryptoboxConfig();function unlock(pwd,caption){formToLink=function(name,form){var divStyle='style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';var aStyle='style="color: #fff; font-size: 18px; text-decoration: none;"';return"<div "+divStyle+"><a "+aStyle+' href="#" onClick=\'javascript:cryptobox.form.fill('+JSON.stringify(form)+");return false;'>"+name+"</a></div>"};var text=cryptobox.cipher.decrypt(pwd,cryptobox.cfg.pbkdf2.salt,cryptobox.cfg.ciphertext,cryptobox.cfg.pbkdf2.iterations,cryptobox.cfg.aes.keylen,cryptobox.cfg.aes.iv);var data=eval(text);var matched=new Array();for(var i=0;i<data.length;i++){var el=data[i];if(el.type=="magic"){if(el.value!="270389"){throw ("<%= @text[:incorrect_password] %>")}continue}if(el.type!="login"){continue}var address=cryptobox.form.sitename(document.URL);var action=cryptobox.form.sitename(el.form.action);if(address==action){matched.push(el)}}if(matched.length==0){caption.innerHTML="<%= @text[:login_not_found] %>";window.setTimeout(function(){document.body.click()},1000)}else{if(matched.length==1){caption.innerHTML="<%= @text[:wait_for_login] %>";cryptobox.form.fill(matched[0].form)}else{var r="";for(var i=0;i<matched.length;i++){var el=matched[i];r+=formToLink(el.name+" ("+el.form.vars.user+")",el.form)}caption.innerHTML="<%= @text[:select_login] %>"+r}}}var div=document.createElement("div");div.style.textAlign="center";var caption=document.createElement("h1");caption.appendChild(document.createTextNode("<%= @text[:enter_password] %>"));div.appendChild(caption);var form=document.createElement("form");var input=document.createElement("input");input.type="password";input.style.border="1px solid #006";input.style.fontSize="18px";var buttonUnlock=document.createElement("input");buttonUnlock.type="submit";buttonUnlock.style.border="1px solid #006";buttonUnlock.style.fontSize="14px";buttonUnlock.value="<%= @text[:button_unlock] %>";var buttonDiv=document.createElement("div");buttonDiv.style.marginTop="20px";buttonDiv.appendChild(buttonUnlock);form.appendChild(input);form.appendChild(buttonDiv);div.appendChild(form);form.onsubmit=function(){try{div.removeChild(form);unlock(input.value,caption)}catch(a){caption.innerHTML=a;window.setTimeout(function(){document.body.click()},1000)}return false};cryptobox.popover.show("320","165",div);input.focus();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+var CryptoJS=CryptoJS||function(h,o){var f={},j=f.lib={},k=j.Base=function(){function a(){}return{extend:function(b){a.prototype=this;var c=new a;b&&c.mixIn(b);c.$super=this;return c},create:function(){var a=this.extend();a.init.apply(a,arguments);return a},init:function(){},mixIn:function(a){for(var c in a)a.hasOwnProperty(c)&&(this[c]=a[c]);a.hasOwnProperty("toString")&&(this.toString=a.toString)},clone:function(){return this.$super.extend(this)}}}(),i=j.WordArray=k.extend({init:function(a,b){a=
+this.words=a||[];this.sigBytes=b!=o?b:4*a.length},toString:function(a){return(a||p).stringify(this)},concat:function(a){var b=this.words,c=a.words,d=this.sigBytes,a=a.sigBytes;this.clamp();if(d%4)for(var e=0;e<a;e++)b[d+e>>>2]|=(c[e>>>2]>>>24-8*(e%4)&255)<<24-8*((d+e)%4);else if(65535<c.length)for(e=0;e<a;e+=4)b[d+e>>>2]=c[e>>>2];else b.push.apply(b,c);this.sigBytes+=a;return this},clamp:function(){var a=this.words,b=this.sigBytes;a[b>>>2]&=4294967295<<32-8*(b%4);a.length=h.ceil(b/4)},clone:function(){var a=
+k.clone.call(this);a.words=this.words.slice(0);return a},random:function(a){for(var b=[],c=0;c<a;c+=4)b.push(4294967296*h.random()|0);return i.create(b,a)}}),l=f.enc={},p=l.Hex={stringify:function(a){for(var b=a.words,a=a.sigBytes,c=[],d=0;d<a;d++){var e=b[d>>>2]>>>24-8*(d%4)&255;c.push((e>>>4).toString(16));c.push((e&15).toString(16))}return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d+=2)c[d>>>3]|=parseInt(a.substr(d,2),16)<<24-4*(d%8);return i.create(c,b/2)}},n=l.Latin1={stringify:function(a){for(var b=
+a.words,a=a.sigBytes,c=[],d=0;d<a;d++)c.push(String.fromCharCode(b[d>>>2]>>>24-8*(d%4)&255));return c.join("")},parse:function(a){for(var b=a.length,c=[],d=0;d<b;d++)c[d>>>2]|=(a.charCodeAt(d)&255)<<24-8*(d%4);return i.create(c,b)}},q=l.Utf8={stringify:function(a){try{return decodeURIComponent(escape(n.stringify(a)))}catch(b){throw Error("Malformed UTF-8 data");}},parse:function(a){return n.parse(unescape(encodeURIComponent(a)))}},m=j.BufferedBlockAlgorithm=k.extend({reset:function(){this._data=i.create();
+this._nDataBytes=0},_append:function(a){"string"==typeof a&&(a=q.parse(a));this._data.concat(a);this._nDataBytes+=a.sigBytes},_process:function(a){var b=this._data,c=b.words,d=b.sigBytes,e=this.blockSize,f=d/(4*e),f=a?h.ceil(f):h.max((f|0)-this._minBufferSize,0),a=f*e,d=h.min(4*a,d);if(a){for(var g=0;g<a;g+=e)this._doProcessBlock(c,g);g=c.splice(0,a);b.sigBytes-=d}return i.create(g,d)},clone:function(){var a=k.clone.call(this);a._data=this._data.clone();return a},_minBufferSize:0});j.Hasher=m.extend({init:function(){this.reset()},
+reset:function(){m.reset.call(this);this._doReset()},update:function(a){this._append(a);this._process();return this},finalize:function(a){a&&this._append(a);this._doFinalize();return this._hash},clone:function(){var a=m.clone.call(this);a._hash=this._hash.clone();return a},blockSize:16,_createHelper:function(a){return function(b,c){return a.create(c).finalize(b)}},_createHmacHelper:function(a){return function(b,c){return r.HMAC.create(a,c).finalize(b)}}});var r=f.algo={};return f}(Math);
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+(function(){var h=CryptoJS,i=h.lib.WordArray;h.enc.Base64={stringify:function(b){var e=b.words,f=b.sigBytes,c=this._map;b.clamp();for(var b=[],a=0;a<f;a+=3)for(var d=(e[a>>>2]>>>24-8*(a%4)&255)<<16|(e[a+1>>>2]>>>24-8*((a+1)%4)&255)<<8|e[a+2>>>2]>>>24-8*((a+2)%4)&255,g=0;4>g&&a+0.75*g<f;g++)b.push(c.charAt(d>>>6*(3-g)&63));if(e=c.charAt(64))for(;b.length%4;)b.push(e);return b.join("")},parse:function(b){var b=b.replace(/\s/g,""),e=b.length,f=this._map,c=f.charAt(64);c&&(c=b.indexOf(c),-1!=c&&(e=c));
+for(var c=[],a=0,d=0;d<e;d++)if(d%4){var g=f.indexOf(b.charAt(d-1))<<2*(d%4),h=f.indexOf(b.charAt(d))>>>6-2*(d%4);c[a>>>2]|=(g|h)<<24-8*(a%4);a++}return i.create(c,a)},_map:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}})();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+CryptoJS.lib.Cipher||function(r){var f=CryptoJS,e=f.lib,i=e.Base,j=e.WordArray,o=e.BufferedBlockAlgorithm,p=f.enc.Base64,s=f.algo.EvpKDF,l=e.Cipher=o.extend({cfg:i.extend(),createEncryptor:function(a,b){return this.create(this._ENC_XFORM_MODE,a,b)},createDecryptor:function(a,b){return this.create(this._DEC_XFORM_MODE,a,b)},init:function(a,b,c){this.cfg=this.cfg.extend(c);this._xformMode=a;this._key=b;this.reset()},reset:function(){o.reset.call(this);this._doReset()},process:function(a){this._append(a);
+return this._process()},finalize:function(a){a&&this._append(a);return this._doFinalize()},keySize:4,ivSize:4,_ENC_XFORM_MODE:1,_DEC_XFORM_MODE:2,_createHelper:function(){return function(a){return{encrypt:function(b,c,d){return("string"==typeof c?q:g).encrypt(a,b,c,d)},decrypt:function(b,c,d){return("string"==typeof c?q:g).decrypt(a,b,c,d)}}}}()});e.StreamCipher=l.extend({_doFinalize:function(){return this._process(!0)},blockSize:1});var k=f.mode={},t=e.BlockCipherMode=i.extend({createEncryptor:function(a,
+b){return this.Encryptor.create(a,b)},createDecryptor:function(a,b){return this.Decryptor.create(a,b)},init:function(a,b){this._cipher=a;this._iv=b}}),k=k.CBC=function(){function a(a,b,m){var h=this._iv;h?this._iv=r:h=this._prevBlock;for(var e=0;e<m;e++)a[b+e]^=h[e]}var b=t.extend();b.Encryptor=b.extend({processBlock:function(b,d){var m=this._cipher,e=m.blockSize;a.call(this,b,d,e);m.encryptBlock(b,d);this._prevBlock=b.slice(d,d+e)}});b.Decryptor=b.extend({processBlock:function(b,d){var e=this._cipher,
+h=e.blockSize,f=b.slice(d,d+h);e.decryptBlock(b,d);a.call(this,b,d,h);this._prevBlock=f}});return b}(),u=(f.pad={}).Pkcs7={pad:function(a,b){for(var c=4*b,c=c-a.sigBytes%c,d=c<<24|c<<16|c<<8|c,e=[],f=0;f<c;f+=4)e.push(d);c=j.create(e,c);a.concat(c)},unpad:function(a){a.sigBytes-=a.words[a.sigBytes-1>>>2]&255}};e.BlockCipher=l.extend({cfg:l.cfg.extend({mode:k,padding:u}),reset:function(){l.reset.call(this);var a=this.cfg,b=a.iv,a=a.mode;if(this._xformMode==this._ENC_XFORM_MODE)var c=a.createEncryptor;
+else c=a.createDecryptor,this._minBufferSize=1;this._mode=c.call(a,this,b&&b.words)},_doProcessBlock:function(a,b){this._mode.processBlock(a,b)},_doFinalize:function(){var a=this.cfg.padding;if(this._xformMode==this._ENC_XFORM_MODE){a.pad(this._data,this.blockSize);var b=this._process(!0)}else b=this._process(!0),a.unpad(b);return b},blockSize:4});var n=e.CipherParams=i.extend({init:function(a){this.mixIn(a)},toString:function(a){return(a||this.formatter).stringify(this)}}),k=(f.format={}).OpenSSL=
+{stringify:function(a){var b=a.ciphertext,a=a.salt,b=(a?j.create([1398893684,1701076831]).concat(a).concat(b):b).toString(p);return b=b.replace(/(.{64})/g,"$1\n")},parse:function(a){var a=p.parse(a),b=a.words;if(1398893684==b[0]&&1701076831==b[1]){var c=j.create(b.slice(2,4));b.splice(0,4);a.sigBytes-=16}return n.create({ciphertext:a,salt:c})}},g=e.SerializableCipher=i.extend({cfg:i.extend({format:k}),encrypt:function(a,b,c,d){var d=this.cfg.extend(d),e=a.createEncryptor(c,d),b=e.finalize(b),e=e.cfg;
+return n.create({ciphertext:b,key:c,iv:e.iv,algorithm:a,mode:e.mode,padding:e.padding,blockSize:a.blockSize,formatter:d.format})},decrypt:function(a,b,c,d){d=this.cfg.extend(d);b=this._parse(b,d.format);return a.createDecryptor(c,d).finalize(b.ciphertext)},_parse:function(a,b){return"string"==typeof a?b.parse(a):a}}),f=(f.kdf={}).OpenSSL={compute:function(a,b,c,d){d||(d=j.random(8));a=s.create({keySize:b+c}).compute(a,d);c=j.create(a.words.slice(b),4*c);a.sigBytes=4*b;return n.create({key:a,iv:c,
+salt:d})}},q=e.PasswordBasedCipher=g.extend({cfg:g.cfg.extend({kdf:f}),encrypt:function(a,b,c,d){d=this.cfg.extend(d);c=d.kdf.compute(c,a.keySize,a.ivSize);d.iv=c.iv;a=g.encrypt.call(this,a,b,c.key,d);a.mixIn(c);return a},decrypt:function(a,b,c,d){d=this.cfg.extend(d);b=this._parse(b,d.format);c=d.kdf.compute(c,a.keySize,a.ivSize,b.salt);d.iv=c.iv;return g.decrypt.call(this,a,b,c.key,d)}})}();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+(function(){var r=CryptoJS,u=r.lib.BlockCipher,o=r.algo,g=[],v=[],w=[],x=[],y=[],z=[],p=[],q=[],s=[],t=[];(function(){for(var b=[],c=0;256>c;c++)b[c]=128>c?c<<1:c<<1^283;for(var a=0,f=0,c=0;256>c;c++){var d=f^f<<1^f<<2^f<<3^f<<4,d=d>>>8^d&255^99;g[a]=d;v[d]=a;var e=b[a],A=b[e],h=b[A],i=257*b[d]^16843008*d;w[a]=i<<24|i>>>8;x[a]=i<<16|i>>>16;y[a]=i<<8|i>>>24;z[a]=i;i=16843009*h^65537*A^257*e^16843008*a;p[d]=i<<24|i>>>8;q[d]=i<<16|i>>>16;s[d]=i<<8|i>>>24;t[d]=i;a?(a=e^b[b[b[h^e]]],f^=b[b[f]]):a=f=1}})();
+var B=[0,1,2,4,8,16,32,64,128,27,54],o=o.AES=u.extend({_doReset:function(){for(var b=this._key,c=b.words,a=b.sigBytes/4,b=4*((this._nRounds=a+6)+1),f=this._keySchedule=[],d=0;d<b;d++)if(d<a)f[d]=c[d];else{var e=f[d-1];d%a?6<a&&4==d%a&&(e=g[e>>>24]<<24|g[e>>>16&255]<<16|g[e>>>8&255]<<8|g[e&255]):(e=e<<8|e>>>24,e=g[e>>>24]<<24|g[e>>>16&255]<<16|g[e>>>8&255]<<8|g[e&255],e^=B[d/a|0]<<24);f[d]=f[d-a]^e}c=this._invKeySchedule=[];for(a=0;a<b;a++)d=b-a,e=a%4?f[d]:f[d-4],c[a]=4>a||4>=d?e:p[g[e>>>24]]^q[g[e>>>
+16&255]]^s[g[e>>>8&255]]^t[g[e&255]]},encryptBlock:function(b,c){this._doCryptBlock(b,c,this._keySchedule,w,x,y,z,g)},decryptBlock:function(b,c){var a=b[c+1];b[c+1]=b[c+3];b[c+3]=a;this._doCryptBlock(b,c,this._invKeySchedule,p,q,s,t,v);a=b[c+1];b[c+1]=b[c+3];b[c+3]=a},_doCryptBlock:function(b,c,a,f,d,e,g,h){for(var i=this._nRounds,k=b[c]^a[0],l=b[c+1]^a[1],m=b[c+2]^a[2],j=b[c+3]^a[3],n=4,r=1;r<i;r++)var o=f[k>>>24]^d[l>>>16&255]^e[m>>>8&255]^g[j&255]^a[n++],p=f[l>>>24]^d[m>>>16&255]^e[j>>>8&255]^
+g[k&255]^a[n++],q=f[m>>>24]^d[j>>>16&255]^e[k>>>8&255]^g[l&255]^a[n++],j=f[j>>>24]^d[k>>>16&255]^e[l>>>8&255]^g[m&255]^a[n++],k=o,l=p,m=q;o=(h[k>>>24]<<24|h[l>>>16&255]<<16|h[m>>>8&255]<<8|h[j&255])^a[n++];p=(h[l>>>24]<<24|h[m>>>16&255]<<16|h[j>>>8&255]<<8|h[k&255])^a[n++];q=(h[m>>>24]<<24|h[j>>>16&255]<<16|h[k>>>8&255]<<8|h[l&255])^a[n++];j=(h[j>>>24]<<24|h[k>>>16&255]<<16|h[l>>>8&255]<<8|h[m&255])^a[n++];b[c]=o;b[c+1]=p;b[c+2]=q;b[c+3]=j},keySize:8});r.AES=u._createHelper(o)})();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+(function(){var d=CryptoJS,c=d.lib,l=c.WordArray,c=c.Hasher,j=[],k=d.algo.SHA1=c.extend({_doReset:function(){this._hash=l.create([1732584193,4023233417,2562383102,271733878,3285377520])},_doProcessBlock:function(c,m){for(var a=this._hash.words,e=a[0],f=a[1],h=a[2],i=a[3],d=a[4],b=0;80>b;b++){if(16>b)j[b]=c[m+b]|0;else{var g=j[b-3]^j[b-8]^j[b-14]^j[b-16];j[b]=g<<1|g>>>31}g=(e<<5|e>>>27)+d+j[b];g=20>b?g+((f&h|~f&i)+1518500249):40>b?g+((f^h^i)+1859775393):60>b?g+((f&h|f&i|h&i)-1894007588):g+((f^h^i)-
+899497514);d=i;i=h;h=f<<30|f>>>2;f=e;e=g}a[0]=a[0]+e|0;a[1]=a[1]+f|0;a[2]=a[2]+h|0;a[3]=a[3]+i|0;a[4]=a[4]+d|0},_doFinalize:function(){var d=this._data,c=d.words,a=8*this._nDataBytes,e=8*d.sigBytes;c[e>>>5]|=128<<24-e%32;c[(e+64>>>9<<4)+15]=a;d.sigBytes=4*c.length;this._process()}});d.SHA1=c._createHelper(k);d.HmacSHA1=c._createHmacHelper(k)})();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+(function(){var c=CryptoJS,j=c.enc.Utf8;c.algo.HMAC=c.lib.Base.extend({init:function(a,b){a=this._hasher=a.create();"string"==typeof b&&(b=j.parse(b));var c=a.blockSize,e=4*c;b.sigBytes>e&&(b=a.finalize(b));for(var f=this._oKey=b.clone(),g=this._iKey=b.clone(),h=f.words,i=g.words,d=0;d<c;d++)h[d]^=1549556828,i[d]^=909522486;f.sigBytes=g.sigBytes=e;this.reset()},reset:function(){var a=this._hasher;a.reset();a.update(this._iKey)},update:function(a){this._hasher.update(a);return this},finalize:function(a){var b=
+this._hasher,a=b.finalize(a);b.reset();return b.finalize(this._oKey.clone().concat(a))}})})();
+/*
+CryptoJS v3.0.2
+code.google.com/p/crypto-js
+(c) 2009-2012 by Jeff Mott. All rights reserved.
+code.google.com/p/crypto-js/wiki/License
+*/
+
+(function(){var b=CryptoJS,a=b.lib,d=a.Base,l=a.WordArray,a=b.algo,o=a.HMAC,k=a.PBKDF2=d.extend({cfg:d.extend({keySize:4,hasher:a.SHA1,iterations:1}),init:function(a){this.cfg=this.cfg.extend(a)},compute:function(a,b){for(var c=this.cfg,f=o.create(c.hasher,a),g=l.create(),d=l.create([1]),k=g.words,p=d.words,m=c.keySize,c=c.iterations;k.length<m;){var h=f.update(b).finalize(d);f.reset();for(var i=h.words,q=i.length,j=h,n=1;n<c;n++){j=f.finalize(j);f.reset();for(var r=j.words,e=0;e<q;e++)i[e]^=r[e]}g.concat(h);
+p[0]++}g.sigBytes=4*m;return g}});b.PBKDF2=function(a,b,c){return k.create(c).compute(a,b)}})();
+var cryptobox = {};
+cryptobox.popover = {};
+
+cryptobox.popover.show = function(width, height, node) {
+	var popover = document.createElement('div');
+	document.body.appendChild(popover);
+	popover.style.position = 'absolute';
+	popover.style.zIndex = 99999;
+	popover.style.top = 0;
+	popover.style.left = 0;
+	popover.style.width = width;
+	popover.style.height = height;
+
+	var paddingDiv = document.createElement('div');
+	popover.appendChild(paddingDiv);
+
+	paddingDiv.style.paddingTop = '20px';
+	paddingDiv.style.paddingLeft = '20px';
+	paddingDiv.style.paddingRight = '40px';
+	paddingDiv.style.paddingBottom = '20px';
+
+	var bg = document.createElement('div');
+	paddingDiv.appendChild(bg);
+
+	bg.style.color = '#fff';
+	bg.style.background = '#000';
+	bg.style.opacity = 0.8;
+	bg.style.width = '100%';
+	bg.style.height = '100%';
+	bg.style.padding = '10px';
+	bg.style.border = '0 none';
+	bg.style.borderRadius = '6px';
+	bg.style.boxShadow = '0 0 8px rgba(0,0,0,.8)';
+
+	bg.appendChild(node);
+
+	popover.onclick = function(e) { e.stopPropagation(); }
+	document.body.onclick = function() { popover.parentNode.removeChild(popover); }
+}
+;
+cryptobox.form = {};
+
+cryptobox.form.withToken = function(form) {
+	if (form.action == '__token__')
+		return true;
+
+	for (var key in form.fields)
+		if (form.fields[key] == '__token__')
+			return true;
+
+	return false;
+}
+
+cryptobox.form.login = function(newWindow, form, token) {
+	if (form.broken)
+		return;
+
+	/* merge in token */
+	if (token != undefined) {
+		if (form.action == '__token__')
+			form.action = token.form.action;
+
+		for (var key in form.fields)
+			if (form.fields[key] == '__token__')
+				form.fields[key] = token.form.fields[key];
+	}
+
+	var w = null;
+	if (newWindow) {
+		w = window.open(form.action, form.name);
+		if (!w)
+			return;
+	} else {
+		w = window;
+		document.close();
+		document.open();
+	}
+
+	var html = "";
+	html += "<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='" + form.method + "' action='" + form.action + "'>";
+
+	for (var key in form.fields)
+		html += "<input type='hidden' name='" + key + "' value='" + form.fields[key] + "'/>";
+
+	html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s";
+//			&lt;/script&gt; screws everything up after embedding, so split it into multiple lines
+	html += "cript></body></html>";
+
+	w.document.write(html);
+	return w;
+}
+
+cryptobox.form.fill = function(form) {
+	var nodes = document.querySelectorAll("input[type=text], input[type=password]");
+	for (var i = 0; i < nodes.length; i++) {
+		var value = null;
+
+		for (var field in form.fields)
+			if (field == nodes[i].attributes['name'].value)
+				value = form.fields[field];
+
+		if (value)
+			nodes[i].value = value;
+	}
+}
+
+cryptobox.form.sitename = function(t) {
+	return t.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
+}
+
+cryptobox.form.toJson = function() {
+	var address = document.URL;
+	var name = document.title;
+	var text = "";
+
+	for (var i = 0; i < document.forms.length; i++) {
+		var form = document.forms[i];
+
+		var form_elements =  "";
+		for (var j = 0; j < form.elements.length; j++) {
+			var el = form.elements[j];
+
+			if (el.name == "")
+				continue;
+
+			if (form_elements == "")
+				form_elements = '\t\t\t"' + el.name + '": "' + el.value + '"';
+			else
+				form_elements += ',\n\t\t\t"' + el.name + '": "' + el.value + '"';
+		}
+
+		var method = form.method;
+		if (method != 'get')
+			method = 'post';
+
+		var form_text = '\t\t"action": "' + form.action + '",\n\t\t"method": "' + method + '",\n\t\t"fields":\n\t\t{\n' + form_elements + '\n\t\t}';
+
+		if (text == "")
+			text += '[\n';
+		else
+			text += ',\n';
+		text += '{\n\t"name": "' + name + '",\n\t"address": "' + address + '",\n\t"form":\n\t{\n' + form_text + '\n\t}\n}\n';
+	}
+
+	if (text)
+		text += "]";
+
+	return text;
+}
+;
+cryptobox.cipher = {};
+
+cryptobox.cipher.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+	var secret = CryptoJS.PBKDF2(
+			pass,
+			CryptoJS.enc.Base64.parse(salt),
+			{
+				keySize: keylen / 32,
+				iterations: iterations
+			});
+	var result = CryptoJS.AES.decrypt(
+			ciphertext,
+			secret,
+			{
+				mode: CryptoJS.mode.CBC,
+				iv: CryptoJS.enc.Base64.parse(iv),
+				padding: CryptoJS.pad.Pkcs7
+			});
+
+	return result.toString(CryptoJS.enc.Utf8);
+}
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+cryptobox.cfg = getCryptoboxConfig();
+
+function unlock(pwd, caption) {
+	formToLink = function(name, form) {
+		var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
+		var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
+
+		return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
+			'cryptobox.form.fill(' + JSON.stringify(form) + ');' +
+			'return false;\'>' + name + '</a></div>';
+	}
+
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
+	var data = eval(text);
+	var matched = new Array();
+
+	for (var i = 0; i < data.length; i++) {
+		var el = data[i];
+		if (el.type == "magic") {
+			if (el.value != "270389")
+				throw("<%= @text[:incorrect_password] %>");
+
+			continue;
+		}
+
+		if (el.type != 'webform')
+			continue;
+
+		var address = cryptobox.form.sitename(document.URL);
+		var action = cryptobox.form.sitename(el.form.action);
+
+		if (address == action)
+			matched.push(el);
+	}
+
+	if (matched.length == 0) {
+		caption.innerHTML = '<%= @text[:login_not_found] %>';
+		window.setTimeout(function () { document.body.click(); }, 1000)
+	} else if (matched.length == 1) {
+		caption.innerHTML = '<%= @text[:wait_for_login] %>';
+		cryptobox.form.fill(matched[0].form);
+	} else {
+		var r = ''
+		for (var i = 0; i < matched.length; i++) {
+			var el = matched[i];
+			r += formToLink(el.name + ' (' + el.form.vars.user + ')', el.form);
+		}
+
+		caption.innerHTML = '<%= @text[:select_login] %>' + r;
+	}
+}
+
+var div = document.createElement('div');
+div.style.textAlign = 'center';
+
+var caption = document.createElement('h1');
+caption.appendChild(document.createTextNode('<%= @text[:enter_password] %>'));
+div.appendChild(caption);
+
+var form = document.createElement('form');
+
+var input = document.createElement('input');
+input.type = "password";
+input.style.border = "1px solid #006";
+input.style.fontSize = '18px';
+
+var buttonUnlock = document.createElement('input');
+buttonUnlock.type = "submit";
+buttonUnlock.style.border = "1px solid #006";
+buttonUnlock.style.fontSize = '14px';
+buttonUnlock.value = "<%= @text[:button_unlock] %>";
+
+var buttonDiv = document.createElement('div');
+buttonDiv.style.marginTop = '20px';
+buttonDiv.appendChild(buttonUnlock);
+
+form.appendChild(input);
+form.appendChild(buttonDiv);
+div.appendChild(form);
+
+form.onsubmit = function() {
+	try {
+		div.removeChild(form);
+
+		unlock(input.value, caption);
+	} catch(e) {
+		caption.innerHTML = e;
+
+		window.setTimeout(function () { document.body.click(); }, 1000);
+	}
+	return false;
+}
+
+cryptobox.popover.show('320', '165', div);
+
+input.focus();

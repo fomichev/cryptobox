@@ -237,6 +237,7 @@ these marks, they will already be in place.
 	webform/dropbox.com:
 	  - s@fomichev.me:
 	      pass: who knows
+	      alias: webform/evernote.com webform/reddit.com
 
 	webform/gmail.com:
 	  - s@fomichev.me:
@@ -483,6 +484,7 @@ TODO: describe here what libs used and where
   - in vim to read database :r !cbedit --stdout (enter password and press enter)
            to save database :w !cbedit --stdin
   - cbcat
+  - web form aliases
 * revise README.rdoc and add other missing information
 * mention somewhere: supported fields for web form entry are: user, pass, secret, note
 * add comments to include/ JSON
@@ -504,7 +506,6 @@ TODO: describe here what libs used and where
   exchange method (also add smart wiping of this file)
 * add RDoc and GEM support
 * add some validation for DB and include/
-* add support for aliases (alias=webform/xyz webform/qwe webform/asd - will generate 3 additional entries in HTML)
 * fix race in cbedit pipe (between cbedit and reader)
 * cbcreate: set umask on unix when creating database
 * try to use 10k iterations for pbkdf2
