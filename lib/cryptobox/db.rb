@@ -110,6 +110,31 @@ module Cryptobox
       return to_base64(cipher.update(plaintext) + cipher.final)
     end
 
+    # Execute block on each database entry
+    def each
+      y = YAML::load(plaintext)
+
+      y.each do |_type, _vars|
+        next if _type == 'include'
+
+        raise "Wrong entry '#{_type}' format!" unless _type =~ /^([^\s]+)\s(.+)/
+
+        type_path = $1
+        # FIXME: use path separator from File?
+        type = type_path.split('/')[0]
+
+        _vars['name'] = $2
+        _vars['type_path'] = type_path
+        _vars['type'] = type
+
+        vars = Hash.new {|hash, key| raise "Key #{key} is not found!" }
+        vars.merge! _vars.symbolize_keys
+        vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String } # FIXME: do this in runtime !!!
+
+        yield vars
+      end
+    end
+
     private
 
     # Generate default cipher parameters (salf, iv, etc)

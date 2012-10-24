@@ -29,7 +29,12 @@ module Cryptobox
   # Ask user password and return it
   def self.ask_password(prompt, interactive)
     i, o = $stdin, $stdout
-    i = o = open('/dev/tty', 'w+') if interactive
+
+    begin
+      i = o = open('/dev/tty', 'w+') if interactive
+    rescue
+      interactive = false
+    end
 
     o.print prompt
     o.flush

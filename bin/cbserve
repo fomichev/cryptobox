@@ -38,7 +38,7 @@ EventMachine.run do
   EventMachine::WebSocket.start(:host => "127.0.0.1", :port => 22790) do |ws|
     ws.onopen do
       puts "Connection open"
-      ws.send(File.read(config[:path][:db_json]))
+      ws.send(File.read(File.join(config[:path][:private], 'cryptobox.json')))
     end
 
     ws.onclose { puts "Connection closed" }
