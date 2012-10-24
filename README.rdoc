@@ -510,7 +510,6 @@ TODO: describe here what libs used and where
 * try to use 10k iterations for pbkdf2
 * don't use minimized version, add normal ones (for debugging); we anyway have
   YUI step which minimizes them
-* ? .html -> .rhtml
 
 === Bookmarklets
 * cleanup fill/form bookmarklets

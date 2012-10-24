@@ -7,7 +7,7 @@ class DesktopHtmlOutput < Output
 
   protected
   def generate
-    source = File.join @config[:path][:templates], 'desktop', 'index.html'
+    source = File.join @config[:path][:templates], 'desktop', 'index.rhtml'
     target = File.join @config[:path][:private], 'html', 'cryptobox.html'
     source_clippy = File.join(@config[:path][:templates], 'extern', 'clippy', 'build', 'clippy.swf')
     target_clippy = File.join(@config[:path][:private], 'html', 'clippy.swf')
@@ -27,7 +27,7 @@ class MobileHtmlOutput < Output
 
   protected
   def generate
-    source = File.join @config[:path][:templates], 'mobile', 'index.html'
+    source = File.join @config[:path][:templates], 'mobile', 'index.rhtml'
     target = File.join @config[:path][:private], 'html', 'm.cryptobox.html'
 
     t = Template.new(@config, source).generate

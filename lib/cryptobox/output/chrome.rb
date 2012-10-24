@@ -8,7 +8,7 @@ class ChromeOutput < Output
   protected
   def generate
     templates = [
-      File.join(@config[:path][:templates], 'chrome', 'popup.html'),
+      File.join(@config[:path][:templates], 'chrome', 'popup.rhtml'),
       File.join(@config[:path][:templates], 'chrome', 'manifest.json'),
       File.join(@config[:path][:build], 'chrome', 'background.js'),
       File.join(@config[:path][:build], 'chrome', 'content.js'),
@@ -21,7 +21,7 @@ class ChromeOutput < Output
 
     templates.each do |source|
       name = File.basename source
-      target = File.join target_prefix, name
+      target = File.join(target_prefix, name).sub(/\.rhtml$/, '.html')
       t = Template.new(@config, source, name).generate
 
       mkdir_for target
