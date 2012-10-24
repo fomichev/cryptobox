@@ -5,8 +5,9 @@ Feature: user edits database
 		And the number of backups should be 0
 		When I set database contents to:
 			"""
-			login/dropbox.com user:
-			  pass: pass
+			login/dropbox.com:
+			  - user:
+			      pass: pass
 			"""
 		And I run `ruby ../../bin/cbedit --stdout --no-interactive` interactively
 		And I enter correct password
@@ -15,8 +16,9 @@ Feature: user edits database
 		And the stdout should contain exactly:
 			"""
 			Password:
-			login/dropbox.com user:
-			  pass: pass
+			login/dropbox.com:
+			  - user:
+			      pass: pass
 
 			"""
 

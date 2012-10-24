@@ -16,13 +16,10 @@ Before do
 #  Capybara.app_host = 'file:///C:/Documents%20and%20Settings/stas.fomichev/My%20Documents/Dropbox/Sources/cryptobox/private3/html/'
   Capybara.app_host = "file:///Users/stanislavfomichev/Dropbox/Sources/cryptobox/private3/html/"
 
+  @dirs = [ TMP_DIR ]
+
   @aruba_keep_ansi = true
   @aruba_io_wait_seconds = 1
-
-  @correct_pass = 'hi'
-  @incorrect_pass = 'ih'
-  @cryptobox_database = File.join('private')
-  @cryptobox_file = File.join('private', 'cryptobox')
 end
 
 After do

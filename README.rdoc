@@ -511,7 +511,6 @@ TODO: describe here what libs used and where
 * add some validation for DB and include/
 * fix race in cbedit pipe (between cbedit and reader)
 * cbcreate: set umask on unix when creating database
-* try to use 10k iterations for pbkdf2
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
@@ -524,9 +523,8 @@ TODO: describe here what libs used and where
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
 * add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
-* ? decouple bootstrap CSS settings from HTML (create additional meaningful containers)
+* ? Decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
-* !!! Share as many code as possible with chrome plugin
 
 === Chrome extension
 * Add key binding to show popup (in overlay)

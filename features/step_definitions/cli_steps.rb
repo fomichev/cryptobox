@@ -1,43 +1,38 @@
 require 'fileutils'
 require 'open3'
 
+require 'aruba'
+
+include CryptoboxWorld
+
 Given /^no database$/ do
-  FileUtils.rm_rf @cryptobox_database
-  Dir.exist?(@cryptobox_database).should be_false
+  FileUtils.rm_rf DB_DIR
+  Dir.exist?(DB_DIR).should be_false
 end
 
 Given /^empty database$/ do
-  Dir.mkdir(@dirs[0]) unless Dir.exist? @dirs[0]
-  Dir.chdir(@dirs[0]) do
-    FileUtils.rm_rf @cryptobox_database
-    File.exist?(@cryptobox_file).should be_false
+  Dir.mkdir(TMP_DIR) unless Dir.exist? TMP_DIR
+  Dir.chdir(TMP_DIR) do
+    FileUtils.rm_rf CryptoboxWorld::DB_DIR
+    File.exist?(DB_FILE).should be_false
 
-    i, o, e = Open3.popen3('ruby ../../bin/cbcreate')
-    i.puts @correct_pass
-    i.puts @correct_pass
-    o.read
-    i.close
-    o.close
-    e.close
+    ret = execute('ruby ../../bin/cbcreate --no-interactive', [ "#{CORRECT_PASS}\n", "#{CORRECT_PASS}\n" ])
+    ret.should == 0
 
-    File.exist?(@cryptobox_file).should be_true
+    File.exist?(DB_FILE).should be_true
   end
 end
 
 When /^I enter correct password$/ do
-  steps %{
-  When I type "#{@correct_pass}"
-  }
+  type(CORRECT_PASS)
 end
 
 When /^I enter incorrect password$/ do
-  steps %{
-  When I type "#{@incorrect_pass}"
-  }
+  type(INCORRECT_PASS)
 end
 
 When /^the number of backups should be (#{NUMBER})$/ do |expected_number|
-  backup_dir = File.join(@dirs, 'private', 'backup')
+  backup_dir = File.join(TMP_DIR, 'private', 'backup')
 
   Dir.exist?(backup_dir).should be_true if expected_number > 0
 
@@ -48,42 +43,22 @@ When /^the number of backups should be (#{NUMBER})$/ do |expected_number|
 end
 
 Then /^the database can be unlocked with "(.*?)"$/ do |pwd|
-  Dir.chdir(@dirs[0]) do
-
-#    status = execute('cbedit --no-edit --no-update', [ pwd ])
-#    status.should == 0
-
-    i, o, e, thr = Open3.popen3('ruby ../../bin/cbedit --no-edit --no-update')
-    i.puts pwd
-    o.read
-    i.close
-    o.close
-    e.close
-    thr.value.exitstatus.should == 0
+  Dir.chdir(TMP_DIR) do
+    ret = execute('ruby ../../bin/cbedit --no-edit --no-update --no-interactive', [ "#{pwd}\n" ])
+    ret.should == 0
   end
 end
 
 Then /^the database can not be unlocked with "(.*?)"$/ do |pwd|
-  Dir.chdir(@dirs[0]) do
-    i, o, e, thr = Open3.popen3('ruby ../../bin/cbedit --no-edit --no-update')
-    i.puts pwd
-    o.read
-    i.close
-    o.close
-    e.close
-    thr.value.exitstatus.should == 1
+  Dir.chdir(TMP_DIR) do
+    ret = execute('ruby ../../bin/cbedit --no-edit --no-update --no-interactive', [ "#{pwd}\n" ])
+    ret.should == 1
   end
 end
 
 When /^I set database contents to:$/ do |data|
-  Dir.chdir(@dirs[0]) do
-    i, o, e, thr = Open3.popen3('ruby ../../bin/cbedit --stdin --no-update')
-    i.puts @correct_pass
-    i.write data
-    i.close
-    o.read
-    o.close
-    e.close
-    thr.value.exitstatus.should == 0
+  Dir.chdir(TMP_DIR) do
+    ret = execute('ruby ../../bin/cbedit --stdin --no-update --no-interactive', [ "#{CORRECT_PASS}\n", data ])
+    ret.should == 0
   end
 end
