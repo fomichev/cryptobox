@@ -801,7 +801,7 @@ cryptobox.main.detailsClick = function(el) {
 		$('#div-details .modal-body').html('');
 
 		var values = {
-			'<%= @text[:address] %>:': $('<a>', { 'href': el.address }).text(el.address),
+			'<%= @text[:address] %>:': $('<a>', { 'target': '_blank', 'href': el.address }).text(el.address),
 			'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
 			'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
 		};

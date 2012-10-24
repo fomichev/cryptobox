@@ -474,6 +474,13 @@ it's better to remove all temporary files and clean +bash+ history.
 
 TODO: describe here what libs used and where
 
+=== Update templates
+* rake handlebars
+  TODO
+
+# rake sprockets
+  TODO
+
 == Todo
 === Documentation
 * describe the following features
@@ -521,7 +528,6 @@ TODO: describe here what libs used and where
 * delete magic type from JSON because converting to utf8 is enough check for decryption
 * Fix when number of entries is 0
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
-* when click on site address in `details', open new window (don't go in current window)
 * decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
