@@ -64,9 +64,10 @@ task :sprockets do
         next unless File.exist? image
 
         puts "Embed image #{$1}"
-        data = File.read(image)
+        data = File.open(image, 'rb').read
 
         result = 'url(data:image/png;base64,' + Base64.encode64(data).gsub(/\n/, '') + ')'
+
         break
       end
 

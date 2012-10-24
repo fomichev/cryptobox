@@ -502,9 +502,6 @@ TODO: describe here what libs used and where
 * Cucumber/Aruba tests
 * ? Add unit tests
 
-== GLOBAL
-* rework JSON output {"webform" => [/* web forms */], "app" => [/* apps */], etc }
-
 === Ruby
 * because we can't use pipe on windows, create plain file and use it for communication;
   afterwards write over with random data several times
@@ -528,13 +525,13 @@ TODO: describe here what libs used and where
 * delete magic type from JSON because converting to utf8 is enough check for decryption
 * Fix when number of entries is 0
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
-* decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
+* ? decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
 * !!! Share as many code as possible with chrome plugin
 
 === Chrome extension
-- Add key binding to show popup (in overlay)
-- ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
+* Add key binding to show popup (in overlay)
+* ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
