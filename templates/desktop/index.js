@@ -77,6 +77,10 @@ cryptobox.main.detailsClick = function(el) {
 cryptobox.main.lock = function() {
 	cryptobox.lock.stopTimeout();
 
+	$('#div-token').modal('hide');
+	$('#div-details').modal('hide');
+	$("#div-generate").modal('hide');
+
 	cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 }

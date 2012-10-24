@@ -519,7 +519,6 @@ TODO: describe here what libs used and where
 
 === Desktop HTML
 * delete magic type from JSON because converting to utf8 is enough check for decryption
-* Fix black screen (from dialog) when auto locked
 * Fix when number of entries is 0
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
 * when click on site address in `details', open new window (don't go in current window)
@@ -533,7 +532,3 @@ TODO: describe here what libs used and where
 - Add key binding to show popup (in overlay)
 - ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
-
-=== Firefox extension
-- ? Try to support firefox also (seems to be possible to share huge amount of codebase)
-  https://addons.mozilla.org/en-US/developers/docs/sdk/latest/dev-guide/tutorials/index.html
