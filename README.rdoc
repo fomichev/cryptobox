@@ -343,17 +343,30 @@ and additionally:
 * {ExecJS}[https://github.com/sstephenson/execjs] - MIT
   Used to compile Handlebars templates to JS
 
-  gem install execjs
+  We also install `therubyracer' GEM for cross platform Javascript engine (V8)
 
 * {Sprockets}[https://github.com/sstephenson/sprockets] - MIT
   Compile CSS and JS
 
-  gem install sprockets
-
 * {Ruby-YUI Compressor}[https://github.com/sstephenson/sprockets] - MIT/BSD
   Compress CSS and JS
 
-  gem install yui-compressor
+  This GEM required Java Runtime!
+
+* {Cucumber}[TODO] - TODO
+  TODO
+
+* {Aruba}[TODO] - TODO
+  TODO
+
+* {Capybara}[TODO] - TODO
+  TODO
+
+* {Poltergeist}[TODO] - TODO
+  TODO
+
+* {PhantomJS}[TODO] - TODO
+  TODO
 
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
@@ -502,9 +515,21 @@ TODO: describe here what libs used and where
 * new pbkdf2 salt and aes iv is generated whenever database is saved
 
 === Tests
-* Apparently tests remove `private/' directory, find where
-* Cucumber/Aruba tests
-* ? Add unit tests
+* Aruba tests
+  - cbcat
+  - cbcreate
+  - cbedit
+  - cbpasswd
+  - cbserve
+* Capybara tests
+  - desktop HTML
+  - mobile HTML
+  - ? chrome extension
+  - ? bookmarklets
+
+=== Include
+* fix form include for appleid.apple.com
+* mark habrahabr.com as broken (requires captcha)
 
 === Ruby
 * add RDoc and GEM support
@@ -518,15 +543,13 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Desktop HTML
-* delete magic type from JSON because converting to utf8 is enough check for decryption
-* Fix when number of entries is 0
+* ? add some way to show hidden entries
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
-* add tests support http://pivotal.github.com/jasmine/ and http://phantomjs.org/
 * Check login with token
-* ? Decouple bootstrap CSS settings from HTML (create additional meaningful containers)
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
 
 === Chrome extension
+* bring back option to embed ciphertext into plugin
 * Add key binding to show popup (in overlay)
 * ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
   This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)

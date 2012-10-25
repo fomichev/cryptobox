@@ -32,3 +32,5 @@ Feature: user edits database
 #		And I run `ruby ../../bin/cbedit --no-edit --no-interactive` interactively
 #		And I enter correct password
 #		Then the exit status should be 0
+
+#TODO cbedit --no-update on empty database

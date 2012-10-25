@@ -29,12 +29,6 @@ function unlock(pwd, caption) {
 
 	for (var i = 0; i < data.length; i++) {
 		var el = data[i];
-		if (el.type == "magic") {
-			if (el.value != "270389")
-				throw("<%= @text[:incorrect_password] %>");
-
-			continue;
-		}
 
 		if (el.type != 'webform')
 			continue;

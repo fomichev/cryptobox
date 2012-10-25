@@ -9,18 +9,18 @@ class JsonOutput < Output
   protected
   def generate
     target = File.join @config[:path][:private], 'cryptobox.json'
-    result = [ { "type" => "magic", "value" => "270389" } ]
+    result = []
 
     @db.each do |vars, includes|
       j = read_include(includes, vars, vars[:type_path])
       if j == nil
         # we allow nil path only for webform entries
-        puts "WARNING! didn't find include for #{type_path}"
+        puts "WARNING! didn't find include for #{vars[:type_path]}"
 
         j = {
           'type' => 'webform',
-          'name' => type_path.sub(/webform\//, ''),
-          'address' => 'http://' + type_path.sub(/webform\//, ''),
+          'name' => vars[:type_path].sub(/webform\//, ''),
+          'address' => 'http://' + vars[:type_path].sub(/webform\//, ''),
           'form' => {}
         }
       end

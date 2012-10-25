@@ -11,14 +11,13 @@ class Template
   def incl(path)
     verbose "Include #{path}"
 
-#    "/* #{path} */\n" + 
-    ERB.new(File.read(path).encode('utf-8')).result(binding)
+    File.open(path, "r:utf-8") { |f| return ERB.new(f.read).result(binding) }
   end
 
   def generate
     verbose "Process template #{@path}"
     if @path.instance_of? String
-      text = File.read(@path).encode 'utf-8'
+      text = File.open(@path, "r:utf-8") { |f| f.read }
     else
       text = JSON.generate(@path)
     end

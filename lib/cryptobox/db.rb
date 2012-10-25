@@ -113,6 +113,7 @@ module Cryptobox
     # Execute block on each database entry
     def each
       y = YAML::load(plaintext)
+      return unless y
 
       includes = y.has_key?('include') ? y['include'] : {}
 

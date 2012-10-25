@@ -1,6 +1,9 @@
+require "bundler/setup"
+
 require 'cucumber'
 require 'cucumber/rake/task'
 require 'rdoc/task'
+
 #require 'rake/package_task'
 #
 #spec = eval(File.read('cryptobox.gemspec'))

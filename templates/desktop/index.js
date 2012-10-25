@@ -144,8 +144,15 @@ $(function() {
 
 			var data = cryptobox.ui.init($("#input-password").val());
 			cryptobox.bootstrap.render('unlocked', { page: data });
-			$('div.tab-pane:first').addClass('in').addClass('active');
-			$('#ul-nav li:first').addClass('active');
+
+			// try to select Sites tab; otherwise select first one
+			if ($('div.tab-pane[id="webform"]')) {
+				$('div.tab-pane[id="webform"]').addClass('in').addClass('active');
+				$('#ul-nav li a[href="#webform"]').parent().addClass('active');
+			} else {
+				$('div.tab-pane:first').addClass('in').addClass('active');
+				$('#ul-nav li:first').addClass('active');
+			}
 			$("#input-filter").focus();
 
 			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);

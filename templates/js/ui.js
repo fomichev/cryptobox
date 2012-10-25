@@ -28,15 +28,9 @@ cryptobox.ui.init = function(pwd) {
 	var data = $.parseJSON(text);
 	var map = {};
 
-	if (data[0].type != "magic" || data[0].value != "270389")
-		throw "Wrong magic number";
-
 	var pages = {};
 	for (var i = 0; i < data.length; i++) {
 		var el = data[i];
-
-		if (el.type == 'magic')
-			continue;
 
 		if (el.visible == false)
 			continue;
@@ -57,8 +51,12 @@ cryptobox.ui.init = function(pwd) {
 		for (var tag_key in pages[page_key])
 			p.tag.push({ name: tag_key, item: pages[page_key][tag_key] });
 
+		p.tag.sort(function(a, b) { return a.name > b.name; });
+
 		result.push(p);
 	}
+
+	result.sort(function(a, b) { return a.name > b.name; });
 
 	});
 	return result;

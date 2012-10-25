@@ -2,7 +2,7 @@
 text = ''
 text += "<p><strong>Cardholder:</strong> #{@vars[:cardholder]}</p>" if @vars.has_key? :cardholder
 text += "<p><strong>Number:</strong> #{@vars[:number]}</p>" if @vars.has_key? :number
-text += "<p><strong>Type:</strong> #{@vars[:type]}</p>" if @vars.has_key? :type
+text += "<p><strong>Kind:</strong> #{@vars[:kind]}</p>" if @vars.has_key? :kind
 text += "<p><strong>CVV:</strong> #{@vars[:cvv]}</p>" if @vars.has_key? :cvv
 text += "<p><strong>PIN:</strong> #{@vars[:pin]}</p>" if @vars.has_key? :pin
 text += "<p><strong>Secret word:</strong> #{@vars[:secret]}</p>" if @vars.has_key? :secret
