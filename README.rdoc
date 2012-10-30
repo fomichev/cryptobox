@@ -552,6 +552,12 @@ TODO: describe here what libs used and where
 * Check login with token
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
 * ? add possibility to connect to new version of cbserve
+* Use the following bootstrap feature for hide/show functionality:
+	<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
+	simple collapsible
+	</button>
+
+	<div id="demo" class="collapse in"> … </div>
 
 === Chrome extension
 * Add key binding to show popup (in overlay)

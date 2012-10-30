@@ -1,18 +1,16 @@
 <div id="div-locked">
+	<div id="div-alert" class="alert alert-error"></div>
+
 	<h1><%= @text[:enter_password] %></h1>
 
 	<div id="div-locked">
 		<form id="form-unlock">
 				<input id="input-password" size="16" type="password">
 				<div>
-				<button id="button-unlock" type="submit" class="btn btn-primary">
+				<button id="button-unlock" type="submit" class="btn btn-primary" data-loading-text="<%= @text[:button_unlock_decrypt] %>">
 					<i class="icon-lock"></i> <%= @text[:button_unlock] %>
 				</button>
 			</div>
 		</form>
 	</div>
-</div>
-
-<div id="div-login-error">
-	<%= @text[:login_not_found] %>
 </div>

@@ -139,40 +139,47 @@ $(function() {
 
 	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
-		try {
-			$("#div-alert").fadeOut();
+		$('#button-unlock').button('loading');
 
-			var data = cryptobox.ui.init($("#input-password").val());
-			cryptobox.bootstrap.render('unlocked', { page: data });
+		$("#div-alert").fadeOut();
 
-			// try to select Sites tab; otherwise select first one
-			if ($('div.tab-pane[id="webform"]')) {
-				$('div.tab-pane[id="webform"]').addClass('in').addClass('active');
-				$('#ul-nav li a[href="#webform"]').parent().addClass('active');
-			} else {
-				$('div.tab-pane:first').addClass('in').addClass('active');
-				$('#ul-nav li:first').addClass('active');
+		/* we need small timeout here because otherwise decryption
+		 * stuff will not let the UI to be redrawn */
+		setTimeout(function() {
+			try {
+				var data = cryptobox.ui.init($("#input-password").val());
+				cryptobox.bootstrap.render('unlocked', { page: data });
+
+				// try to select Sites tab; otherwise select first one
+				if ($('div.tab-pane[id="webform"]')) {
+					$('div.tab-pane[id="webform"]').addClass('in').addClass('active');
+					$('#ul-nav li a[href="#webform"]').parent().addClass('active');
+				} else {
+					$('div.tab-pane:first').addClass('in').addClass('active');
+					$('#ul-nav li:first').addClass('active');
+				}
+				$("#input-filter").focus();
+
+				cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);
+				cryptobox.main.dialogTokenLoginInit();
+				cryptobox.main.dialogGenerateInit();
+				cryptobox.bootstrap.filterInit();
+
+				$('.button-login').click(function() {
+					var el = $.parseJSON($(this).parent().parent().attr('json'));
+					cryptobox.main.headerClick(el);
+				});
+
+				$('.button-details').click(function() {
+					var el = $.parseJSON($(this).parent().parent().attr('json'));
+					cryptobox.main.detailsClick(el);
+				});
+			} catch(e) {
+				$('#button-unlock').button('reset');
+				$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
+				$("#div-alert").fadeIn();
+				return;
 			}
-			$("#input-filter").focus();
-
-			cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);
-			cryptobox.main.dialogTokenLoginInit();
-			cryptobox.main.dialogGenerateInit();
-			cryptobox.bootstrap.filterInit();
-
-			$('.button-login').click(function() {
-				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.main.headerClick(el);
-			});
-
-			$('.button-details').click(function() {
-				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.main.detailsClick(el);
-			});
-		} catch(e) {
-			$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
-			$("#div-alert").fadeIn();
-			return;
-		}
+		}, 10);
 	});
 });

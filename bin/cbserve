@@ -52,8 +52,6 @@ EventMachine.run do
       ws.send(contents)
     end
 
-    ws.onmessage { puts "MESSAGE" }
-
     ws.onclose { puts "Connection closed" }
   end
 end

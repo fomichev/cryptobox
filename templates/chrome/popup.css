@@ -15,3 +15,8 @@ body {
 #div-details {
 	padding: 20px;
 }
+
+#div-alert {
+	margin-top: 10px;
+	display: none;
+}

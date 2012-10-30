@@ -49,7 +49,6 @@ cryptobox.main = {};
 
 cryptobox.main.show = function(div) {
 	$("#div-locked").hide();
-	$("#div-login-error").hide();
 	$("#div-unlocked").hide();
 	$("#div-details").hide();
 	$("#div-generate").hide();
@@ -92,101 +91,108 @@ cryptobox.main.lock = function() {
 cryptobox.main.unlock = function(pwd, unlockCallback) {
 	if ("WebSocket" in window) {
 		var timeout = setTimeout(function() {
-			$('button').text('<%= @text[:server_not_responding] %>');
-			$('button').addClass('btn-danger');
+			$("#button-unlock").button("reset");
+
+			$("#div-alert").text('<%= @text[:server_not_responding] %>');
+			$("#div-alert").fadeIn();
 		}, 5000);
 
 		var ws = new WebSocket("wss://127.0.0.1:22790");
 		ws.onopen = function() { };
 		ws.onmessage = function (evt) {
-			clearTimeout(timeout);
-			cryptobox.cfg = $.parseJSON(evt.data);
-			var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
+			try {
+				clearTimeout(timeout);
+				cryptobox.cfg = $.parseJSON(evt.data);
+				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
+
+			} catch(e) {
+				$("#button-unlock").button("reset");
+
+				$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
+				$("#div-alert").fadeIn();
+			}
+
 			unlockCallback($.parseJSON(text));
 		};
 		ws.onclose = function() { };
 	} else {
-		$('body').html('<h1><%= @text[:no_websocket_support] %></h1>');
+		$("#button-unlock").button("reset");
+
+		$("#div-alert").text('<%= @text[:no_websocket_support] %>');
+		$("#div-alert").fadeIn();
 	}
 }
 
 cryptobox.main.showData = function(data) {
-	try {
-		chrome.tabs.getSelected(null, function (t) {
-			var matched = [];
-			var unmatched = [];
+	chrome.tabs.getSelected(null, function (t) {
+		var matched = [];
+		var unmatched = [];
 
-			for (var i = 0; i < data.length; i++) {
-				if (data[i].type == 'webform') {
-					if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url)) {
-						matched.push(data[i]);
-					} else {
-						if (data[i].visible == true)
-							unmatched.push(data[i]);
-					}
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].type == 'webform') {
+				if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url)) {
+					matched.push(data[i]);
+				} else {
+					if (data[i].visible == true)
+						unmatched.push(data[i]);
 				}
 			}
+		}
 
-			cryptobox.bootstrap.render('unlocked', { matched: matched, unmatched: unmatched });
+		cryptobox.bootstrap.render('unlocked', { matched: matched, unmatched: unmatched });
 
-			$("#div-login-error").hide();
-			$("#div-login-details").hide();
+		$("#div-login-details").hide();
 
-			$('.button-login-matched').click(function() {
-				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
-				window.close();
-			});
-
-			$('.button-login-unmatched').click(function() {
-				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
-					chrome.extension.getBackgroundPage().fill[tab.id] = el;
-				});
-			});
-
-			$('.button-details').click(function() {
-				var el = $.parseJSON($(this).parent().parent().attr('json'));
-				cryptobox.main.detailsClick(el);
-			});
-
-			cryptobox.bootstrap.lockInit(function() {
-				chrome.extension.getBackgroundPage().updateTimeout(); },
-				chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
-				cryptobox.main.lock);
-			cryptobox.bootstrap.filterInit();
-
-			$('#button-hide-generate').click(function() {
-				cryptobox.main.show('#div-unlocked');
-			});
-
-			$('#button-generate-show').click(function() {
-				cryptobox.main.show('#div-generate');
-			});
-
-			$('#button-generate').click(function() {
-				cryptobox.bootstrap.dialogGenerateSubmit();
-			});
-
-			$('#button-get-json').click(function() {
-				cryptobox.browser.sendToContentScript({ type: 'getFormJson' }, function(text) {
-					$('#div-details-body').html('<textarea class="span6" rows="20">' + text + '</textarea>');
-					cryptobox.main.show('#div-details');
-				});
-			});
-
-			$('#button-hide-details').click(function() {
-				cryptobox.main.show('#div-unlocked');
-			});
-
-			cryptobox.main.show("#div-unlocked");
-			$("#input-filter").focus();
+		$('.button-login-matched').click(function() {
+			var el = $.parseJSON($(this).parent().parent().attr('json'));
+			cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
+			window.close();
 		});
-	} catch(e) {
-		$("#div-login-error").show();
-		alert(e);
-		return;
-	}
+
+		$('.button-login-unmatched').click(function() {
+			var el = $.parseJSON($(this).parent().parent().attr('json'));
+			chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
+				chrome.extension.getBackgroundPage().fill[tab.id] = el;
+			});
+		});
+
+		$('.button-details').click(function() {
+			var el = $.parseJSON($(this).parent().parent().attr('json'));
+			cryptobox.main.detailsClick(el);
+		});
+
+		cryptobox.bootstrap.lockInit(function() {
+			chrome.extension.getBackgroundPage().updateTimeout(); },
+			chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
+			cryptobox.main.lock);
+		cryptobox.bootstrap.filterInit();
+
+		$('#button-hide-generate').click(function() {
+			cryptobox.main.show('#div-unlocked');
+		});
+
+		$('#button-generate-show').click(function() {
+			cryptobox.main.show('#div-generate');
+		});
+
+		$('#button-generate').click(function() {
+			cryptobox.bootstrap.dialogGenerateSubmit();
+		});
+
+		$('#button-get-json').click(function() {
+			cryptobox.browser.sendToContentScript({ type: 'getFormJson' }, function(text) {
+				$('#div-details-body').html('<textarea class="span6" rows="20">' + text + '</textarea>');
+				cryptobox.main.show('#div-details');
+			});
+		});
+
+		$('#button-hide-details').click(function() {
+			cryptobox.main.show('#div-unlocked');
+		});
+
+		cryptobox.main.show("#div-unlocked");
+		$("#input-filter").focus();
+	});
 }
 
 $(function() {
@@ -201,14 +207,21 @@ $(function() {
 		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
-			cryptobox.main.unlock($("#input-password").val(), function(cfg) {
-				$("#input-password").val("");
+			$('#button-unlock').button('loading');
+			$("#div-alert").fadeOut();
 
-				chrome.extension.getBackgroundPage().cfg = cfg;
-				chrome.extension.getBackgroundPage().startTimeout();
+			/* we need small timeout here because otherwise decryption
+			 * stuff will not let the UI to be redrawn */
+			setTimeout(function() {
+				cryptobox.main.unlock($("#input-password").val(), function(cfg) {
+					$("#input-password").val("");
 
-				cryptobox.main.showData(cfg);
-			});
+					chrome.extension.getBackgroundPage().cfg = cfg;
+					chrome.extension.getBackgroundPage().startTimeout();
+
+					cryptobox.main.showData(cfg);
+				});
+			}, 10);
 		});
 	}
 
