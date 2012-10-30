@@ -94,9 +94,9 @@ cryptobox.main.unlock = function(pwd, unlockCallback) {
 		var timeout = setTimeout(function() {
 			$('button').text('<%= @text[:server_not_responding] %>');
 			$('button').addClass('btn-danger');
-		}, 1000);
+		}, 5000);
 
-		var ws = new WebSocket("ws://127.0.0.1:22790");
+		var ws = new WebSocket("wss://127.0.0.1:22790");
 		ws.onopen = function() { };
 		ws.onmessage = function (evt) {
 			clearTimeout(timeout);

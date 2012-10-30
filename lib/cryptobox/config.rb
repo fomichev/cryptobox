@@ -22,7 +22,7 @@ module Cryptobox
     end
 
     def load_config(path)
-      @config = { ui: {}, cryptobox: {}, chrome: {}, path: {}, text: {} }
+      @config = { ui: {}, cryptobox: {}, chrome: {}, path: {}, text: {}, security: {} }
 
       user_config = path ? YAML.load_file(path).symbolize_keys : {}
 
@@ -63,6 +63,10 @@ module Cryptobox
 
       set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox'))
       set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
+
+      set_value user_config, :security, :private_key_path, File.expand_path(File.join(@config[:path][:private], 'cryptobox.key'))
+      set_value user_config, :security, :certificate_path, File.expand_path(File.join(@config[:path][:private], 'cryptobox.crt'))
+
     end
   end
 end

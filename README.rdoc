@@ -532,6 +532,7 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
+* use one master command (+cb+) for actions like edit/create/etc (instead of tons of scripts)
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in cbedit pipe (between cbedit and reader)
@@ -541,15 +542,47 @@ TODO: describe here what libs used and where
 * cleanup fill/form bookmarklets
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
+* ? convert form bookmarklet to new cbserve when its ready
 
 === Desktop HTML
+* update bootstrap and try to use http://twitter.github.com/bootstrap/examples/signin.html for login page
+* add support for picking theme from http://bootswatch.com
 * ? add some way to show hidden entries
 * add spinner while calculating pbkdf2 (or at least change the title of the button color?)
 * Check login with token
 * ? Use icons http://fortawesome.github.com/Font-Awesome/
+* ? add possibility to connect to new version of cbserve
 
 === Chrome extension
-* bring back option to embed ciphertext into plugin
 * Add key binding to show popup (in overlay)
-* ? Possibly add feature to plugin to create new web form entries in the database (by just appending to plaintext in cbserve)
-  This will require making cbserve more complex (we need to establish secure communication between cbserve and plugin to pass passwords around)
+
+=== Firefox extension
+* Implement desktop firefox plugin
+* Implement mobile firefox plugin
+
+=== Read only server which serves encrypted data (evolution of cbserve)
+* Will allow to add Firefox mobile extension
+* We may need:
+  - support some kind of certificates to prevent man-in-the-middle attacks (check secure WebSockets)
+  - user will use different credentials to access this server (NOT MASTER PASS)
+  - different users may publish their data to the same server (public)
+
+* openssl req -new -x509 -days 365 -nodes -out cryptobox.crt -keyout cryptobox.key
+  127.0.0.1 for common name
+* Then navigate to https://127.0.0.1:22790/ in browser and add this certificate to exceptions list
+* Commands format:
+  enc_dec_key = sha(lowercase(username) + password)
+  storage_key = sha(enc_dec_key + password)
+
+  # get encrypted data
+  { version: '1', user: '$username', key: '$storage_key', command: 'get' }
+  # put encrypted data (override old)
+  { version: '1', user: '$username', key: '$storage_key', command: 'put', data: {} }
+
+  # try to register new user
+  { version: '1', user: '$username', key: '$storage_key', command: 'register' }
+  # delete existing user and all its data
+  { version: '1', user: '$username', key: '$storage_key', command: 'unregister' }
+
+  Ban for 1 second when wrong password or command is given.
+* Add some option to config which tells to which server we have to push the data
