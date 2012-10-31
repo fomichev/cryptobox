@@ -25,6 +25,8 @@ module Cryptobox
       @backup_path = backup_path
       @keep_backups = keep_backups
       @password = password
+
+      File.umask(0077)
     end
 
     # Create empty database, ask user to confirm if it already exists

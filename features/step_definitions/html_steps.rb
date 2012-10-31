@@ -20,10 +20,12 @@ When /^I login with incorrect password$/ do
 end
 
 Then /^I should see main page$/ do
+  sleep 1
   page.has_css?('#div-alert').should == false
 end
 
 Then /^I should see alert$/ do
+  sleep 1
   page.has_css?('#div-alert').should == true
   page.should have_selector('#div-alert', visible: true)
 end

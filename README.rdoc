@@ -535,7 +535,6 @@ TODO: describe here what libs used and where
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
-* cryptobox create: set umask on unix when creating database
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
