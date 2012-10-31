@@ -9,10 +9,10 @@ License:: MIT
 Cryptobox is a bunch of Ruby scripts that help you manage your
 passwords and other sensitive data. The idea is simple: there is some encrypted
 file (<tt>private/cryptobox</tt>) where the sensitive information is
-stored. To edit it you use special executable (+cbedit+) which will open editor
-and let you update passwords/bookmarks/notes/etc. When the editor is
-closed, +cbedit+ will create beautiful and easy to navigate HTML page with
-all your sensitive information (encrypted). This HTML page will also
+stored. To edit it you use special executable (+cryptobox edit+) which will
+open editor and let you update passwords/bookmarks/notes/etc. When the editor
+is closed, +cryptobox edit+ will create beautiful and easy to navigate HTML
+page with all your sensitive information (encrypted). This HTML page will also
 contain Javascript code which can decrypt attached encrypted data on the fly
 when you provide the correct password.
 
@@ -37,7 +37,7 @@ system use whatever package manager is installed on your system to install it.
 
 * Create new database (creates empty <tt>private/cryptobox</tt>):
 
-	$ cbcreate
+	$ cryptobox create
 
 Upon database creation, PBKDB2 salt and AES IV will be generated. That
 guarantees that even two databases with the same content will be encrypted to
@@ -47,7 +47,7 @@ different cipher text.
   <tt>private/html/cryptobox.html</tt> and at
   <tt>private/html/m.cryptobox.html</tt>):
 
-	$ cbedit
+	$ cryptobox edit
 
 Whenever you edit cryptobox database, the backup file (under
 <tt>private/backup</tt>) is created with the previous version of your database.
@@ -56,10 +56,10 @@ database contents.
 
 * Change password (every couple of months):
 
-	$ cbpasswd
+	$ cryptobox passwd
 
-As in +cbedit+ command, backup file will be created (or updated) whenever
-you change the password.
+As in +cryptobox edit+ command, backup file will be created (or updated)
+whenever you change the password.
 
 == Features
 * Secure storage of sensitive information;
@@ -80,7 +80,7 @@ key length is 128 bits (by default) and it is derived from your master password
 using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
 (consult your lawyer about whether it's considered crime in your country).
 
-When +cbedit+ generates HTML, it asks your password, decrypts
+When +cryptobox edit+ generates HTML, it asks your password, decrypts
 <tt>private/cryptbox</tt> file and merges it with JSON
 patterns from <tt>include/</tt> directory (more on this later), encrypts it using
 AES and puts this information into HTML page. Later on, when you
@@ -88,18 +88,18 @@ open it in the browser, it will ask your password and decrypt attached
 database on the fly. So, your sensitive information is never exposed in
 plain text.
 
-The steps +cbedit+ does are:
+The steps +cryptobox edit+ does are:
 
 * TODO: describe how it uses pipes to run editor and what it does instead on Windows;
   - http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
-  - cbedit --no-pipe
+  - cryptobox edit --no-pipe
 
 * Reads <tt>private/cryptobox</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
   <tt>include/</tt> and merges it with entry's variables (username, password, etc);
 * Merges all JSON entries into one string and encrypts it with AES;
-* Embeds this encrypted data into pre-baked HTML page (look at <tt>templates/html/</tt> for
-  more details);
+* Embeds this encrypted data into pre-baked HTML page (look at
+  <tt>templates/html/</tt> for more details);
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
   under <tt>private/html</tt> directory (cryptobox.html - is a desktop
   version; m.cryptobox.html - is a mobile one);
@@ -118,10 +118,10 @@ button for token based sites, you'll be asked for this data. After you paste it
 and press 'OK' you'll be automatically logged in (using provided authenticity
 token and your username/password).
 
-When you're adding such form to the web forms storage (<tt>include/webform</tt>), you
-should set token field value to <tt>__token__</tt>; that will lead to a pop-up
-dialog box on login asking you to provide the form data (you may have multiple
-tokens within forms).
+When you're adding such form to the web forms storage
+(<tt>include/webform</tt>), you should set token field value to
+<tt>__token__</tt>; that will lead to a pop-up dialog box on login asking you
+to provide the form data (you may have multiple tokens within forms).
 
 TODO: Describe how to get this bookmarklet; also describe login bookmarklet.
 
@@ -170,10 +170,10 @@ without any quotes.
 
 Entry type is a relative path to a file inside the <tt>include/</tt> directory.
 And the first component in this path (until the first / of end of string) will
-form a tab in the HTML page. So, for example, if you have <tt>webform/google.com</tt>
-and <tt>webform/yahoo.com</tt>, there will be a +webform+ page (or +Sites+
-because of predefined translations) in the HTML document
-containing two entries. If you have several +note+ entries, they will
+form a tab in the HTML page. So, for example, if you have
+<tt>webform/google.com</tt> and <tt>webform/yahoo.com</tt>, there will be a
++webform+ page (or +Sites+ because of predefined translations) in the HTML
+document containing two entries. If you have several +note+ entries, they will
 be located on anther tab. Be aware that you can't have two entries with the
 same <tt>entry type</tt> and <tt>entry name</tt>!
 
@@ -216,10 +216,10 @@ I'm not telling its impossible; I just see no need to implement it myself.
 
 === Is is possible to export database to other password managers?
 No, there are no reasons to switch from cryptobox :-) But if you have strong
-reasons, you can always implement <tt>private/cryptobox</tt> parser yourself; the
-format is YAML, so probably all languages have some support of it and +cbedit+
-tool have useful <tt>--stdout</tt> argument which you can use to pipe your
-plain text database to other tools safely.
+reasons, you can always implement <tt>private/cryptobox</tt> parser yourself;
+the format is YAML, so probably all languages have some support of it and
++cryptobox edit+ tool have useful <tt>--stdout</tt> argument which you can use
+to pipe your plain text database to other tools safely.
 
 == Extending / Adding new web form (includes)
 I think it's pretty straightforward. You can use aforesaid +form+ bookmarklet
@@ -335,7 +335,7 @@ On Ruby side standard bindings to OpenSSL are used to manage database,
 and additionally:
 
 * {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
-  Used in cbserve to serve encrypted JSON to Chrome extension
+  Used to serve encrypted JSON to Chrome extension
 
   gem install em-websocket
 
@@ -502,13 +502,13 @@ TODO: describe here what libs used and where
 * describe the following features
   - broken web forms (do they still work? recheck!)
   - cryptobox.json
-  - cbserve and how it talks to extension
+  - 'cryptobox serve' and how it talks to extension
   - how to integrate include into yaml
-  - in vim to read database :r !cbedit --stdout (enter password and press enter)
-           to save database :w !cbedit --stdin
-  - cbcat
+  - in vim to read database :r !cryptobox edit --stdout (enter password and press enter)
+           to save database :w !cryptobox edit --stdin
+  - cryptobox cat
   - web form aliases
-  - cbedit --no-pipe
+  - cryptobox edit --no-pipe
 * revise README.rdoc and add other missing information
 * mention somewhere: supported fields for web form entry are: user, pass, secret, note
 * add comments to include/ JSON
@@ -516,11 +516,11 @@ TODO: describe here what libs used and where
 
 === Tests
 * Aruba tests
-  - cbcat
-  - cbcreate
-  - cbedit
-  - cbpasswd
-  - cbserve
+  - cryptobox cat
+  - cryptobox create
+  - cryptobox edit
+  - cryptobox passwd
+  - cryptobox serve
 * Capybara tests
   - desktop HTML
   - mobile HTML
@@ -532,26 +532,23 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
-* use one master command (+cb+) for actions like edit/create/etc (instead of tons of scripts)
 * add RDoc and GEM support
 * add some validation for DB and include/
-* fix race in cbedit pipe (between cbedit and reader)
-* cbcreate: set umask on unix when creating database
+* fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
+* cryptobox create: set umask on unix when creating database
 
 === Bookmarklets
 * cleanup fill/form bookmarklets
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
-* ? convert form bookmarklet to new cbserve when its ready
+* ? convert form bookmarklet to new 'cryptobox serve' when its ready
 
 === Desktop HTML
+* build version which can connect to 'cryptobox depot'
 * update bootstrap and try to use http://twitter.github.com/bootstrap/examples/signin.html for login page
-* add support for picking theme from http://bootswatch.com
 * ? add some way to show hidden entries
-* add spinner while calculating pbkdf2 (or at least change the title of the button color?)
 * Check login with token
-* ? Use icons http://fortawesome.github.com/Font-Awesome/
-* ? add possibility to connect to new version of cbserve
+* ? add possibility to connect to new version of 'cryptobox serve'
 * Use the following bootstrap feature for hide/show functionality:
 	<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
 	simple collapsible
@@ -566,7 +563,8 @@ TODO: describe here what libs used and where
 * Implement desktop firefox plugin
 * Implement mobile firefox plugin
 
-=== Read only server which serves encrypted data (evolution of cbserve)
+=== Read only server which serves encrypted data (evolution of 'cryptobox serve')
+* Rename to 'cryptobox depot'
 * Will allow to add Firefox mobile extension
 * We may need:
   - support some kind of certificates to prevent man-in-the-middle attacks (check secure WebSockets)
@@ -577,8 +575,9 @@ TODO: describe here what libs used and where
   127.0.0.1 for common name
 * Then navigate to https://127.0.0.1:22790/ in browser and add this certificate to exceptions list
 * Commands format:
-  enc_dec_key = sha(lowercase(username) + password)
-  storage_key = sha(enc_dec_key + password)
+  aes_key = pbkdf2(salt, password, iter)
+  enc_dec_key = sha256(lowercase(username) + aes_key) (use this key to encrypt data before sending)
+  storage_key = sha256(lowercase(username) + enc_dec_key) (use this key to authenticate user)
 
   # get encrypted data
   { version: '1', user: '$username', key: '$storage_key', command: 'get' }
@@ -591,4 +590,6 @@ TODO: describe here what libs used and where
   { version: '1', user: '$username', key: '$storage_key', command: 'unregister' }
 
   Ban for 1 second when wrong password or command is given.
+
 * Add some option to config which tells to which server we have to push the data
+  or store this information directly in the cryptobox itself

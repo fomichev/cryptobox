@@ -5,7 +5,7 @@ module Cryptobox
     en: {
     title: 'Cryptobox',
     noscript: 'Sorry, this thing heavily depends on JavaScript.',
-    enter_password: 'Enter password',
+    enter_password: 'Enter master password',
     button_unlock: 'Unlock',
     button_unlock_decrypt: 'Decrypting...',
     form_bookmarklet: 'Cryptobox bookmarklet',
@@ -49,7 +49,7 @@ module Cryptobox
     ru: {
     title: 'Cryptobox',
     noscript: 'Извините, но без JavaScript\'а ничего работать не будет.',
-    enter_password: 'Введите пароль',
+    enter_password: 'Введите главный пароль',
     button_unlock: 'Разблокировать',
     button_unlock_decrypt: 'Расшифровываю...',
     form_bookmarklet: 'Cryptobox букмарклет',

@@ -1,22 +1,22 @@
-Feature: user edits database
+Feature: User edits database
 
 	Scenario: Edit via stdio
 		Given empty database
 		And the number of backups should be 0
 		When I set database contents to:
 			"""
-			login/dropbox.com:
+			webform/dropbox.com:
 			  - user:
 			      pass: pass
 			"""
-		And I run `ruby ../../bin/cbedit --stdout --no-interactive` interactively
+		And I run cryptobox "edit --stdout"
 		And I enter correct password
 		Then the exit status should be 0
 		And the number of backups should be 1
 		And the stdout should contain exactly:
 			"""
 			Password:
-			login/dropbox.com:
+			webform/dropbox.com:
 			  - user:
 			      pass: pass
 
@@ -26,10 +26,10 @@ Feature: user edits database
 #		Given empty database
 #		When I set database contents to:
 #			"""
-#			login/dropbox.com user:
+#			webform/dropbox.com user:
 #			  pass: pass
 #			"""
-#		And I run `ruby ../../bin/cbedit --no-edit --no-interactive` interactively
+#		And I run cryptobox "edit --noedit"
 #		And I enter correct password
 #		Then the exit status should be 0
 

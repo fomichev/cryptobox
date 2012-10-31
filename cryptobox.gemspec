@@ -16,4 +16,6 @@ Gem::Specification.new do |s|
   s.files = ["bin/xxx", "lib/xxx"]
   s.require_paths << 'lib'
   s.executables = ["bin/xxx", "bin/xxx"]
+
+  # runtime depends: gli, em-websocket
 end

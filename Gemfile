@@ -1,5 +1,10 @@
 source :rubygems
 
+group :runtime do
+  gem 'gli'
+  gem 'em-websocket'
+end
+
 group :development do
   gem 'sprockets'
   gem 'execjs'

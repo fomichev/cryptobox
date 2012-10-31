@@ -3,13 +3,18 @@ module CryptoboxWorld
   INCORRECT_PASS = 'ih'
   TMP_DIR = File.join(Dir.getwd, 'tmp', 'aruba')
   DB_DIR = File.join(TMP_DIR, 'private')
-  DB_FILE = File.join(TMP_DIR, 'private', 'cryptobox')
+  DB_FILE = File.join(TMP_DIR, 'private', 'cryptobox.yaml')
 
   def execute(name, input)
     i, o, e, thr = Open3.popen3(name)
     input.each {|line| i.write line}
     i.close
-    o.read
+
+    File.open(File.join(TMP_DIR, 'exec.log'), 'w') do |f|
+      f.puts "COMMAND=#{name}"
+      f.puts "STDOUT=#{o.read}"
+      f.puts "STDERR=#{e.read}"
+    end
     o.close
     e.close
 

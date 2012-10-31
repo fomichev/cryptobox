@@ -7,10 +7,10 @@ Feature: User creates new database
 		empty database.
 
 		Given no database
-		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
+		When I run cryptobox "create"
 		And I enter correct password
 		And I enter correct password
-		Then a file named "private/cryptobox" should exist
+		Then a file named "private/cryptobox.yaml" should exist
 		And the exit status should be 0
 		And the database can be unlocked with "hi"
 		And the stdout should contain exactly:
@@ -26,10 +26,10 @@ Feature: User creates new database
 		created.
 
 		Given no database
-		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
+		When I run cryptobox "create"
 		And I enter correct password
 		And I enter incorrect password
-		Then a file named "private/cryptobox" should not exist
+		Then a file named "private/cryptobox.yaml" should not exist
 		And the exit status should be 1
 		And the stdout should contain exactly:
 			"""
@@ -39,7 +39,7 @@ Feature: User creates new database
 			"""
 		And the stderr should contain exactly:
 			"""
-			Passwords don't match!
+			error: Passwords don't match!
 
 			"""
 
@@ -51,7 +51,7 @@ Feature: User creates new database
 
 		Given empty database
 		And the database can be unlocked with "hi"
-		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
+		When I run cryptobox "create"
 		And I type "y"
 		And I type "password"
 		And I type "password"
@@ -74,7 +74,7 @@ Feature: User creates new database
 		not see database update and new backup.
 
 		Given empty database
-		When I run `ruby ../../bin/cbcreate --no-interactive` interactively
+		When I run cryptobox "create"
 		And I type "n"
 		And the number of backups should be 0
 		Then the exit status should be 0
@@ -90,7 +90,7 @@ Feature: User creates new database
 		comments", check it.
 
 		Given empty database
-		When I run `ruby ../../bin/cbedit --stdout --no-interactive` interactively
+		When I run cryptobox "edit --stdout"
 		And I enter correct password
 		Then the exit status should be 0
 		And the stdout should contain:

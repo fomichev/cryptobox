@@ -61,7 +61,7 @@ module Cryptobox
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
 
-      set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox'))
+      set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox.yaml'))
       set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
 
       set_value user_config, :security, :private_key_path, File.expand_path(File.join(@config[:path][:private], 'cryptobox.key'))
