@@ -1,17 +1,19 @@
 require 'fileutils'
 
 class DesktopHtmlOutput < Output
-  def initialize(config)
+  def initialize(config, to, embed)
+    super
+
     @config = config
   end
 
   protected
   def generate
     source = File.join @config[:path][:templates], 'desktop', 'index.rhtml'
-    target = File.join @config[:path][:private], 'html', 'cryptobox.html'
+    target = File.join @to, 'html', 'cryptobox.html'
     source_clippy = File.join(@config[:path][:templates], 'extern', 'clippy', 'build', 'clippy.swf')
-    target_clippy = File.join(@config[:path][:private], 'html', 'clippy.swf')
-    t = Template.new(@config, source).generate
+    target_clippy = File.join(@to, 'html', 'clippy.swf')
+    t = Template.new(@config, source, @embed).generate
 
     mkdir_for target
     File.open(target, 'w') {|f| f.write t }
@@ -21,16 +23,18 @@ class DesktopHtmlOutput < Output
 end
 
 class MobileHtmlOutput < Output
-  def initialize(config)
+  def initialize(config, to, embed)
+    super
+
     @config = config
   end
 
   protected
   def generate
     source = File.join @config[:path][:templates], 'mobile', 'index.rhtml'
-    target = File.join @config[:path][:private], 'html', 'm.cryptobox.html'
+    target = File.join @to, 'html', 'm.cryptobox.html'
 
-    t = Template.new(@config, source).generate
+    t = Template.new(@config, source, @embed).generate
 
     mkdir_for target
     File.open(target, 'w') {|f| f.write t }

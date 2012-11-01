@@ -143,11 +143,13 @@ $(function() {
 
 		$("#div-alert").fadeOut();
 
-		/* we need small timeout here because otherwise decryption
-		 * stuff will not let the UI to be redrawn */
-		setTimeout(function() {
-			try {
-				var data = cryptobox.ui.init($("#input-password").val());
+		cryptobox.open($("#input-password").val(), function(json, error) {
+			if (error) {
+				$('#button-unlock').button('reset');
+				$("#div-alert").text(error);
+				$("#div-alert").fadeIn();
+			} else {
+				var data = cryptobox.ui.init(json);
 				cryptobox.bootstrap.render('unlocked', { page: data });
 
 				// try to select Sites tab; otherwise select first one
@@ -160,7 +162,7 @@ $(function() {
 				}
 				$("#input-filter").focus();
 
-				cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);
+				cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
 				cryptobox.main.dialogTokenLoginInit();
 				cryptobox.main.dialogGenerateInit();
 				cryptobox.bootstrap.filterInit();
@@ -174,12 +176,7 @@ $(function() {
 					var el = $.parseJSON($(this).parent().parent().attr('json'));
 					cryptobox.main.detailsClick(el);
 				});
-			} catch(e) {
-				$('#button-unlock').button('reset');
-				$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
-				$("#div-alert").fadeIn();
-				return;
 			}
-		}, 10);
+		});
 	});
 });

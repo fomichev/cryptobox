@@ -11,7 +11,7 @@
 // =require js/form.js
 // =require js/cipher.js
 
-cryptobox.cfg = getCryptoboxConfig();
+cryptobox.json = openCryptobox();
 
 function unlock(pwd, caption) {
 	formToLink = function(name, form) {
@@ -23,7 +23,7 @@ function unlock(pwd, caption) {
 			'return false;\'>' + name + '</a></div>';
 	}
 
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
+	var text = cryptobox.cipher.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 
@@ -61,7 +61,7 @@ var div = document.createElement('div');
 div.style.textAlign = 'center';
 
 var caption = document.createElement('h1');
-caption.appendChild(document.createTextNode('<%= @text[:enter_password] %>'));
+caption.appendChild(document.createTextNode('<%= @text[:locked_title] %>'));
 div.appendChild(caption);
 
 var form = document.createElement('form');

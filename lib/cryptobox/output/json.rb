@@ -1,14 +1,17 @@
 require 'json'
 
 class JsonOutput < Output
-  def initialize(config, db)
+  def initialize(config, to, embed, db)
+    super config, to, embed
+
     @config, @db = config, db
-    @include_paths = [ File.join(config[:path][:private], 'include'), config[:path][:include] ]
+    @include_paths = [ File.join(@to, 'include'), config[:path][:include] ]
   end
 
   protected
   def generate
-    target = File.join @config[:path][:private], 'cryptobox.json'
+    target = File.join @to, 'cryptobox.json'
+    target_config = File.join @to, 'cryptobox-config.json'
     result = []
 
     @db.each do |vars, includes|
@@ -41,7 +44,7 @@ class JsonOutput < Output
       result << j
     end
 
-    cfg = { "pbkdf2" =>
+    json = { "pbkdf2" =>
       {
         "salt" => Base64.encode64(@db.pbkdf2_salt).gsub(/\n/, ''),
         "iterations" => @db.pbkdf2_iter
@@ -51,20 +54,16 @@ class JsonOutput < Output
         "keylen" => @db.aes_keylen,
         "iv" => Base64.encode64(@db.aes_iv).gsub(/\n/, ''),
       },
-      "ciphertext" => @db.encrypt(JSON.pretty_generate result),
-      "lock_timeout_minutes" => @config[:ui][:lock_timeout_minutes]
+      "ciphertext" => @db.encrypt(JSON.pretty_generate result)
     }
 
-    cfg["page"] = {}
-    Cryptobox::I18N_PAGE[@config[:ui][:lang]].each {|k, v| cfg["page"][k.to_s] = v }
-
-    File.open(target, 'w') {|f| f.write JSON.pretty_generate cfg }
+    File.open(target, 'w') {|f| f.write JSON.pretty_generate json }
   end
 
   private
   def read_include(includes, vars, type_path)
     if includes.has_key? type_path
-      return JSON.parse(Template.new(@config, includes[type_path], vars).generate)
+      return JSON.parse(Template.new(@config, includes[type_path], @embed, vars).generate)
     end
 
     type = type_path.split('/')[0]
@@ -80,7 +79,7 @@ class JsonOutput < Output
 
     raise "Unknown entry #{type_path}" if path == nil and type != 'webform'
 
-    return JSON.parse(Template.new(@config, path, vars).generate) if path
+    return JSON.parse(Template.new(@config, path, @embed, vars).generate) if path
     return nil
   end
 end

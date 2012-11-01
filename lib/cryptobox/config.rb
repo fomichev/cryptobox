@@ -1,4 +1,5 @@
 require 'date'
+require 'json'
 
 module Cryptobox
   class Config
@@ -19,6 +20,19 @@ module Cryptobox
 
     def [](var)
       return @config[var]
+    end
+
+    # convert selected config options to JSON format
+    def to_json
+      config = {
+        "lock_timeout_minutes" => @config[:ui][:lock_timeout_minutes],
+        "i18n" => {}
+      }
+
+      config["i18n"]["page"] = {}
+      Cryptobox::I18N_PAGE[@config[:ui][:lang]].each {|k, v| config["i18n"]["page"][k.to_s] = v }
+
+      JSON.pretty_generate(config)
     end
 
     def load_config(path)
@@ -64,9 +78,8 @@ module Cryptobox
       set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox.yaml'))
       set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
 
-      set_value user_config, :security, :private_key_path, File.expand_path(File.join(@config[:path][:private], 'cryptobox.key'))
-      set_value user_config, :security, :certificate_path, File.expand_path(File.join(@config[:path][:private], 'cryptobox.crt'))
-
+      set_value user_config, :security, :private_key_path, File.expand_path(File.join(@config[:path][:private], 'depot', 'cryptobox.key'))
+      set_value user_config, :security, :certificate_path, File.expand_path(File.join(@config[:path][:private], 'depot', 'cryptobox.crt'))
     end
   end
 end

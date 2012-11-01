@@ -61,29 +61,28 @@ $(document).ready(function() {
 
 		$("#div-alert").hide();
 
-		/* we need small timeout here because otherwise decryption
-		 * stuff will not let the UI to be redrawn */
-		setTimeout(function() {
-			try {
-				var data = cryptobox.ui.init($("#input-password").val());
+		cryptobox.open($("#input-password").val(), function(json, error) {
+			if (error) {
+				$('#button-unlock').val('<%= @text[:button_unlock] %>');
+				$("#button-unlock").button("refresh");
+
+				$("#div-alert").text(error);
+				$("#div-alert").show();
+			} else {
+				var data = cryptobox.ui.init(json);
 				cryptobox.main.render('unlocked', { page: data });
 				$("#input-password").val("");
 				$("#input-filter").focus();
 
-				cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout, cryptobox.cfg.lock_timeout_minutes, cryptobox.main.lock);
+				cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,
+					cryptobox.config.lock_timeout_minutes,
+					cryptobox.main.lock);
 
 				$('#button-unlock').val('<%= @text[:button_unlock] %>');
 				$("#button-unlock").button("refresh");
 
 				$.mobile.changePage("#div-main");
-
-			} catch(e) {
-				$('#button-unlock').val('<%= @text[:button_unlock] %>');
-				$("#button-unlock").button("refresh");
-
-				$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
-				$("#div-alert").show();
 			}
-		}, 10);
+		});
 	});
 });

@@ -81,46 +81,11 @@ cryptobox.main.detailsClick = function(el) {
 }
 
 cryptobox.main.lock = function() {
-	chrome.extension.getBackgroundPage().cfg = null;
+	chrome.extension.getBackgroundPage().json = null;
 	cryptobox.browser.cleanClipboard();
 	cryptobox.bootstrap.render('locked', this);
 	cryptobox.main.show('#div-locked');
 	$("#input-password").focus();
-}
-
-cryptobox.main.unlock = function(pwd, unlockCallback) {
-	if ("WebSocket" in window) {
-		var timeout = setTimeout(function() {
-			$("#button-unlock").button("reset");
-
-			$("#div-alert").text('<%= @text[:server_not_responding] %>');
-			$("#div-alert").fadeIn();
-		}, 5000);
-
-		var ws = new WebSocket("wss://127.0.0.1:22790");
-		ws.onopen = function() { };
-		ws.onmessage = function (evt) {
-			try {
-				clearTimeout(timeout);
-				cryptobox.cfg = $.parseJSON(evt.data);
-				var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
-
-			} catch(e) {
-				$("#button-unlock").button("reset");
-
-				$("#div-alert").text("<%= @text[:incorrect_password] %> " + e);
-				$("#div-alert").fadeIn();
-			}
-
-			unlockCallback($.parseJSON(text));
-		};
-		ws.onclose = function() { };
-	} else {
-		$("#button-unlock").button("reset");
-
-		$("#div-alert").text('<%= @text[:no_websocket_support] %>');
-		$("#div-alert").fadeIn();
-	}
 }
 
 cryptobox.main.showData = function(data) {
@@ -163,7 +128,7 @@ cryptobox.main.showData = function(data) {
 
 		cryptobox.bootstrap.lockInit(function() {
 			chrome.extension.getBackgroundPage().updateTimeout(); },
-			chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
+			cryptobox.config.lock_timeout_minutes,
 			cryptobox.main.lock);
 		cryptobox.bootstrap.filterInit();
 
@@ -198,9 +163,9 @@ cryptobox.main.showData = function(data) {
 $(function() {
 	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
 
-	if (chrome.extension.getBackgroundPage().cfg != null) {
+	if (chrome.extension.getBackgroundPage().json != null) {
 		chrome.extension.getBackgroundPage().updateTimeout();
-		cryptobox.main.showData(chrome.extension.getBackgroundPage().cfg);
+		cryptobox.main.showData(chrome.extension.getBackgroundPage().json);
 	} else {
 		cryptobox.main.lock();
 
@@ -210,18 +175,21 @@ $(function() {
 			$('#button-unlock').button('loading');
 			$("#div-alert").fadeOut();
 
-			/* we need small timeout here because otherwise decryption
-			 * stuff will not let the UI to be redrawn */
-			setTimeout(function() {
-				cryptobox.main.unlock($("#input-password").val(), function(cfg) {
+			cryptobox.open($("#input-password").val(), function(json, error) {
+				if (error) {
+					$("#button-unlock").button("reset");
+
+					$("#div-alert").text(error);
+					$("#div-alert").fadeIn();
+				} else {
 					$("#input-password").val("");
 
-					chrome.extension.getBackgroundPage().cfg = cfg;
+					chrome.extension.getBackgroundPage().json = json;
 					chrome.extension.getBackgroundPage().startTimeout();
 
-					cryptobox.main.showData(cfg);
-				});
-			}, 10);
+					cryptobox.main.showData(json);
+				}
+			});
 		});
 	}
 

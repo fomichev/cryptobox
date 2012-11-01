@@ -7,6 +7,10 @@
 			<%= incl(File.join(@config[:path][:root], 'build', 'chrome', 'popup.css')) %>
 		</style>
 		<script src="popup.js"></script>
+		<% if @embed %>
+			<script src="cryptobox-data.js"></script>
+		<% end %>
+		<script src="cryptobox-config.js"></script>
 	</head>
 	<body>
 		<div id="content"></div>

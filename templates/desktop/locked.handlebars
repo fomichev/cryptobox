@@ -2,11 +2,11 @@
 	<div id="div-alert" class="alert alert-error"></div>
 
 	<form id="form-unlock" class="form-signin">
-		<h2 class="form-signin-heading"><%= @text[:enter_password] %></h2>
+		<h2 class="form-signin-heading"><%= @text[:locked_title] %></h2>
 
 		<input id="input-password" class="input-block-level" type="password" placeholder="<%= @text[:password] %>">
 
-		<% if @embed %>
+		<% unless @embed %>
 		<input id="input-hostname" class="input-block-level" type="text" placeholder="<%= @text[:hostname] %>">
 		<input id="input-username" class="input-block-level" type="text" placeholder="<%= @text[:username] %>">
 

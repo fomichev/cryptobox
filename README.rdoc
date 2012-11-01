@@ -532,15 +532,21 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
+* add config options to disable building of embedded/depot versions
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
 
 === Bookmarklets
+* TEST FROM BOOKMARKLET! (may not work because of the latest changes)
 * cleanup fill/form bookmarklets
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
 * ? convert form bookmarklet to new 'cryptobox serve' when its ready
+
+=== Common JS
+* eliminate cryptobox.ui.init (integrate in cryptobox.open and convert chrome
+  plugin to its format)
 
 === Desktop HTML
 * build version which can connect to 'cryptobox depot'
@@ -555,6 +561,7 @@ TODO: describe here what libs used and where
 	<div id="demo" class="collapse in"> … </div>
 
 === Chrome extension
+* Align locked page with desktop version
 * Add key binding to show popup (in overlay)
 
 === Firefox extension

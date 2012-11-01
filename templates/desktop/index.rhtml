@@ -9,7 +9,12 @@
 		</style>
 		<script type="text/javascript">
 			<%= incl(File.join(@config[:path][:build], 'desktop', 'index.js')) %>
-			cryptobox.cfg = <%= incl(File.join(@config[:path][:private], 'cryptobox.json')) %>;
+			<% if @embed %>
+				cryptobox.json = <%= incl(File.join(@config[:path][:private], 'cryptobox.json')) %>;
+			<% else %>
+				cryptobox.json = null;
+			<% end %>
+			cryptobox.config = <%= @config.to_json %>;
 		</script>
 	</head>
 	<body>

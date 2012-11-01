@@ -1,7 +1,13 @@
 class Output
-  def run
-    verbose "-> Run #{self.class.name}"
+  def initialize(config, to, embed)
+    @to = to
+    @embed = embed
+  end
 
+  def run
+    verbose "-> Run #{self.class.name} -> #{@to}"
+
+    Dir.mkdir(@to) unless Dir.exist?(@to)
     generate
   end
 

@@ -9,7 +9,7 @@
 	},
 
 	"background" : {
-		"scripts": ["background.js"]
+		"scripts": ["background.js", "cryptobox-config.js"]
 	},
 
 	"content_scripts":

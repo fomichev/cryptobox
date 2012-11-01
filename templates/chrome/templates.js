@@ -5,7 +5,7 @@ templates['locked'] = template(function (Handlebars,depth0,helpers,partials,data
   
 
 
-  return "<div id=\"div-locked\">\n	<div id=\"div-alert\" class=\"alert alert-error\"></div>\n\n	<h1><%= @text[:enter_password] %></h1>\n\n	<div id=\"div-locked\">\n		<form id=\"form-unlock\">\n				<input id=\"input-password\" size=\"16\" type=\"password\">\n				<div>\n				<button id=\"button-unlock\" type=\"submit\" class=\"btn btn-primary\" data-loading-text=\"<%= @text[:button_unlock_decrypt] %>\">\n					<i class=\"icon-lock\"></i> <%= @text[:button_unlock] %>\n				</button>\n			</div>\n		</form>\n	</div>\n</div>\n";});
+  return "<div id=\"div-locked\">\n	<div id=\"div-alert\" class=\"alert alert-error\"></div>\n\n	<h1><%= @text[:locked_title] %></h1>\n\n	<div id=\"div-locked\">\n		<form id=\"form-unlock\">\n				<input id=\"input-password\" size=\"16\" type=\"password\">\n				<div>\n				<button id=\"button-unlock\" type=\"submit\" class=\"btn btn-primary\" data-loading-text=\"<%= @text[:button_unlock_decrypt] %>\">\n					<i class=\"icon-lock\"></i> <%= @text[:button_unlock] %>\n				</button>\n			</div>\n		</form>\n	</div>\n</div>\n";});
 templates['unlocked'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
   var buffer = "", stack1, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;

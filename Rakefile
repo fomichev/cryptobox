@@ -58,6 +58,8 @@ task :sprockets do
   require 'sprockets'
   require "yui/compressor"
 
+  compress = true
+
   def embed_images(text, dirs)
     text.gsub(/url\((?:"|')?([^#?"')]*)([^"')]*)(?:"|')?\)*/) do
       result = nil
@@ -101,8 +103,10 @@ task :sprockets do
       content = env[a].to_s
 
       puts "Process #{filename}..."
-      content = js.compress(content) if filename =~ /\.js$/
-      content = css.compress(content) if filename =~ /\.css$/
+      if compress
+        content = js.compress(content) if filename =~ /\.js$/
+        content = css.compress(content) if filename =~ /\.css$/
+      end
       content = embed_images(content, images_dirs) if filename =~ /\.css$/
 
       # replace </script> with <\/script>

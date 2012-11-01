@@ -7,25 +7,15 @@ cryptobox.ui.addBr = function(text) {
 		return "";
 }
 
-cryptobox.ui.measure = function(name, fn) {
-//	var begin = Date.now(), end;
-	var result = fn();
-//	end = Date.now();
-//	console.log(name + ' ' + (end - begin) + 'ms');
-	return result;
-}
-
 cryptobox.ui.render = function (name, context) {
-	return cryptobox.ui.measure('render ' + name, function(){
+	return cryptobox.measure('render ' + name, function(){
 		return Handlebars.templates[name](context);
 	});
 }
 
-cryptobox.ui.init = function(pwd) {
+cryptobox.ui.init = function(data) {
 	var result = [];
-	cryptobox.ui.measure('decrypt', function(){
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.cfg.pbkdf2.salt, cryptobox.cfg.ciphertext, cryptobox.cfg.pbkdf2.iterations, cryptobox.cfg.aes.keylen, cryptobox.cfg.aes.iv);
-	var data = $.parseJSON(text);
+	cryptobox.measure('ui.init', function(){
 	var map = {};
 
 	var pages = {};
@@ -46,7 +36,7 @@ cryptobox.ui.init = function(pwd) {
 	}
 
 	for (var page_key in pages) {
-		var p = { id: page_key, name: cryptobox.cfg.page[page_key], tag: [] };
+		var p = { id: page_key, name: cryptobox.config.i18n.page[page_key], tag: [] };
 
 		for (var tag_key in pages[page_key])
 			p.tag.push({ name: tag_key, item: pages[page_key][tag_key] });

@@ -1,13 +1,12 @@
 //= require js/cryptobox.js
 //= require js/lock.js
 
-var cfg = null;
 var fill = {};
 
 chrome.extension.getBackgroundPage().startTimeout = function() {
 	cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,
-			chrome.extension.getBackgroundPage().cfg.lock_timeout_minutes,
-			function() { chrome.extension.getBackgroundPage().cfg = null; }
+			cryptobox.config.lock_timeout_minutes,
+			function() { chrome.extension.getBackgroundPage().json = null; }
 	);
 }
 
