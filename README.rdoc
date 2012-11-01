@@ -387,7 +387,7 @@ and additionally:
 
   templates/extern/jquery
 
-* {Twitter Bootstrap 2.1.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
+* {Twitter Bootstrap 2.2.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
 
   templates/extern/bootstrap
 
@@ -544,7 +544,6 @@ TODO: describe here what libs used and where
 
 === Desktop HTML
 * build version which can connect to 'cryptobox depot'
-* update bootstrap and try to use http://twitter.github.com/bootstrap/examples/signin.html for login page
 * ? add some way to show hidden entries
 * Check login with token
 * ? add possibility to connect to new version of 'cryptobox serve'

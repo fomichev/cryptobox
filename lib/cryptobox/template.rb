@@ -6,6 +6,7 @@ class Template
     @config = config
     @text = Cryptobox::I18N_TEXT[config[:ui][:lang]]
     @vars = vars
+    @embed = false
   end
 
   def incl(path)

@@ -1,14 +1,18 @@
 <div data-role="page" id="div-locked">
 	<div data-role="header">
-		<h1><%= @text[:title] %></h1>
+		<h1><%= @text[:enter_password] %></h1>
 	</div>
 
 	<div data-role="content">
 		<div id="div-alert" class="ui-bar ui-bar-e"></div>
 
 		<form id="form-unlock" action="#div-main" method="get" data-ajax="false">
-			<label for="input-password"><%= @text[:enter_password] %></label>
-			<input type="password" id="input-password" value="" />
+			<input type="password" id="input-password" value="" placeholder="<%= @text[:password] %>" />
+			<% if @embed %>
+			<input type="text" id="input-hostname" value="" placeholder="<%= @text[:hostname] %>" />
+			<input type="text" id="input-username" value="" placeholder="<%= @text[:username] %>" />
+			<label><input id="input-save" type="checkbox"/ > <%= @text[:save_settings] %></label>
+			<% end %>
 			<input id="button-unlock" type="submit" value="<%= @text[:button_unlock] %>" />
 		</form>
 	</div>

@@ -1,16 +1,22 @@
-<div id="div-locked" class="container">
+<div class="container">
 	<div id="div-alert" class="alert alert-error"></div>
 
-	<h1><%= @text[:enter_password] %></h1>
+	<form id="form-unlock" class="form-signin">
+		<h2 class="form-signin-heading"><%= @text[:enter_password] %></h2>
 
-	<div id="div-locked">
-		<form id="form-unlock">
-			<input id="input-password" size="16" type="password">
-			<div>
-				<button id="button-unlock" type="submit" class="btn btn-primary" data-loading-text="<%= @text[:button_unlock_decrypt] %>">
-					<i class="icon-lock"></i> <%= @text[:button_unlock] %>
-				</button>
-			</div>
-		</form>
-	</div>
+		<input id="input-password" class="input-block-level" type="password" placeholder="<%= @text[:password] %>">
+
+		<% if @embed %>
+		<input id="input-hostname" class="input-block-level" type="text" placeholder="<%= @text[:hostname] %>">
+		<input id="input-username" class="input-block-level" type="text" placeholder="<%= @text[:username] %>">
+
+		<label class="checkbox">
+			<input id="input-save" type="checkbox"> <%= @text[:save_settings] %>
+		</label>
+		<% end %>
+
+		<button id="button-unlock" type="submit" class="btn btn-primary" data-loading-text="<%= @text[:button_unlock_decrypt] %>">
+			<i class="icon-lock"></i> <%= @text[:button_unlock] %>
+		</button>
+	</form>
 </div>

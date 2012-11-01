@@ -5,7 +5,7 @@ module Cryptobox
     en: {
     title: 'Cryptobox',
     noscript: 'Sorry, this thing heavily depends on JavaScript.',
-    enter_password: 'Enter master password',
+    enter_password: 'Enter password',
     button_unlock: 'Unlock',
     button_unlock_decrypt: 'Decrypting...',
     form_bookmarklet: 'Cryptobox bookmarklet',
@@ -45,11 +45,13 @@ module Cryptobox
     cleared_clipboard: 'Cryptobox has cleared your clipboard!',
     server_not_responding: 'Cryptobox server is not responding!',
     no_websocket_support:  'Your browser does not support WebSockets!',
+    hostname: 'Hostname',
+    save_settings: 'Save settings in persistent storage',
   },
     ru: {
     title: 'Cryptobox',
     noscript: 'Извините, но без JavaScript\'а ничего работать не будет.',
-    enter_password: 'Введите главный пароль',
+    enter_password: 'Введите пароль',
     button_unlock: 'Разблокировать',
     button_unlock_decrypt: 'Расшифровываю...',
     form_bookmarklet: 'Cryptobox букмарклет',
@@ -89,6 +91,8 @@ module Cryptobox
     cleared_clipboard: 'Cryptobox очистил буфер обмена!',
     server_not_responding: 'Сервер Cryptobox не отвечает!',
     no_websocket_support:  'Ваш браузер не поддерживает технологию WebSocket!',
+    hostname: 'Имя хоста',
+    save_settings: 'Сохранить настройки',
   }
   }
 

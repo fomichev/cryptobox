@@ -59,7 +59,7 @@ task :sprockets do
   require "yui/compressor"
 
   def embed_images(text, dirs)
-    text.gsub(/url\("?([^")]*)"?\)*/) do
+    text.gsub(/url\((?:"|')?([^#?"')]*)([^"')]*)(?:"|')?\)*/) do
       result = nil
       dirs.each do |dir|
         image = File.join(dir, $1)
@@ -68,7 +68,7 @@ task :sprockets do
         puts "Embed image #{$1}"
         data = File.open(image, 'rb').read
 
-        result = 'url(data:image/png;base64,' + Base64.encode64(data).gsub(/\n/, '') + ')'
+        result = "url(data:image/png;base64,#{Base64.encode64(data).gsub(/\n/, '')}#{$2})"
 
         break
       end

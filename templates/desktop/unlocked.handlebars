@@ -54,61 +54,61 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div id="div-details" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3></h3>
+	<div id="div-details" class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3></h3>
+		</div>
+		<div class="modal-body"></div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+		</div>
 	</div>
-	<div class="modal-body"></div>
-	<div class="modal-footer">
-		<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
-	</div>
-</div>
 
-<div id="div-generate" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3><%= @text[:title_generate] %></h3>
+	<div id="div-generate" class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3><%= @text[:title_generate] %></h3>
+		</div>
+		<div class="modal-body">
+			<form>
+				<label><%= @text[:generate_length] %></label>
+				<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" />
+				<label class="checkbox">
+					<input type="checkbox" id="input-include-num" checked /> <%= @text[:generate_numbers] %>
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" id="input-include-punc" checked /> <%= @text[:generate_punctuation] %>
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" id="input-pronounceable" /> <%= @text[:generate_pronounceable] %>
+				</label>
+				<label><%= @text[:generated] %></label>
+				<input type="text" id="intput-generated-password" size="30" />
+			</form>
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+			<a id="button-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
+		</div>
 	</div>
-	<div class="modal-body">
-		<form>
-			<label><%= @text[:generate_length] %></label>
-			<input type="text" id="input-password-length" value="<%= @config[:ui][:default_password_length] %>" size="4" />
-			<label class="checkbox">
-				<input type="checkbox" id="input-include-num" checked /> <%= @text[:generate_numbers] %>
-			</label>
-			<label class="checkbox">
-				<input type="checkbox" id="input-include-punc" checked /> <%= @text[:generate_punctuation] %>
-			</label>
-			<label class="checkbox">
-				<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
-			</label>
-			<label class="checkbox">
-				<input type="checkbox" id="input-pronounceable" /> <%= @text[:generate_pronounceable] %>
-			</label>
-			<label><%= @text[:generated] %></label>
-			<input type="text" id="intput-generated-password" size="30" />
-		</form>
-	</div>
-	<div class="modal-footer">
-		<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
-		<a id="button-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
-	</div>
-</div>
 
-<div id="div-token" class="modal hide fade">
-	<div class="modal-header">
-		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3><%= @text[:title_token] %></h3>
-	</div>
-	<div class="modal-body">
-		<input type="text" id="input-json" />
-	</div>
-	<div class="modal-footer">
-		<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
-		<a id="button-token" href="#" class="btn btn-success" target="_blank"><%= @text[:get_token] %></a>
-		<a id="button-token-login" href="#" class="btn btn-primary"><%= @text[:log_in] %></a>
+	<div id="div-token" class="modal hide fade">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3><%= @text[:title_token] %></h3>
+		</div>
+		<div class="modal-body">
+			<input type="text" id="input-json" />
+		</div>
+		<div class="modal-footer">
+			<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+			<a id="button-token" href="#" class="btn btn-success" target="_blank"><%= @text[:get_token] %></a>
+			<a id="button-token-login" href="#" class="btn btn-primary"><%= @text[:log_in] %></a>
+		</div>
 	</div>
 </div>
