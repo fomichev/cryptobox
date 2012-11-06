@@ -581,20 +581,41 @@ TODO: describe here what libs used and where
 * Then navigate to https://127.0.0.1:22790/ in browser and add this certificate to exceptions list
 * Commands format:
   aes_key = pbkdf2(salt, password, iter)
-  enc_dec_key = sha256(lowercase(username) + aes_key) (use this key to encrypt data before sending)
-  storage_key = sha256(lowercase(username) + enc_dec_key) (use this key to authenticate user)
+  user_key = sha256(hostname + username)
+
+  # register new user
+  # # send registration request
+  depot <- { command: 'register', data: '<user_key>', error: 0 }
+  # # server generates random 512bit data and asks user to sing it
+  depot -> { command: 'sign', data: '0011223344....', error: 0 }
+  # # user received data, does sha256(aes(data, aes_key)) and sends result back
+  depot <- { command: 'sign_ack', data: 'aabbccddee....', error: 0 }
+  # # server return ok (and stores returned key) or fail (user already exist)
+  depot -> { command: 'register_ack', data: {}, error: 0/1 }
+
+
+  # authorization
+  # # send authorization request
+  depot <- { command: 'hello', data: '<user_key>', error: 0 }
+  # # server takes stored random 512bit data and sends it to the user
+  depot -> { command: 'hello_ack', data: '0011223344....', error: 0 }
+
+
+  # # user received data, does token = sha256(aes(data, aes_key)) and uses
+  # # it for the next commands
+
 
   # get encrypted data
-  { version: '1', user: '$username', key: '$storage_key', command: 'get' }
+  depot <- { command: 'get', token: '<token>' }
   # put encrypted data (override old)
-  { version: '1', user: '$username', key: '$storage_key', command: 'put', data: {} }
+  depot <- { command: 'put', token: '<token>', data: {} }
 
-  # try to register new user
-  { version: '1', user: '$username', key: '$storage_key', command: 'register' }
   # delete existing user and all its data
-  { version: '1', user: '$username', key: '$storage_key', command: 'unregister' }
+  depot <- { command: 'unregister', token: '<token>' }
 
   Ban for 1 second when wrong password or command is given.
+
+  # each message should also contain cryptobox_version and format fields
 
 * Add some option to config which tells to which server we have to push the data
   or store this information directly in the cryptobox itself

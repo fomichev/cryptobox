@@ -4,58 +4,71 @@ if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
   $:.unshift(File.expand_path('../../lib', __FILE__))
 end
 
-require 'gli'
+require 'trollop'
 require 'json'
 require 'em-websocket'
 
 require 'cryptobox'
 
-$verbose = false
-config = nil
-
-include GLI::App
-
-program_desc 'Secure sensitive information manager'
-
-version Cryptobox::VERSION
-
-desc 'Run verbosely'
-switch [:v,:verbose], :negatable => false
-
-desc 'Open /dev/tty to read password'
-switch [:nointeractive], :negatable => false
-
-desc 'Configuration file path'
-arg_name 'PATH'
-flag [:c,:config]
-
-pre do |global,command,options,args|
-  config = Cryptobox::Config.new global[:config]
-
-  $verbose = false if global.has_key? :noverbose
-  options[:interactive] = true
-  options[:interactive] = false if global.has_key? :nointeractive
-
-  true
+def desc(cmd, desc, args='')
+  banner "#{desc}\n\nUsage: cryptobox #{cmd}#{cmd ? ' ' : ''}[options] #{args}\n\nOptions:"
 end
 
-arg_name 'filter', :multiple
-command :cat do |c|
-  c.desc 'Print value of the given key if number of filtered items is 1'
-  c.arg_name 'KEY'
-  c.flag [:k,:key]
+global_opts = Trollop::options do
+  version "Cryptobox #{Cryptobox::VERSION} (c) Stanislav Fomichev"
+  desc nil, 'Secure sensitive information manager', '[cat|create|edit|passwd|serve|cert] [options]'
+  opt :verbose, 'Be verbose', :short => '-V', :default => false, :short => :none
+  opt :no_interactive, 'Open /dev/tty to read password', :short => :none
+  opt :config, 'Configuration file path', :short => '-c', :type => :string
+  stop_on %w{cat create edit passwd serve cert}
+end
 
-  c.action do |global_options, options, args|
-    command_cat(config, options, args);
+cmd = ARGV.shift
+cmd_opts = case cmd
+  when "cat"
+    Trollop::options do
+      desc cmd, 'Print selected entries to the stdout', '[field=value...]'
+      opt :key, 'Print value of specific key', :type => :string
+    end
+  when "create"
+    Trollop::options do
+      desc cmd, 'Create new empty database'
+    end
+  when "edit"
+    Trollop::options do
+      desc cmd, 'Edit encrypted database with text editor'
+      opt :no_edit, 'Don\'t start editor, just process current database', :short => :none
+      opt :no_update, 'Don\'t process database and generate applications', :short => :none
+      opt :stdout, 'Print decrypted data to standard output', :short => :none
+      opt :stdin, 'Read decrypted data from standard input', :short => :none
+      opt :no_pipe, 'Don\'t use named fifo for data exchange with editor', :short => :none
+    end
+  when "passwd"
+    Trollop::options do
+      desc cmd, 'Change database password'
+    end
+  when "serve"
+    Trollop::options do
+      desc cmd, 'Start server application'
+    end
+  when "cert"
+    Trollop::options do
+      desc cmd, 'Create self signed SSL sertificate (TEMPORARY)'
+    end
+  else
+    Trollop::die "unknown subcommand #{cmd.inspect}"
   end
-end
 
-def command_cat(config, options, args)
+config = Cryptobox::Config.new(global_opts[:config])
+$verbose = global_opts[:verbose]
+interactive = !global_opts[:no_interactive]
+
+def command_cat(config, interactive, key, args)
   # TODO
   db = Cryptobox::Db.new config[:path][:cryptobox],
     config[:path][:backup],
     config[:cryptobox][:keep_backups],
-    Cryptobox::ask_password('Password:', options[:interactive])
+    Cryptobox::ask_password('Password:', interactive)
   db.load
 
   entries = []
@@ -76,8 +89,8 @@ def command_cat(config, options, args)
     entries << vars if add
   end
 
-  if options[:key]
-    k = options[:key].to_sym
+  if key
+    k = key.to_sym
 
     exit_now!('Too many entries', 1) if entries.size != 1
     exit_now!('Key is not found', 2) if not entries[0].has_key? k # TODO: add error printout
@@ -88,14 +101,7 @@ def command_cat(config, options, args)
   end
 end
 
-desc 'Create new empty database'
-command :create do |c|
-  c.action do |global_options, options, args|
-    command_create(config, options, args);
-  end
-end
-
-def command_create(config, options, args)
+def command_create(config, interactive)
   if File.exist? config[:path][:cryptobox]
     return unless Cryptobox::yn "Database already exists, do you want to overwrite it?"
   end
@@ -103,9 +109,9 @@ def command_create(config, options, args)
   db = Cryptobox::Db.new config[:path][:cryptobox],
     config[:path][:backup],
     config[:cryptobox][:keep_backups],
-    Cryptobox::ask_password('Password:', options[:interactive])
+    Cryptobox::ask_password('Password:', interactive)
   begin
-    db.create Cryptobox::ask_password('Confirm password:', options[:interactive])
+    db.create Cryptobox::ask_password('Confirm password:', interactive)
 
     db.plaintext = '# Lines started with # are comments'
     db.save
@@ -115,45 +121,23 @@ def command_create(config, options, args)
   end
 end
 
-desc 'Edit database'
-command :edit do |c|
-  c.desc 'Don\'t start editor, just process current database'
-  c.switch [:noedit], :negatable => false
-
-  c.desc 'Don\'t process database and generate applications'
-  c.switch [:noupdate], :negatable => false
-
-  c.desc 'Print decrypted data to standard output'
-  c.switch [:stdout], :negatable => false
-
-  c.desc 'Read decrypted data from standard input'
-  c.switch [:stdin], :negatable => false
-
-  c.desc 'Don\'t use named fifo for data exchange with editor'
-  c.switch [:nopipe], :negatable => false
-
-  c.action do |global_options, options, args|
-    command_edit(config, options, args);
-  end
-end
-
-def command_edit(config, options, args)
+def command_edit(config, interactive, stdout, stdin, edit, update, pipe)
   db = Cryptobox::Db.new config[:path][:cryptobox],
     config[:path][:backup],
     config[:cryptobox][:keep_backups],
-    Cryptobox::ask_password('Password:', options[:interactive])
+    Cryptobox::ask_password('Password:', interactive)
   db.load
 
-  if options[:stdout]
+  if stdout
     $stdout.puts db.plaintext
     return
   end
 
-  unless options[:noedit]
-    if options[:stdin]
+  if edit
+    if stdin
       db.plaintext = $stdin.read
     else
-      new_plaintext = edit config[:path][:home], config[:ui][:editor], db.plaintext, options[:pipe]
+      new_plaintext = edit config[:path][:home], config[:ui][:editor], db.plaintext, pipe
       return if new_plaintext == db.plaintext
 
       db.plaintext = new_plaintext
@@ -162,7 +146,7 @@ def command_edit(config, options, args)
     db.save
   end
 
-  unless options[:noupdate]
+  if update
     # generate embedded versions
     JsonOutput.new(config, config[:path][:private], true, db).run
 
@@ -187,32 +171,18 @@ def command_edit(config, options, args)
   end
 end
 
-desc 'Change database password'
-command :passwd do |c|
-  c.action do |global_options, options, args|
-    command_passwd(config, options, args);
-  end
-end
-
-def command_passwd(config, options, args)
+def command_passwd(config, interactive)
   db = Cryptobox::Db.new config[:path][:cryptobox],
     config[:path][:backup],
     config[:cryptobox][:keep_backups],
-    Cryptobox::ask_password('Password:', options[:interactive])
+    Cryptobox::ask_password('Password:', interactive)
   db.load
-  db.change_password Cryptobox::ask_password('New password:', options[:interactive]),
-    Cryptobox::ask_password('Confirm password:', options[:interactive])
+  db.change_password Cryptobox::ask_password('New password:', interactive),
+    Cryptobox::ask_password('Confirm password:', interactive)
   db.save
 end
 
-desc 'Start server application'
-command :serve do |c|
-  c.action do |global_options, options, args|
-    command_serve(config, options, args);
-  end
-end
-
-def command_serve(config, options, args)
+def command_serve(config)
   address = "127.0.0.1"
   port = 22790
 
@@ -240,14 +210,7 @@ def command_serve(config, options, args)
   end
 end
 
-desc 'Create self signed SSL sertificate (TEMPORARY)'
-command :cert do |c|
-  c.action do |global_options, options, args|
-    command_cert(config, options, args);
-  end
-end
-
-def command_cert(config, options, args)
+def command_cert(config)
   require 'openssl'
 
   def create_certificate(c='RU', st='Moscow', l='Moscow', host='127.0.0.1', email='s@fomichev.me')
@@ -283,4 +246,17 @@ def command_cert(config, options, args)
   File.open("cryptobox.crt", "w") { |f| f.write cert }
 end
 
-exit run(ARGV)
+case cmd
+when "cat"
+  command_cat(config, interactive, cmd_opts[:key], ARGV)
+when "create"
+  command_create(config, interactive)
+when "edit"
+  command_edit(config, interactive, cmd_opts[:stdout], cmd_opts[:stdin], !cmd_opts[:no_edit], !cmd_opts[:no_update], !cmd_opts[:no_pipe])
+when "passwd"
+  command_passwd(config, interactive)
+when "serve"
+  command_serve(config)
+when "cert"
+  command_cert(config)
+end

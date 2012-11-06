@@ -1,7 +1,7 @@
 source :rubygems
 
 group :runtime do
-  gem 'gli'
+  gem 'trollop'
   gem 'em-websocket'
 end
 
