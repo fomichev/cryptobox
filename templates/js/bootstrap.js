@@ -1,8 +1,11 @@
 /* common functionality shared between chrome extension and desktop html */
 cryptobox.bootstrap = {};
 
+cryptobox.bootstrap._collapsible_id = 0;
 cryptobox.bootstrap.collapsible = function(value, copy) {
-	return '<div><a href="#" class="collapsible btn btn-mini" data-toggle="button" onClick="javascript:return false;"><%= @text[:button_hide_reveal] %></a>&nbsp;' + copy + '</div><div style="display: none">' + value + '</div>';
+	var id = cryptobox.bootstrap._collapsible_id++;
+
+	return '<button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#collapsible-' + id + '"><%= @text[:button_hide_reveal] %></button>&nbsp;' + copy + '<div id="collapsible-' + id + '" class="collapse">' + value + '</div>';
 }
 
 cryptobox.bootstrap.createDetails = function(entry, map) {
@@ -64,11 +67,3 @@ cryptobox.bootstrap.render = function(name, context) {
 	$('#content').html(cryptobox.ui.render(name, context));
 	$('#content').fadeIn();
 }
-
-$(function() {
-	$('.collapsible').live('click', function() {
-		event.preventDefault();
-
-		$(this).parent().next().toggle();
-	});
-});

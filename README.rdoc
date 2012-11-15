@@ -538,27 +538,18 @@ TODO: describe here what libs used and where
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
 
 === Bookmarklets
-* TEST FROM BOOKMARKLET! (may not work because of the latest changes)
+* TEST FORM/FILL BOOKMARKLETS! (may not work because of the latest changes)
 * cleanup fill/form bookmarklets
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
-* ? convert form bookmarklet to new 'cryptobox serve' when its ready
+* form bookmarklet: add support for 'cryptobox depot'
 
 === Common JS
 * eliminate cryptobox.ui.init (integrate in cryptobox.open and convert chrome
   plugin to its format)
 
 === Desktop HTML
-* build version which can connect to 'cryptobox depot'
-* ? add some way to show hidden entries
 * Check login with token
-* ? add possibility to connect to new version of 'cryptobox serve'
-* Use the following bootstrap feature for hide/show functionality:
-	<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo">
-	simple collapsible
-	</button>
-
-	<div id="demo" class="collapse in"> … </div>
 
 === Chrome extension
 * Align locked page with desktop version
@@ -572,8 +563,6 @@ TODO: describe here what libs used and where
 * Rename to 'cryptobox depot'
 * Will allow to add Firefox mobile extension
 * We may need:
-  - support some kind of certificates to prevent man-in-the-middle attacks (check secure WebSockets)
-  - user will use different credentials to access this server (NOT MASTER PASS)
   - different users may publish their data to the same server (public)
 
 * openssl req -new -x509 -days 365 -nodes -out cryptobox.crt -keyout cryptobox.key
