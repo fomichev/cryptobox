@@ -26,27 +26,32 @@ module Cryptobox
       end
 
       if update
+
         # generate embedded versions
-        JsonOutput.new(config, config[:path][:private], true, db).run
+        if config[:cryptobox][:embed]
+          JsonOutput.new(config, config[:path][:private], true, db).run
 
-        DesktopHtmlOutput.new(config, config[:path][:private], true).run
-        MobileHtmlOutput.new(config, config[:path][:private], true).run
+          DesktopHtmlOutput.new(config, config[:path][:private], true).run
+          MobileHtmlOutput.new(config, config[:path][:private], true).run
 
-        FillBookmarkletOutput.new(config, config[:path][:private], true).run
-        FormBookmarkletOutput.new(config, config[:path][:private], true).run
+          FillBookmarkletOutput.new(config, config[:path][:private], true).run
+          FormBookmarkletOutput.new(config, config[:path][:private], true).run
 
-        ChromeOutput.new(config, config[:path][:private], true).run
+          ChromeOutput.new(config, config[:path][:private], true).run
+        end
 
         # generate versions for depot
-        JsonOutput.new(config, File.join(config[:path][:private], 'depot'), false, db).run
+        if config[:cryptobox][:depot]
+          JsonOutput.new(config, File.join(config[:path][:private], 'depot'), false, db).run
 
-        DesktopHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
-        MobileHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+          DesktopHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+          MobileHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
 
-        FillBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
-        FormBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+          FillBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+          FormBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
 
-        ChromeOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+          ChromeOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+        end
       end
     end
   end

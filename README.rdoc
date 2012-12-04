@@ -503,6 +503,7 @@ TODO: describe here what libs used and where
   - broken web forms (do they still work? recheck!)
   - cryptobox.json
   - 'cryptobox serve' and how it talks to extension
+  - cryptobox.embed & cryptobox.depot
   - how to integrate include into yaml
   - in vim to read database :r !cryptobox edit --stdout (enter password and press enter)
            to save database :w !cryptobox edit --stdin
@@ -532,7 +533,6 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
-* add config options to disable building of embedded/depot versions
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
