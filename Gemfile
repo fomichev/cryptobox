@@ -2,7 +2,7 @@ source :rubygems
 
 group :runtime do
   gem 'trollop'
-  gem 'em-websocket'
+  gem 'websocket'
 end
 
 group :development do

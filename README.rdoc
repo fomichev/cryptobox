@@ -334,10 +334,10 @@ Put 'include' key in your database, e.g:
 On Ruby side standard bindings to OpenSSL are used to manage database,
 and additionally:
 
-* {EM-WebSocket}[https://github.com/igrigorik/em-websocket] - MIT
-  Used to serve encrypted JSON to Chrome extension
+* {WebSocket Ruby}[https://github.com/imanel/websocket-ruby] - MIT
+  Serve encrypted JSON
 
-  gem install em-websocket
+  gem install websocket
 
 ==== The following components are required only for developers
 * {ExecJS}[https://github.com/sstephenson/execjs] - MIT
@@ -574,8 +574,6 @@ TODO: describe here what libs used and where
 * Allow path.remote to specify remote server to use (in the form of
   [cryptobox://]<username>@<hostname>[:port]
   this way we will push cryptobox.json also to this server upon changes
-* Probably use https://github.com/imanel/websocket-ruby for client and
-  server
 
 * openssl req -new -x509 -days 365 -nodes -out cryptobox.crt -keyout
   cryptobox.key
