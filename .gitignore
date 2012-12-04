@@ -4,5 +4,6 @@ private*/
 *rc.yml
 
 Gemfile.lock
+.bundle/
 
 tmp/

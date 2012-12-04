@@ -161,7 +161,7 @@ def edit_file(fifo_name, editor, initial_text)
   text
 end
 
-def edit(home, editor, initial_text, use_pipe)
+def run_editor(home, editor, initial_text, use_pipe)
   fifo_name = (0...8).map{65.+(SecureRandom.random_number(25)).chr}.join + '.yml'
   text = nil
 

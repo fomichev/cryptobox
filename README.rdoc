@@ -536,38 +536,52 @@ TODO: describe here what libs used and where
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
+* ssh-agent/gnome-keyring daemon so we may hook up to the existing browsers/tools
 
 === Bookmarklets
 * TEST FORM/FILL BOOKMARKLETS! (may not work because of the latest changes)
 * cleanup fill/form bookmarklets
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
-* form bookmarklet: add support for 'cryptobox depot'
+* fill bookmarklet: add support for 'cryptobox depot'
 
 === Common JS
-* eliminate cryptobox.ui.init (integrate in cryptobox.open and convert chrome
-  plugin to its format)
+* eliminate cryptobox.ui.init (integrate in cryptobox.open and convert
+  chrome plugin to its format)
+* keep passwords in memory encrypted (with some temporary key), decrypt as soon
+  as user needs them; may prevent leaking when swapping or doing memory dump
 
 === Desktop HTML
 * Check login with token
 
 === Chrome extension
-* Align locked page with desktop version
+* Align locked page with desktop version (left justify)
 * Add key binding to show popup (in overlay)
 
 === Firefox extension
-* Implement desktop firefox plugin
-* Implement mobile firefox plugin
+* Implement desktop Firefox plugin
+* Implement mobile Firefox plugin
 
-=== Read only server which serves encrypted data (evolution of 'cryptobox serve')
+=== Read only server which serves encrypted data
 * Rename to 'cryptobox depot'
-* Will allow to add Firefox mobile extension
-* We may need:
-  - different users may publish their data to the same server (public)
+* Add command to do registration and password change:
+  - cryptobox depot register
+  - cryptobox depot passwd
+  - by default execute: cryptobox depot start (to start local server)
+  - cryptobox depot certificate (to generate self signed certificates)
+* Will allow to add Firefox mobile extension (and other mobile application
+  without requiring user to have local copy of cryptobox.json on the device)
+* Allow path.remote to specify remote server to use (in the form of
+  [cryptobox://]<username>@<hostname>[:port]
+  this way we will push cryptobox.json also to this server upon changes
+* Probably use https://github.com/imanel/websocket-ruby for client and
+  server
 
-* openssl req -new -x509 -days 365 -nodes -out cryptobox.crt -keyout cryptobox.key
+* openssl req -new -x509 -days 365 -nodes -out cryptobox.crt -keyout
+  cryptobox.key
   127.0.0.1 for common name
-* Then navigate to https://127.0.0.1:22790/ in browser and add this certificate to exceptions list
+* Then navigate to https://127.0.0.1:22790/ in browser and add this
+  certificate to exceptions list
 * Commands format:
   aes_key = pbkdf2(salt, password, iter)
   user_key = sha256(hostname + username)
@@ -605,6 +619,3 @@ TODO: describe here what libs used and where
   Ban for 1 second when wrong password or command is given.
 
   # each message should also contain cryptobox_version and format fields
-
-* Add some option to config which tells to which server we have to push the data
-  or store this information directly in the cryptobox itself
