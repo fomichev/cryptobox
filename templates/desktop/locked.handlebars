@@ -7,12 +7,7 @@
 		<input id="input-password" class="input-block-level" type="password" placeholder="<%= @text[:password] %>">
 
 		<% unless @embed %>
-		<input id="input-hostname" class="input-block-level" type="text" placeholder="<%= @text[:hostname] %>">
-		<input id="input-username" class="input-block-level" type="text" placeholder="<%= @text[:username] %>">
-
-		<label class="checkbox">
-			<input id="input-save" type="checkbox"> <%= @text[:save_settings] %>
-		</label>
+		<label><input id="input-remember" type="checkbox" checked="checked" /> <%= @text[:remember_dropbox_credentials] %></label>
 		<% end %>
 
 		<button id="button-unlock" type="submit" class="btn btn-primary" data-loading-text="<%= @text[:button_unlock_decrypt] %>">

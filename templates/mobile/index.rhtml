@@ -19,6 +19,10 @@
 			<% end %>
 			cryptobox.config = <%= @config.to_json %>;
 		</script>
+		<% unless @embed %>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/0.7.1/dropbox.min.js">
+			</script>
+		<% end %>
 	</head>
 	<body></body>
 </html>

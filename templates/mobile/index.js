@@ -12,6 +12,7 @@
 // =require extern/CryptoJS/components/pbkdf2.js
 
 // =require js/cryptobox.js
+// =require js/dropbox.js
 // =require js/form.js
 // =require js/ui.js
 // =require js/handlebars.js
@@ -24,6 +25,7 @@ cryptobox.main = {};
 cryptobox.main.lock = function() {
 	cryptobox.lock.stopTimeout();
 	$.mobile.changePage("#div-locked", "slideup");
+	cryptobox.main.prepare();
 	$("#input-password").focus();
 }
 
@@ -31,7 +33,31 @@ cryptobox.main.render = function(name, context) {
 	$('body').append(cryptobox.ui.render(name, context));
 }
 
+cryptobox.main.prepare = function() {
+	cryptobox.dropbox.prepare(
+		function(url) {
+			cryptobox.main.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
+		},
+		function(error) {
+			if (error) {
+				cryptobox.main.showAlert(true, 'Dropbox authentication error');
+			} else {
+				cryptobox.main.showAlert(false, 'Successfully restored Dropbox credentials');
+			}
+		});
+}
+
+cryptobox.main.showAlert = function(error, text) {
+	$("#div-alert").html(text);
+	$("#div-alert").show();
+}
+
+cryptobox.main.hideAlert = function() {
+	$("#div-alert").hide();
+}
+
 $(document).ready(function() {
+	cryptobox.main.prepare();
 	cryptobox.main.render('locked', this);
 	$.mobile.initializePage();
 	$("#input-password").focus();
@@ -48,7 +74,7 @@ $(document).ready(function() {
 	$('.button-login').live('click', function() {
 		var el = $.parseJSON($(this).attr('json'));
 		if (cryptobox.form.withToken(el.form))
-			alert("<%= @text[:no_login_with_token] %>");
+			cryptobox.main.showAlert(true, "<%= @text[:no_login_with_token] %>");
 		else
 			cryptobox.form.login(true, el.form);
 	});
@@ -56,18 +82,19 @@ $(document).ready(function() {
 	$("#form-unlock").live('submit', function(event) {
 		event.preventDefault();
 
+		cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
+
 		$('#button-unlock').val('<%= @text[:button_unlock_decrypt] %>');
 		$("#button-unlock").button("refresh");
 
-		$("#div-alert").hide();
+		cryptobox.main.hideAlert();
 
 		cryptobox.open($("#input-password").val(), function(json, error) {
 			if (error) {
 				$('#button-unlock').val('<%= @text[:button_unlock] %>');
 				$("#button-unlock").button("refresh");
 
-				$("#div-alert").text(error);
-				$("#div-alert").show();
+				cryptobox.main.showAlert(true, error);
 			} else {
 				var data = cryptobox.ui.init(json);
 				cryptobox.main.render('unlocked', { page: data });

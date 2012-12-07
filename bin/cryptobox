@@ -14,11 +14,11 @@ end
 
 global_opts = Trollop::options do
   version "Cryptobox #{Cryptobox::VERSION} (c) Stanislav Fomichev"
-  desc nil, 'Secure sensitive information manager', '[cat|create|edit|passwd|depot] [options]'
+  desc nil, 'Secure sensitive information manager', '[cat|create|edit|passwd] [options]'
   opt :verbose, 'Be verbose', :short => '-V', :default => false, :short => :none
   opt :no_interactive, 'Open /dev/tty to read password', :short => :none
   opt :config, 'Configuration file path', :short => '-c', :type => :string
-  stop_on %w{cat create edit passwd depot}
+  stop_on %w{cat create edit passwd}
 end
 
 cmd = ARGV.shift
@@ -44,10 +44,7 @@ cmd_opts = case cmd
   when "passwd"
     Trollop::options do
       desc cmd, 'Change database password'
-    end
-  when "depot"
-    Trollop::options do
-      desc cmd, 'Start depot server application'
+      opt :remote, 'Change password only on remote server'
     end
   else
     Trollop::die "unknown subcommand #{cmd.inspect}"
@@ -70,8 +67,4 @@ when "edit"
 when "passwd"
   require 'cryptobox/command/passwd'
   Cryptobox::Command.passwd(config, interactive)
-when "depot"
-  require 'cryptobox/depot'
-  require 'cryptobox/command/depot'
-  Cryptobox::Command.depot(config)
 end

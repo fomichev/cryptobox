@@ -6,6 +6,10 @@
 		<style type="text/css">
 			<%= incl(File.join(@config[:path][:root], 'build', 'chrome', 'popup.css')) %>
 		</style>
+		<% unless @embed %>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/dropbox.js/0.7.1/dropbox.min.js">
+			</script>
+		<% end %>
 		<script src="popup.js"></script>
 		<% if @embed %>
 			<script src="cryptobox-data.js"></script>

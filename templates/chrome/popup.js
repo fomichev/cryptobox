@@ -12,9 +12,10 @@
 // =require extern/CryptoJS/components/pbkdf2.js
 
 // =require js/cryptobox.js
+// =require js/dropbox.js
 // =require js/cipher.js
 // =require js/form.js
-//= require js/lock.js
+// =require js/lock.js
 // =require js/ui.js
 // =require js/password.js
 // =require js/handlebars.js
@@ -85,7 +86,22 @@ cryptobox.main.lock = function() {
 	cryptobox.browser.cleanClipboard();
 	cryptobox.bootstrap.render('locked', this);
 	cryptobox.main.show('#div-locked');
+	cryptobox.main.prepare();
 	$("#input-password").focus();
+}
+
+cryptobox.main.prepare = function() {
+	cryptobox.dropbox.prepare(
+		function(url) {
+			cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
+		},
+		function(error) {
+			if (error) {
+				cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
+			} else {
+				cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
+			}
+		});
 }
 
 cryptobox.main.showData = function(data) {
@@ -172,15 +188,15 @@ $(function() {
 		$("#form-unlock").live('submit', function(event) {
 			event.preventDefault();
 
+			cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
+
 			$('#button-unlock').button('loading');
-			$("#div-alert").fadeOut();
+			cryptobox.bootstrap.hideAlert();
 
 			cryptobox.open($("#input-password").val(), function(json, error) {
 				if (error) {
 					$("#button-unlock").button("reset");
-
-					$("#div-alert").text(error);
-					$("#div-alert").fadeIn();
+					cryptobox.bootstrap.showAlert(true, error);
 				} else {
 					$("#input-password").val("");
 

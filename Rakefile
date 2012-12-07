@@ -1,8 +1,9 @@
 require "bundler/setup"
 
+require 'rdoc/task'
+
 require 'cucumber'
 require 'cucumber/rake/task'
-require 'rdoc/task'
 
 #require 'rake/package_task'
 #
@@ -17,12 +18,12 @@ Rake::RDocTask.new do |rd|
   rd.title = 'cryptobox'
 end
 
-Cucumber::Rake::Task.new(:features) do |t|
-  t.cucumber_opts = "features --format progress"
-#  t.cucumber_opts = "features/desktop.feature --format pretty"
-#  t.cucumber_opts = "features/cryptobox-cat.feature --format pretty"
-  t.fork = false
-end
+#Cucumber::Rake::Task.new(:features) do |t|
+#  t.cucumber_opts = "features --format progress"
+##  t.cucumber_opts = "features/desktop.feature --format pretty"
+##  t.cucumber_opts = "features/cryptobox-cat.feature --format pretty"
+#  t.fork = false
+#end
 
 task :handlebars do
   require 'execjs'

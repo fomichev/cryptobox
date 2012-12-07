@@ -36,25 +36,15 @@ cryptobox.open = function(pwd, callback) {
 	if (cryptobox.json) {
 		decrypt(cryptobox.json, callback);
 	} else {
-		var hostname = "wss://127.0.0.1:22790";
+		cryptobox.dropbox.read(function(error, data) {
+			if (error) {
+				console.log('error:');
+				console.log(error);
+				callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
+				return;
+			}
 
-		if ("WebSocket" in window) {
-			var timeout = setTimeout(function() {
-				callback(null, '<%= @text[:server_not_responding] %>');
-			}, 5000);
-
-			var ws = new WebSocket(hostname);
-			ws.onopen = function() { };
-			ws.onmessage = function (evt) {
-				clearTimeout(timeout);
-				decrypt($.parseJSON(evt.data), callback);
-			};
-			ws.onclose = function() {
-				/* TODO: tell user to check sertificate
-				 * when close was not clean */
-			};
-		} else {
-			callback(null, '<%= @text[:no_websocket_support] %>');
-		}
+			decrypt($.parseJSON(data), callback);
+		});
 	}
 }

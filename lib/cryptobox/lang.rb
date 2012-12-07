@@ -46,7 +46,7 @@ module Cryptobox
     server_not_responding: 'Cryptobox server is not responding!',
     no_websocket_support:  'Your browser does not support WebSockets!',
     hostname: 'Hostname',
-    save_settings: 'Save settings in persistent storage',
+    remember_dropbox_credentials: 'Remember Dropbox credentials',
   },
     ru: {
     title: 'Cryptobox',
@@ -92,7 +92,7 @@ module Cryptobox
     server_not_responding: 'Сервер Cryptobox не отвечает!',
     no_websocket_support:  'Ваш браузер не поддерживает технологию WebSocket!',
     hostname: 'Имя хоста',
-    save_settings: 'Сохранить настройки',
+    remember_dropbox_credentials: 'Запомнить сессию Dropbox',
   }
   }
 

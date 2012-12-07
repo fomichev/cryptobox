@@ -5,8 +5,13 @@
 
 	<div id="div-locked">
 		<form id="form-unlock">
-				<input id="input-password" size="16" type="password">
-				<div>
+			<input id="input-password" size="16" type="password">
+
+			<% unless @embed %>
+				<label><input id="input-remember" type="checkbox" checked="checked" /> <%= @text[:remember_dropbox_credentials] %></label>
+			<% end %>
+
+			<div>
 				<button id="button-unlock" type="submit" class="btn btn-primary" data-loading-text="<%= @text[:button_unlock_decrypt] %>">
 					<i class="icon-lock"></i> <%= @text[:button_unlock] %>
 				</button>

@@ -67,3 +67,19 @@ cryptobox.bootstrap.render = function(name, context) {
 	$('#content').html(cryptobox.ui.render(name, context));
 	$('#content').fadeIn();
 }
+
+cryptobox.bootstrap.showAlert = function(error, text) {
+	if (error)
+		$('#div-alert').addClass('alert-error');
+	else
+		$('#div-alert').addClass('alert-info');
+
+	$("#div-alert").html(text);
+	$("#div-alert").fadeIn();
+}
+
+cryptobox.bootstrap.hideAlert = function() {
+	$('#div-alert').removeClass('alert-error');
+	$('#div-alert').removeClass('alert-info');
+	$("#div-alert").fadeOut();
+}

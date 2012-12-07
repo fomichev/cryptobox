@@ -26,32 +26,27 @@ module Cryptobox
       end
 
       if update
-
         # generate embedded versions
-        if config[:cryptobox][:embed]
-          JsonOutput.new(config, config[:path][:private], true, db).run
+        JsonOutput.new(config, config[:path][:private], true, db).run
 
-          DesktopHtmlOutput.new(config, config[:path][:private], true).run
-          MobileHtmlOutput.new(config, config[:path][:private], true).run
+        DesktopHtmlOutput.new(config, config[:path][:private], true).run
+        MobileHtmlOutput.new(config, config[:path][:private], true).run
 
-          FillBookmarkletOutput.new(config, config[:path][:private], true).run
-          FormBookmarkletOutput.new(config, config[:path][:private], true).run
+        FillBookmarkletOutput.new(config, config[:path][:private], true).run
+        FormBookmarkletOutput.new(config, config[:path][:private], true).run
 
-          ChromeOutput.new(config, config[:path][:private], true).run
-        end
+        ChromeOutput.new(config, config[:path][:private], true).run
 
-        # generate versions for depot
-        if config[:cryptobox][:depot]
-          JsonOutput.new(config, File.join(config[:path][:private], 'depot'), false, db).run
+        # generate versions for Dropbox
+        JsonOutput.new(config, config[:path][:dropbox], false, db).run
 
-          DesktopHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
-          MobileHtmlOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+        DesktopHtmlOutput.new(config, config[:path][:dropbox], false).run
+        MobileHtmlOutput.new(config, config[:path][:dropbox], false).run
 
-          FillBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
-          FormBookmarkletOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
+        FillBookmarkletOutput.new(config, config[:path][:dropbox], false).run
+        FormBookmarkletOutput.new(config, config[:path][:dropbox], false).run
 
-          ChromeOutput.new(config, File.join(config[:path][:private], 'depot'), false).run
-        end
+        ChromeOutput.new(config, config[:path][:dropbox], false).run
       end
     end
   end
