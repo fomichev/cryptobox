@@ -59,7 +59,8 @@ task :sprockets do
   require 'sprockets'
   require "yui/compressor"
 
-  compress = true
+  compress = false
+#  compress = true
 
   def embed_images(text, dirs)
     text.gsub(/url\((?:"|')?([^#?"')]*)([^"')]*)(?:"|')?\)*/) do

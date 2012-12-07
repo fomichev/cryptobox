@@ -1,1 +1,76 @@
-var cryptobox={};cryptobox.json=null;cryptobox.measure=function(c,e){var d=Date.now(),b;var a=e();b=Date.now();console.log(c+" "+(b-d)+"ms");return a};cryptobox.open=function(b,c){var a=function(d,e){setTimeout(function(){try{var f=cryptobox.measure("decrypt",function(){var h=cryptobox.cipher.decrypt(b,d.pbkdf2.salt,d.ciphertext,d.pbkdf2.iterations,d.aes.keylen,d.aes.iv);return $.parseJSON(h)});e(f,null)}catch(g){e(null,"<%= @text[:incorrect_password] %> "+g)}},10)};if(cryptobox.json){a(cryptobox.json,c)}else{cryptobox.dropbox.read(function(d,e){if(d){console.log("error:");console.log(d);c(null,"Can't read file 'cryptobox.json ("+d+")'");return}a($.parseJSON(e),c)})}};cryptobox.lock={_timeoutNow:0,_timeoutId:0};cryptobox.lock.startTimeout=function(d,b,c){var a=document.getElementsByTagName("body")[0];a.addEventListener("mousemove",d);cryptobox.lock._timeout=b;cryptobox.lock._timeoutNow=cryptobox.lock._timeout;cryptobox.lock._timeoutId=window.setInterval(function(){cryptobox.lock._timeoutNow--;if(cryptobox.lock._timeoutNow<=0){cryptobox.lock.stopTimeout();c()}},1000*60)};cryptobox.lock.updateTimeout=function(){cryptobox.lock._timeoutNow=cryptobox.lock._timeout};cryptobox.lock.stopTimeout=function(){clearInterval(cryptobox.lock._timeoutId)};var fill={};chrome.extension.getBackgroundPage().startTimeout=function(){cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,cryptobox.config.lock_timeout_minutes,function(){chrome.extension.getBackgroundPage().json=null})};chrome.extension.getBackgroundPage().updateTimeout=function(){cryptobox.lock.updateTimeout()};chrome.extension.onRequest.addListener(function(e,d,b){var a=document.getElementsByTagName("body")[0];var c=document.createElement("textarea");a.appendChild(c);c.value=e.text;c.select();document.execCommand("copy",false,null);a.removeChild(c);b({})});chrome.tabs.onUpdated.addListener(function(a,c,b){if(c.status=="complete"&&a in fill){var d={type:"fillForm",cfg:fill[a]};chrome.tabs.sendMessage(a,d,function(){});delete fill[a]}});
+var cryptobox = {};
+
+cryptobox.json = null;
+
+cryptobox.measure = function(name, fn) {
+	var begin = Date.now(), end;
+	var result = fn();
+	end = Date.now();
+	console.log(name + ' ' + (end - begin) + 'ms');
+	return result;
+}
+
+cryptobox.open = function(pwd, callback) {
+	var decrypt = function(json, callback) {
+		/* we need small timeout here because otherwise decryption
+		 * stuff will not let the UI to be redrawn */
+		setTimeout(function() {
+			try {
+				var data = cryptobox.measure('decrypt', function(){
+					var text = cryptobox.cipher.decrypt(pwd,
+						json.pbkdf2.salt,
+						json.ciphertext,
+						json.pbkdf2.iterations,
+						json.aes.keylen,
+						json.aes.iv);
+					return $.parseJSON(text);
+				});
+
+				callback(data, null);
+			} catch (e) {
+				callback(null, "<%= @text[:incorrect_password] %> " + e);
+			}
+		}, 10);
+	}
+
+	if (cryptobox.json) {
+		decrypt(cryptobox.json, callback);
+	} else {
+		cryptobox.dropbox.read(function(error, data) {
+			if (error) {
+				console.log('error:');
+				console.log(error);
+				callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
+				return;
+			}
+
+			decrypt($.parseJSON(data), callback);
+		});
+	}
+}
+;
+
+var fill = {};
+
+/* Clipboard copy handler */
+chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {
+	var body = document.getElementsByTagName('body') [0];
+	var ta = document.createElement('textarea');
+
+	body.appendChild(ta);
+	ta.value = msg.text;
+	ta.select();
+	document.execCommand("copy", false, null);
+	body.removeChild(ta);
+
+	sendResponse({});
+});
+
+/* Unmatched form fill handler */
+chrome.tabs.onUpdated.addListener(function(tabId, info, tab) {
+	if (info.status == 'complete' && tabId in fill) {
+		var msg = { type: 'fillForm', cfg: fill[tabId] };
+		chrome.tabs.sendMessage(tabId, msg, function() { });
+		delete fill[tabId];
+	}
+});

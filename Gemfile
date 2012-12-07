@@ -5,6 +5,7 @@ group :runtime do
 end
 
 group :development do
+  gem 'coffee-script'
   gem 'sprockets'
   gem 'execjs'
   gem 'yui-compressor'

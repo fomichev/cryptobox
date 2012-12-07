@@ -1,26 +1,28 @@
-// =require extern/jquery/jquery.js
-// =require extern/bootstrap/js/bootstrap.js
-// =require extern/handlebars/handlebars.runtime.js
+//= require cryptobox.js.coffee
+//= require lock.js.coffee
 
-// =require extern/seedrandom/seedrandom.js
-// =require extern/CryptoJS/components/core.js
-// =require extern/CryptoJS/components/enc-base64.js
-// =require extern/CryptoJS/components/cipher-core.js
-// =require extern/CryptoJS/components/aes.js
-// =require extern/CryptoJS/components/sha1.js
-// =require extern/CryptoJS/components/hmac.js
-// =require extern/CryptoJS/components/pbkdf2.js
+//= require extern/jquery/jquery.js
+//= require extern/bootstrap/js/bootstrap.js
+//= require extern/handlebars/handlebars.runtime.js
 
-// =require js/cryptobox.js
-// =require js/dropbox.js
-// =require js/cipher.js
-// =require js/form.js
-// =require js/lock.js
-// =require js/ui.js
-// =require js/password.js
-// =require js/handlebars.js
-// =require js/bootstrap.js
-// =require chrome/templates.js
+//= require extern/seedrandom/seedrandom.js
+//= require extern/CryptoJS/components/core.js
+//= require extern/CryptoJS/components/enc-base64.js
+//= require extern/CryptoJS/components/cipher-core.js
+//= require extern/CryptoJS/components/aes.js
+//= require extern/CryptoJS/components/sha1.js
+//= require extern/CryptoJS/components/hmac.js
+//= require extern/CryptoJS/components/pbkdf2.js
+
+//= require js/cryptobox.js
+//= require js/dropbox.js
+//= require js/cipher.js
+//= require js/form.js
+//= require js/ui.js
+//= require js/password.js
+//= require js/handlebars.js
+//= require js/bootstrap.js
+//= require chrome/templates.js
 
 cryptobox.browser = {};
 
@@ -142,8 +144,8 @@ cryptobox.main.showData = function(data) {
 			cryptobox.main.detailsClick(el);
 		});
 
-		cryptobox.bootstrap.lockInit(function() {
-			chrome.extension.getBackgroundPage().updateTimeout(); },
+		cryptobox.bootstrap.lockInit(
+			function() { chrome.extension.getBackgroundPage().lock.rewind(); cryptobox.lock.rewind(); },
 			cryptobox.config.lock_timeout_minutes,
 			cryptobox.main.lock);
 		cryptobox.bootstrap.filterInit();
@@ -180,7 +182,7 @@ $(function() {
 	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
 
 	if (chrome.extension.getBackgroundPage().json != null) {
-		chrome.extension.getBackgroundPage().updateTimeout();
+		chrome.extension.getBackgroundPage().lock.rewind();
 		cryptobox.main.showData(chrome.extension.getBackgroundPage().json);
 	} else {
 		cryptobox.main.lock();
@@ -201,7 +203,14 @@ $(function() {
 					$("#input-password").val("");
 
 					chrome.extension.getBackgroundPage().json = json;
-					chrome.extension.getBackgroundPage().startTimeout();
+
+					chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(
+						function() { chrome.extension.getBackgroundPage().lock.rewind(); },
+						cryptobox.config.lock_timeout_minutes,
+						function() { chrome.extension.getBackgroundPage().json = null; }
+						);
+
+					chrome.extension.getBackgroundPage().lock.start();
 
 					cryptobox.main.showData(json);
 				}

@@ -1,27 +1,29 @@
-// =require extern/jquery/jquery.js
-// =require extern/bootstrap/js/bootstrap.js
-// =require extern/handlebars/handlebars.runtime.js
+//= require cryptobox.js.coffee
+//= require lock.js.coffee
 
-// =require extern/seedrandom/seedrandom.js
-// =require extern/CryptoJS/components/core.js
-// =require extern/CryptoJS/components/enc-base64.js
-// =require extern/CryptoJS/components/cipher-core.js
-// =require extern/CryptoJS/components/aes.js
-// =require extern/CryptoJS/components/sha1.js
-// =require extern/CryptoJS/components/hmac.js
-// =require extern/CryptoJS/components/pbkdf2.js
+//= require extern/jquery/jquery.js
+//= require extern/bootstrap/js/bootstrap.js
+//= require extern/handlebars/handlebars.runtime.js
 
-// =require js/cryptobox.js
-// =require js/dropbox.js
-// =require js/cipher.js
-// =require js/form.js
-// =require js/lock.js
-// =require js/ui.js
-// =require js/password.js
-// =require js/handlebars.js
-// =require js/bootstrap.js
-// =require desktop/index.js
-// =require desktop/templates.js
+//= require extern/seedrandom/seedrandom.js
+//= require extern/CryptoJS/components/core.js
+//= require extern/CryptoJS/components/enc-base64.js
+//= require extern/CryptoJS/components/cipher-core.js
+//= require extern/CryptoJS/components/aes.js
+//= require extern/CryptoJS/components/sha1.js
+//= require extern/CryptoJS/components/hmac.js
+//= require extern/CryptoJS/components/pbkdf2.js
+
+//= require js/cryptobox.js
+//= require js/dropbox.js
+//= require js/cipher.js
+//= require js/form.js
+//= require js/ui.js
+//= require js/password.js
+//= require js/handlebars.js
+//= require js/bootstrap.js
+//= require desktop/index.js
+//= require desktop/templates.js
 
 cryptobox.main = {};
 
@@ -76,7 +78,7 @@ cryptobox.main.detailsClick = function(el) {
 }
 
 cryptobox.main.lock = function() {
-	cryptobox.lock.stopTimeout();
+	cryptobox.lock.stop();
 
 	$('#div-token').modal('hide');
 	$('#div-details').modal('hide');
@@ -181,7 +183,10 @@ $(function() {
 				}
 				$("#input-filter").focus();
 
-				cryptobox.bootstrap.lockInit(function() { cryptobox.lock.updateTimeout(); }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
+				cryptobox.bootstrap.lockInit(
+					function() { cryptobox.lock.rewind(); },
+					cryptobox.config.lock_timeout_minutes,
+					cryptobox.main.lock);
 				cryptobox.main.dialogTokenLoginInit();
 				cryptobox.main.dialogGenerateInit();
 				cryptobox.bootstrap.filterInit();

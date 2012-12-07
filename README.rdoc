@@ -574,3 +574,15 @@ TODO: describe here what libs used and where
   without requiring user to have local copy of cryptobox.json on the device)
 * Implement for desktop/mobile and possibly chrome extension
 * Add documentation
+
+
+
+prepare
+render
+
+lockInit
+lockStart
+lockStop
+
+alertShow
+alertHide

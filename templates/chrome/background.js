@@ -1,18 +1,6 @@
 //= require js/cryptobox.js
-//= require js/lock.js
 
 var fill = {};
-
-chrome.extension.getBackgroundPage().startTimeout = function() {
-	cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,
-			cryptobox.config.lock_timeout_minutes,
-			function() { chrome.extension.getBackgroundPage().json = null; }
-	);
-}
-
-chrome.extension.getBackgroundPage().updateTimeout = function() {
-	cryptobox.lock.updateTimeout();
-}
 
 /* Clipboard copy handler */
 chrome.extension.onRequest.addListener(function (msg, sender, sendResponse) {

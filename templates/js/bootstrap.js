@@ -54,7 +54,8 @@ cryptobox.bootstrap.dialogGenerateSubmit = function() {
 }
 
 cryptobox.bootstrap.lockInit = function(onMove, timeout, lockCallback) {
-	cryptobox.lock.startTimeout(onMove, timeout, lockCallback);
+	cryptobox.lock = new Cryptobox.Lock(onMove, timeout, lockCallback);
+	cryptobox.lock.start();
 
 	$("#button-lock").click(function(event) {
 		event.preventDefault();

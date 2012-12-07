@@ -1,15 +1,15 @@
-// =require extern/CryptoJS/components/core.js
-// =require extern/CryptoJS/components/enc-base64.js
-// =require extern/CryptoJS/components/cipher-core.js
-// =require extern/CryptoJS/components/aes.js
-// =require extern/CryptoJS/components/sha1.js
-// =require extern/CryptoJS/components/hmac.js
-// =require extern/CryptoJS/components/pbkdf2.js
+//= require extern/CryptoJS/components/core.js
+//= require extern/CryptoJS/components/enc-base64.js
+//= require extern/CryptoJS/components/cipher-core.js
+//= require extern/CryptoJS/components/aes.js
+//= require extern/CryptoJS/components/sha1.js
+//= require extern/CryptoJS/components/hmac.js
+//= require extern/CryptoJS/components/pbkdf2.js
 
-// =require js/cryptobox.js
-// =require js/popover.js
-// =require js/form.js
-// =require js/cipher.js
+//= require js/cryptobox.js
+//= require js/popover.js
+//= require js/form.js
+//= require js/cipher.js
 
 cryptobox.json = openCryptobox();
 

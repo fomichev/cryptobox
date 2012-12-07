@@ -1,1 +1,186 @@
-var cryptobox={};cryptobox.json=null;cryptobox.measure=function(c,e){var d=Date.now(),b;var a=e();b=Date.now();console.log(c+" "+(b-d)+"ms");return a};cryptobox.open=function(b,c){var a=function(d,e){setTimeout(function(){try{var f=cryptobox.measure("decrypt",function(){var h=cryptobox.cipher.decrypt(b,d.pbkdf2.salt,d.ciphertext,d.pbkdf2.iterations,d.aes.keylen,d.aes.iv);return $.parseJSON(h)});e(f,null)}catch(g){e(null,"<%= @text[:incorrect_password] %> "+g)}},10)};if(cryptobox.json){a(cryptobox.json,c)}else{cryptobox.dropbox.read(function(d,e){if(d){console.log("error:");console.log(d);c(null,"Can't read file 'cryptobox.json ("+d+")'");return}a($.parseJSON(e),c)})}};cryptobox.form={};cryptobox.form.withToken=function(b){if(b.action=="__token__"){return true}for(var a in b.fields){if(b.fields[a]=="__token__"){return true}}return false};cryptobox.form.login=function(f,e,d){if(e.broken){return}if(d!=undefined){if(e.action=="__token__"){e.action=d.form.action}for(var c in e.fields){if(e.fields[c]=="__token__"){e.fields[c]=d.form.fields[c]}}}var a=null;if(f){a=window.open(e.action,e.name);if(!a){return}}else{a=window;document.close();document.open()}var b="";b+="<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='"+e.method+"' action='"+e.action+"'>";for(var c in e.fields){b+="<input type='hidden' name='"+c+"' value='"+e.fields[c]+"'/>"}b+="</form><script type='text/javascript'>document.getElementById('formid').submit()</s";b+="cript></body></html>";a.document.write(b);return a};cryptobox.form.fill=function(c){var a=document.querySelectorAll("input[type=text], input[type=password]");for(var b=0;b<a.length;b++){var d=null;for(var e in c.fields){if(e==a[b].attributes.name.value){d=c.fields[e]}}if(d){a[b].value=d}}};cryptobox.form.sitename=function(a){return a.replace(/[^/]+\/\/([^/]+).+/,"$1").replace(/^www./,"")};cryptobox.form.toJson=function(){var k=document.URL;var c=document.title;var l="";for(var g=0;g<document.forms.length;g++){var d=document.forms[g];var h="";for(var f=0;f<d.elements.length;f++){var e=d.elements[f];if(e.name==""){continue}if(h==""){h='\t\t\t"'+e.name+'": "'+e.value+'"'}else{h+=',\n\t\t\t"'+e.name+'": "'+e.value+'"'}}var b=d.method;if(b!="get"){b="post"}var a='\t\t"action": "'+d.action+'",\n\t\t"method": "'+b+'",\n\t\t"fields":\n\t\t{\n'+h+"\n\t\t}";if(l==""){l+="[\n"}else{l+=",\n"}l+='{\n\t"name": "'+c+'",\n\t"address": "'+k+'",\n\t"form":\n\t{\n'+a+"\n\t}\n}\n"}if(l){l+="]"}return l};chrome.extension.onMessage.addListener(function(c,b,a){if(c.type=="fillForm"){cryptobox.form.fill(c.data.form);a({})}else{if(c.type=="getFormJson"){a(cryptobox.form.toJson())}else{}}});window.addEventListener("keyup",function(a){if(a.ctrlKey&&a.keyCode){if(a.keyCode==220){}}},false);
+var cryptobox = {};
+
+cryptobox.json = null;
+
+cryptobox.measure = function(name, fn) {
+	var begin = Date.now(), end;
+	var result = fn();
+	end = Date.now();
+	console.log(name + ' ' + (end - begin) + 'ms');
+	return result;
+}
+
+cryptobox.open = function(pwd, callback) {
+	var decrypt = function(json, callback) {
+		/* we need small timeout here because otherwise decryption
+		 * stuff will not let the UI to be redrawn */
+		setTimeout(function() {
+			try {
+				var data = cryptobox.measure('decrypt', function(){
+					var text = cryptobox.cipher.decrypt(pwd,
+						json.pbkdf2.salt,
+						json.ciphertext,
+						json.pbkdf2.iterations,
+						json.aes.keylen,
+						json.aes.iv);
+					return $.parseJSON(text);
+				});
+
+				callback(data, null);
+			} catch (e) {
+				callback(null, "<%= @text[:incorrect_password] %> " + e);
+			}
+		}, 10);
+	}
+
+	if (cryptobox.json) {
+		decrypt(cryptobox.json, callback);
+	} else {
+		cryptobox.dropbox.read(function(error, data) {
+			if (error) {
+				console.log('error:');
+				console.log(error);
+				callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
+				return;
+			}
+
+			decrypt($.parseJSON(data), callback);
+		});
+	}
+}
+;
+cryptobox.form = {};
+
+cryptobox.form.withToken = function(form) {
+	if (form.action == '__token__')
+		return true;
+
+	for (var key in form.fields)
+		if (form.fields[key] == '__token__')
+			return true;
+
+	return false;
+}
+
+cryptobox.form.login = function(newWindow, form, token) {
+	if (form.broken)
+		return;
+
+	/* merge in token */
+	if (token != undefined) {
+		if (form.action == '__token__')
+			form.action = token.form.action;
+
+		for (var key in form.fields)
+			if (form.fields[key] == '__token__')
+				form.fields[key] = token.form.fields[key];
+	}
+
+	var w = null;
+	if (newWindow) {
+		w = window.open(form.action, form.name);
+		if (!w)
+			return;
+	} else {
+		w = window;
+		document.close();
+		document.open();
+	}
+
+	var html = "";
+	html += "<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='" + form.method + "' action='" + form.action + "'>";
+
+	for (var key in form.fields)
+		html += "<input type='hidden' name='" + key + "' value='" + form.fields[key] + "'/>";
+
+	html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s";
+//			&lt;/script&gt; screws everything up after embedding, so split it into multiple lines
+	html += "cript></body></html>";
+
+	w.document.write(html);
+	return w;
+}
+
+cryptobox.form.fill = function(form) {
+	var nodes = document.querySelectorAll("input[type=text], input[type=password]");
+	for (var i = 0; i < nodes.length; i++) {
+		var value = null;
+
+		for (var field in form.fields)
+			if (field == nodes[i].attributes['name'].value)
+				value = form.fields[field];
+
+		if (value)
+			nodes[i].value = value;
+	}
+}
+
+cryptobox.form.sitename = function(t) {
+	return t.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
+}
+
+cryptobox.form.toJson = function() {
+	var address = document.URL;
+	var name = document.title;
+	var text = "";
+
+	for (var i = 0; i < document.forms.length; i++) {
+		var form = document.forms[i];
+
+		var form_elements =  "";
+		for (var j = 0; j < form.elements.length; j++) {
+			var el = form.elements[j];
+
+			if (el.name == "")
+				continue;
+
+			if (form_elements == "")
+				form_elements = '\t\t\t"' + el.name + '": "' + el.value + '"';
+			else
+				form_elements += ',\n\t\t\t"' + el.name + '": "' + el.value + '"';
+		}
+
+		var method = form.method;
+		if (method != 'get')
+			method = 'post';
+
+		var form_text = '\t\t"action": "' + form.action + '",\n\t\t"method": "' + method + '",\n\t\t"fields":\n\t\t{\n' + form_elements + '\n\t\t}';
+
+		if (text == "")
+			text += '[\n';
+		else
+			text += ',\n';
+		text += '{\n\t"name": "' + name + '",\n\t"address": "' + address + '",\n\t"form":\n\t{\n' + form_text + '\n\t}\n}\n';
+	}
+
+	if (text)
+		text += "]";
+
+	return text;
+}
+;
+
+
+
+chrome.extension.onMessage.addListener(
+	function(msg, sender, sendResponse) {
+		if (msg.type == 'fillForm') {
+			cryptobox.form.fill(msg.data.form);
+			sendResponse({});
+		} else if (msg.type == 'getFormJson') {
+			sendResponse(cryptobox.form.toJson());
+		} else {
+			// unknown message
+		}
+	});
+
+/* Ctrl-\ shortcut */
+window.addEventListener("keyup", function (e) {
+	if (e.ctrlKey && e.keyCode) {
+		if (e.keyCode == 220) {
+			/* TODO: we need to add our overlay with popup.html
+			 * to the current window because it's not possible
+			 * just to show browser action */
+		}
+	}
+} , false);

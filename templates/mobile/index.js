@@ -1,29 +1,31 @@
-// =require extern/jquery/jquery.js
-// =require mobile/jquery.mobile.js
-// =require extern/jquery.mobile/jquery.mobile.js
-// =require extern/handlebars/handlebars.runtime.js
+//= require cryptobox.js.coffee
+//= require lock.js.coffee
 
-// =require extern/CryptoJS/components/core.js
-// =require extern/CryptoJS/components/enc-base64.js
-// =require extern/CryptoJS/components/cipher-core.js
-// =require extern/CryptoJS/components/aes.js
-// =require extern/CryptoJS/components/sha1.js
-// =require extern/CryptoJS/components/hmac.js
-// =require extern/CryptoJS/components/pbkdf2.js
+//= require extern/jquery/jquery.js
+//= require mobile/jquery.mobile.js
+//= require extern/jquery.mobile/jquery.mobile.js
+//= require extern/handlebars/handlebars.runtime.js
 
-// =require js/cryptobox.js
-// =require js/dropbox.js
-// =require js/form.js
-// =require js/ui.js
-// =require js/handlebars.js
-// =require js/cipher.js
-// =require js/lock.js
-// =require mobile/templates.js
+//= require extern/CryptoJS/components/core.js
+//= require extern/CryptoJS/components/enc-base64.js
+//= require extern/CryptoJS/components/cipher-core.js
+//= require extern/CryptoJS/components/aes.js
+//= require extern/CryptoJS/components/sha1.js
+//= require extern/CryptoJS/components/hmac.js
+//= require extern/CryptoJS/components/pbkdf2.js
+
+//= require js/cryptobox.js
+//= require js/dropbox.js
+//= require js/form.js
+//= require js/ui.js
+//= require js/handlebars.js
+//= require js/cipher.js
+//= require mobile/templates.js
 
 cryptobox.main = {};
 
 cryptobox.main.lock = function() {
-	cryptobox.lock.stopTimeout();
+	cryptobox.lock.stop();
 	$.mobile.changePage("#div-locked", "slideup");
 	cryptobox.main.prepare();
 	$("#input-password").focus();
@@ -61,6 +63,10 @@ $(document).ready(function() {
 	cryptobox.main.render('locked', this);
 	$.mobile.initializePage();
 	$("#input-password").focus();
+
+	cryptobox.lock = new Cryptobox.Lock(function() { cryptobox.lock.rewind(); },
+		cryptobox.config.lock_timeout_minutes,
+		cryptobox.main.lock);
 
 	$('#div-locked').live('pageshow', function(event, data) {
 			$(".generated").remove();
@@ -101,9 +107,7 @@ $(document).ready(function() {
 				$("#input-password").val("");
 				$("#input-filter").focus();
 
-				cryptobox.lock.startTimeout(cryptobox.lock.updateTimeout,
-					cryptobox.config.lock_timeout_minutes,
-					cryptobox.main.lock);
+				cryptobox.lock.start();
 
 				$('#button-unlock').val('<%= @text[:button_unlock] %>');
 				$("#button-unlock").button("refresh");
