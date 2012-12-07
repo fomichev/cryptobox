@@ -17,7 +17,7 @@ cryptobox.open = function(pwd, callback) {
 		setTimeout(function() {
 			try {
 				var data = cryptobox.measure('decrypt', function(){
-					var text = cryptobox.cipher.decrypt(pwd,
+					var text = Cryptobox.decrypt(pwd,
 						json.pbkdf2.salt,
 						json.ciphertext,
 						json.pbkdf2.iterations,

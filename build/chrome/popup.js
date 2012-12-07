@@ -2,6 +2,26 @@
 
   window.Cryptobox = {};
 
+}).call(this);
+(function() {
+
+  window.Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+    var result, secret;
+    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
+      keySize: keylen / 32,
+      iterations: iterations
+    });
+    result = CryptoJS.AES.decrypt(ciphertext, secret, {
+      mode: CryptoJS.mode.CBC,
+      iv: CryptoJS.enc.Base64.parse(iv),
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return result.toString(CryptoJS.enc.Utf8);
+  };
+
+}).call(this);
+(function() {
+
   window.Cryptobox.Lock = (function() {
 
     function Lock(onMove, timeout, lockCallback) {
@@ -15,31 +35,23 @@
     Lock.prototype.start = function() {
       var body,
         _this = this;
-      console.log("Start lock");
-      console.log(this);
       body = document.getElementsByTagName('body')[0];
       body.addEventListener('mousemove', this.onMove);
       this.timeoutNow = this.timeout;
       return this.timeoutId = window.setInterval(function() {
-        console.log("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          _this.lockCallback();
+          return _this.lockCallback();
         }
-        return console.log(_this);
-      }, 1000);
+      }, 1000 * 60);
     };
 
     Lock.prototype.rewind = function() {
-      console.log("Rewind lock");
-      console.log(this);
       return this.timeoutNow = this.timeout;
     };
 
     Lock.prototype.stop = function() {
-      console.log("Stop lock");
-      console.log(this);
       return clearInterval(this.timeoutId);
     };
 
@@ -14324,7 +14336,7 @@ cryptobox.open = function(pwd, callback) {
 		setTimeout(function() {
 			try {
 				var data = cryptobox.measure('decrypt', function(){
-					var text = cryptobox.cipher.decrypt(pwd,
+					var text = Cryptobox.decrypt(pwd,
 						json.pbkdf2.salt,
 						json.ciphertext,
 						json.pbkdf2.iterations,
@@ -14524,28 +14536,6 @@ cryptobox.dropbox.authenticate = function(remember) {
 	}
 
 	console.log('}}}');
-}
-;
-cryptobox.cipher = {};
-
-cryptobox.cipher.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
-	var secret = CryptoJS.PBKDF2(
-			pass,
-			CryptoJS.enc.Base64.parse(salt),
-			{
-				keySize: keylen / 32,
-				iterations: iterations
-			});
-	var result = CryptoJS.AES.decrypt(
-			ciphertext,
-			secret,
-			{
-				mode: CryptoJS.mode.CBC,
-				iv: CryptoJS.enc.Base64.parse(iv),
-				padding: CryptoJS.pad.Pkcs7
-			});
-
-	return result.toString(CryptoJS.enc.Utf8);
 }
 ;
 cryptobox.form = {};
@@ -14990,6 +14980,7 @@ function program5(depth0,data) {
   buffer += "\n\n	</tbody></table>\n</div>\n\n<div id=\"div-details\">\n	<div id=\"div-details-body\"></div>\n\n	<form>\n		<div class=\"pull-right\">\n		<button id=\"button-hide-details\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></button>\n		</div>\n	</form>\n</div>\n\n<div id=\"div-generate\">\n	<form>\n		<label><%= @text[:generate_length] %></label>\n		<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-pronounceable\" /> <%= @text[:generate_pronounceable] %>\n		</label>\n		<label><%= @text[:generated] %></label>\n		<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n	</form>\n\n	<div class=\"pull-right\">\n		<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		<a id=\"button-hide-generate\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></a>\n	</div>\n	<div class=\"clearfix\"></div>\n</div>\n";
   return buffer;});
 })();
+
 
 
 

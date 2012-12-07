@@ -1,3 +1,25 @@
+(function() {
+
+  window.Cryptobox = {};
+
+}).call(this);
+(function() {
+
+  window.Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+    var result, secret;
+    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
+      keySize: keylen / 32,
+      iterations: iterations
+    });
+    result = CryptoJS.AES.decrypt(ciphertext, secret, {
+      mode: CryptoJS.mode.CBC,
+      iv: CryptoJS.enc.Base64.parse(iv),
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return result.toString(CryptoJS.enc.Utf8);
+  };
+
+}).call(this);
 /*
 CryptoJS v3.0.2
 code.google.com/p/crypto-js
@@ -2317,7 +2339,7 @@ cryptobox.open = function(pwd, callback) {
 		setTimeout(function() {
 			try {
 				var data = cryptobox.measure('decrypt', function(){
-					var text = cryptobox.cipher.decrypt(pwd,
+					var text = Cryptobox.decrypt(pwd,
 						json.pbkdf2.salt,
 						json.ciphertext,
 						json.pbkdf2.iterations,
@@ -2498,28 +2520,8 @@ cryptobox.form.toJson = function() {
 	return text;
 }
 ;
-cryptobox.cipher = {};
 
-cryptobox.cipher.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
-	var secret = CryptoJS.PBKDF2(
-			pass,
-			CryptoJS.enc.Base64.parse(salt),
-			{
-				keySize: keylen / 32,
-				iterations: iterations
-			});
-	var result = CryptoJS.AES.decrypt(
-			ciphertext,
-			secret,
-			{
-				mode: CryptoJS.mode.CBC,
-				iv: CryptoJS.enc.Base64.parse(iv),
-				padding: CryptoJS.pad.Pkcs7
-			});
 
-	return result.toString(CryptoJS.enc.Utf8);
-}
-;
 
 
 
@@ -2545,7 +2547,7 @@ function unlock(pwd, caption) {
 			'return false;\'>' + name + '</a></div>';
 	}
 
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
+	var text = Cryptobox.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 

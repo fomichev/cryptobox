@@ -1,3 +1,6 @@
+//= require cryptobox.js.coffee
+//= require cipher.js.coffee
+
 //= require extern/CryptoJS/components/core.js
 //= require extern/CryptoJS/components/enc-base64.js
 //= require extern/CryptoJS/components/cipher-core.js
@@ -9,7 +12,6 @@
 //= require js/cryptobox.js
 //= require js/popover.js
 //= require js/form.js
-//= require js/cipher.js
 
 cryptobox.json = openCryptobox();
 
@@ -23,7 +25,7 @@ function unlock(pwd, caption) {
 			'return false;\'>' + name + '</a></div>';
 	}
 
-	var text = cryptobox.cipher.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
+	var text = Cryptobox.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 

@@ -2,6 +2,26 @@
 
   window.Cryptobox = {};
 
+}).call(this);
+(function() {
+
+  window.Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+    var result, secret;
+    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
+      keySize: keylen / 32,
+      iterations: iterations
+    });
+    result = CryptoJS.AES.decrypt(ciphertext, secret, {
+      mode: CryptoJS.mode.CBC,
+      iv: CryptoJS.enc.Base64.parse(iv),
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return result.toString(CryptoJS.enc.Utf8);
+  };
+
+}).call(this);
+(function() {
+
   window.Cryptobox.Lock = (function() {
 
     function Lock(onMove, timeout, lockCallback) {
@@ -15,31 +35,23 @@
     Lock.prototype.start = function() {
       var body,
         _this = this;
-      console.log("Start lock");
-      console.log(this);
       body = document.getElementsByTagName('body')[0];
       body.addEventListener('mousemove', this.onMove);
       this.timeoutNow = this.timeout;
       return this.timeoutId = window.setInterval(function() {
-        console.log("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          _this.lockCallback();
+          return _this.lockCallback();
         }
-        return console.log(_this);
-      }, 1000);
+      }, 1000 * 60);
     };
 
     Lock.prototype.rewind = function() {
-      console.log("Rewind lock");
-      console.log(this);
       return this.timeoutNow = this.timeout;
     };
 
     Lock.prototype.stop = function() {
-      console.log("Stop lock");
-      console.log(this);
       return clearInterval(this.timeoutId);
     };
 
@@ -14324,7 +14336,7 @@ cryptobox.open = function(pwd, callback) {
 		setTimeout(function() {
 			try {
 				var data = cryptobox.measure('decrypt', function(){
-					var text = cryptobox.cipher.decrypt(pwd,
+					var text = Cryptobox.decrypt(pwd,
 						json.pbkdf2.salt,
 						json.ciphertext,
 						json.pbkdf2.iterations,
@@ -14524,28 +14536,6 @@ cryptobox.dropbox.authenticate = function(remember) {
 	}
 
 	console.log('}}}');
-}
-;
-cryptobox.cipher = {};
-
-cryptobox.cipher.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
-	var secret = CryptoJS.PBKDF2(
-			pass,
-			CryptoJS.enc.Base64.parse(salt),
-			{
-				keySize: keylen / 32,
-				iterations: iterations
-			});
-	var result = CryptoJS.AES.decrypt(
-			ciphertext,
-			secret,
-			{
-				mode: CryptoJS.mode.CBC,
-				iv: CryptoJS.enc.Base64.parse(iv),
-				padding: CryptoJS.pad.Pkcs7
-			});
-
-	return result.toString(CryptoJS.enc.Utf8);
 }
 ;
 cryptobox.form = {};
@@ -14911,6 +14901,7 @@ cryptobox.bootstrap.hideAlert = function() {
 	$("#div-alert").fadeOut();
 }
 ;
+
 
 
 

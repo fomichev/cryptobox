@@ -1,4 +1,5 @@
 //= require cryptobox.js.coffee
+//= require cipher.js.coffee
 //= require lock.js.coffee
 
 //= require extern/jquery/jquery.js
@@ -19,7 +20,6 @@
 //= require js/form.js
 //= require js/ui.js
 //= require js/handlebars.js
-//= require js/cipher.js
 //= require mobile/templates.js
 
 cryptobox.main = {};
