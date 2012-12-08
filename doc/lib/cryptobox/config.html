@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>config.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../cryptobox.html">cryptobox.rb</a>
+          <a class="source" href="config.html">config.rb</a>
+          <a class="source" href="db.html">db.rb</a>
+          <a class="source" href="editor.html">editor.rb</a>
+          <a class="source" href="lang.html">lang.rb</a>
+          <a class="source" href="template.html">template.rb</a>
+          <a class="source" href="util.html">util.rb</a>
+          <a class="source" href="../../templates/cipher.js.html">cipher.js.coffee</a>
+          <a class="source" href="../../templates/cryptobox.js.html">cryptobox.js.coffee</a>
+          <a class="source" href="../../templates/lock.js.html">lock.js.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>config.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s1">&#39;date&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;json&#39;</span>
+
+<span class="k">module</span> <span class="nn">Cryptobox</span>
+  <span class="k">class</span> <span class="nc">Config</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+      <span class="n">paths</span> <span class="o">=</span> <span class="n">path</span> <span class="p">?</span> <span class="o">[</span> <span class="n">path</span> <span class="o">]</span> <span class="p">:</span> <span class="o">[</span> <span class="s1">&#39;.cryptoboxrc.yml&#39;</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOME&#39;</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;.cryptoboxrc.yml&#39;</span><span class="p">)</span> <span class="o">]</span>
+      <span class="n">paths</span> <span class="o">=</span> <span class="n">paths</span><span class="o">.</span><span class="n">select</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">exist?</span> <span class="n">f</span> <span class="p">}</span>
+
+      <span class="n">load_config</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">first</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="n">user_config</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">user_config</span><span class="o">.</span><span class="n">has_key?</span> <span class="n">group</span> <span class="ow">and</span> <span class="n">user_config</span><span class="o">[</span><span class="n">group</span><span class="o">].</span><span class="n">has_key?</span> <span class="n">variable</span>
+        <span class="vi">@config</span><span class="o">[</span><span class="n">group</span><span class="o">][</span><span class="n">variable</span><span class="o">]</span> <span class="o">=</span> <span class="n">user_config</span><span class="o">[</span><span class="n">group</span><span class="o">][</span><span class="n">variable</span><span class="o">]</span>
+      <span class="k">else</span>
+        <span class="vi">@config</span><span class="o">[</span><span class="n">group</span><span class="o">][</span><span class="n">variable</span><span class="o">]</span> <span class="o">=</span> <span class="n">default</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">[]</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+      <span class="k">return</span> <span class="vi">@config</span><span class="o">[</span><span class="n">var</span><span class="o">]</span>
+    <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>convert selected config options to JSON format</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="k">def</span> <span class="nf">to_json</span>
+      <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;lock_timeout_minutes&quot;</span> <span class="o">=&gt;</span> <span class="vi">@config</span><span class="o">[</span><span class="ss">:ui</span><span class="o">][</span><span class="ss">:lock_timeout_minutes</span><span class="o">]</span><span class="p">,</span>
+        <span class="s2">&quot;i18n&quot;</span> <span class="o">=&gt;</span> <span class="p">{}</span>
+      <span class="p">}</span>
+
+      <span class="n">config</span><span class="o">[</span><span class="s2">&quot;i18n&quot;</span><span class="o">][</span><span class="s2">&quot;page&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="p">{}</span>
+      <span class="no">Cryptobox</span><span class="o">::</span><span class="no">I18N_PAGE</span><span class="o">[</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:ui</span><span class="o">][</span><span class="ss">:lang</span><span class="o">]].</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">|</span> <span class="n">config</span><span class="o">[</span><span class="s2">&quot;i18n&quot;</span><span class="o">][</span><span class="s2">&quot;page&quot;</span><span class="o">][</span><span class="n">k</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span> <span class="o">=</span> <span class="n">v</span> <span class="p">}</span>
+
+      <span class="no">JSON</span><span class="o">.</span><span class="n">pretty_generate</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+      <span class="vi">@config</span> <span class="o">=</span> <span class="p">{</span> <span class="n">ui</span><span class="p">:</span> <span class="p">{},</span> <span class="n">cryptobox</span><span class="p">:</span> <span class="p">{},</span> <span class="n">chrome</span><span class="p">:</span> <span class="p">{},</span> <span class="n">path</span><span class="p">:</span> <span class="p">{},</span> <span class="n">text</span><span class="p">:</span> <span class="p">{},</span> <span class="n">security</span><span class="p">:</span> <span class="p">{}</span> <span class="p">}</span>
+
+      <span class="n">user_config</span> <span class="o">=</span> <span class="n">path</span> <span class="p">?</span> <span class="no">YAML</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">symbolize_keys</span> <span class="p">:</span> <span class="p">{}</span>
+
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:jquery_ui_theme</span><span class="p">,</span> <span class="s1">&#39;flick&#39;</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:default_password_length</span><span class="p">,</span> <span class="mi">16</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:lock_timeout_minutes</span><span class="p">,</span> <span class="mi">5</span>
+
+      <span class="k">if</span> <span class="no">RUBY_PLATFORM</span> <span class="o">=~</span> <span class="sr">/(win|w)32$/</span>
+        <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:editor</span><span class="p">,</span> <span class="s1">&#39;gvim -n -f&#39;</span>
+        <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:home</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOMEDRIVE&#39;</span><span class="o">]</span><span class="si">}#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;HOMEPATH&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>else if on mac => use mvim</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="k">else</span>
+        <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:editor</span><span class="p">,</span> <span class="s1">&#39;vim -n -f&#39;</span>
+        <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:home</span><span class="p">,</span> <span class="no">Dir</span><span class="o">.</span><span class="n">home</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>set<em>value user</em>config, :ui, :editor, 'mvim -n -f'
+set<em>value user</em>config, :ui, :editor, 'gvim -n -f'
+editor=ENV['EDITOR']
+editor='gvim -n -f'
+editor='mvim -n -f'
+editor='vim -n'</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:ui</span><span class="p">,</span> <span class="ss">:lang</span><span class="p">,</span> <span class="ss">:en</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>set<em>value user</em>config, :ui, :lang, :ru</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:cryptobox</span><span class="p">,</span> <span class="ss">:version</span><span class="p">,</span> <span class="no">VERSION</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:cryptobox</span><span class="p">,</span> <span class="ss">:date_format</span><span class="p">,</span> <span class="s1">&#39;%H:%M %d.%m.%Y&#39;</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:cryptobox</span><span class="p">,</span> <span class="ss">:date</span><span class="p">,</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:cryptobox</span><span class="o">][</span><span class="ss">:date_format</span><span class="o">]</span><span class="p">)</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:cryptobox</span><span class="p">,</span> <span class="ss">:keep_backups</span><span class="p">,</span> <span class="kp">true</span>
+
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:root</span><span class="p">,</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
+
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:build</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:root</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">))</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:private</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:root</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;private&#39;</span><span class="p">))</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:dropbox</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:private</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;dropbox&#39;</span><span class="p">))</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:include</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:root</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;include&#39;</span><span class="p">))</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:templates</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:root</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;templates&#39;</span><span class="p">))</span>
+
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:cryptobox</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:private</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;cryptobox.yaml&#39;</span><span class="p">))</span>
+      <span class="n">set_value</span> <span class="n">user_config</span><span class="p">,</span> <span class="ss">:path</span><span class="p">,</span> <span class="ss">:backup</span><span class="p">,</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="vi">@config</span><span class="o">[</span><span class="ss">:path</span><span class="o">][</span><span class="ss">:private</span><span class="o">]</span><span class="p">,</span> <span class="s1">&#39;backup&#39;</span><span class="p">))</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>

@@ -1,4 +1,4 @@
-//= require js/cryptobox.js
+//= require cryptobox.js.coffee
 
 var fill = {};
 

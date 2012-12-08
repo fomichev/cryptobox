@@ -13,9 +13,9 @@
 			<%= incl(File.join(@config[:path][:build], 'mobile', 'index.js')) %>
 
 			<% if @embed %>
-				cryptobox.json = <%= incl(File.join(@config[:path][:private], 'cryptobox.json')) %>;
+				Cryptobox.json = <%= incl(File.join(@config[:path][:private], 'cryptobox.json')) %>;
 			<% else %>
-				cryptobox.json = null;
+				Cryptobox.json = null;
 			<% end %>
 			cryptobox.config = <%= @config.to_json %>;
 		</script>

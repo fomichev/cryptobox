@@ -1,0 +1,8 @@
+find_exclude 'doc/*'
+find_exclude 'html/*'
+find_exclude 'build/*'
+find_exclude 'templates/extern/*'
+find_exclude 'tmp/*'
+find_exclude 'private*/*'
+
+force_grep_variant system

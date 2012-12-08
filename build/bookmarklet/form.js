@@ -1,54 +1,69 @@
-var cryptobox = {};
+(function() {
 
-cryptobox.json = null;
+  window.Cryptobox = {};
 
-cryptobox.measure = function(name, fn) {
-	var begin = Date.now(), end;
-	var result = fn();
-	end = Date.now();
-	console.log(name + ' ' + (end - begin) + 'ms');
-	return result;
-}
+  window.cryptobox = {};
 
-cryptobox.open = function(pwd, callback) {
-	var decrypt = function(json, callback) {
-		/* we need small timeout here because otherwise decryption
-		 * stuff will not let the UI to be redrawn */
-		setTimeout(function() {
-			try {
-				var data = cryptobox.measure('decrypt', function(){
-					var text = Cryptobox.decrypt(pwd,
-						json.pbkdf2.salt,
-						json.ciphertext,
-						json.pbkdf2.iterations,
-						json.aes.keylen,
-						json.aes.iv);
-					return $.parseJSON(text);
-				});
+  window.Cryptobox.json = null;
 
-				callback(data, null);
-			} catch (e) {
-				callback(null, "<%= @text[:incorrect_password] %> " + e);
-			}
-		}, 10);
-	}
+  window.p = function(s) {
+    return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
+  };
 
-	if (cryptobox.json) {
-		decrypt(cryptobox.json, callback);
-	} else {
-		cryptobox.dropbox.read(function(error, data) {
-			if (error) {
-				console.log('error:');
-				console.log(error);
-				callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
-				return;
-			}
+  window.dbg = function(s) {};
 
-			decrypt($.parseJSON(data), callback);
-		});
-	}
-}
-;
+  window.Cryptobox.measure = function(name, fn) {
+    var begin, end, result;
+    begin = Date.now();
+    result = fn();
+    end = Date.now();
+    p("" + name + " " + (end - begin) + "ms");
+    return result;
+  };
+
+  window.Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+    var result, secret;
+    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
+      keySize: keylen / 32,
+      iterations: iterations
+    });
+    result = CryptoJS.AES.decrypt(ciphertext, secret, {
+      mode: CryptoJS.mode.CBC,
+      iv: CryptoJS.enc.Base64.parse(iv),
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return result.toString(CryptoJS.enc.Utf8);
+  };
+
+  window.Cryptobox.open = function(password, callback) {
+    var decrypt;
+    decrypt = function(json, callback) {
+      return setTimeout(function() {
+        var data;
+        try {
+          data = Cryptobox.measure('decrypt', function() {
+            return JSON.parse(Cryptobox.decrypt(password, json.pbkdf2.salt, json.ciphertext, json.pbkdf2.iterations, json.aes.keylen, json.aes.iv));
+          });
+          return callback(data, null);
+        } catch (e) {
+          return callback(null, "<%= @text[:incorrect_password] %> " + e);
+        }
+      }, 10);
+    };
+    if (Cryptobox.json) {
+      return decrypt(Cryptobox.json, callback);
+    } else {
+      return cryptobox.dropbox.read(function(error, data) {
+        if (error) {
+          callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
+          return;
+        }
+        return decrypt($.parseJSON(data), callback);
+      });
+    }
+  };
+
+}).call(this);
 cryptobox.popover = {};
 
 cryptobox.popover.show = function(width, height, node) {
@@ -198,6 +213,7 @@ cryptobox.form.toJson = function() {
 	return text;
 }
 ;
+
 
 
 

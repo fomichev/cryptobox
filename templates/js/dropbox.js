@@ -45,7 +45,7 @@ cryptobox.dropbox.read = function(callback) {
 }
 
 cryptobox.dropbox.prepare = function(token_callback, auth_callback) {
-	if (cryptobox.json == null) {
+	if (Cryptobox.json == null) {
 		cryptobox.dropbox.client = new Dropbox.Client({
 			key: "nEGVEjZUFiA=|o5O6VucOhZA5Fw39MGotRofoEXUIO0MjFU6dmDpYNA==", sandbox: true
 		});
@@ -146,7 +146,7 @@ cryptobox.dropbox.prepare = function(token_callback, auth_callback) {
 cryptobox.dropbox.authenticate = function(remember) {
 	console.log('{{{');
 
-	if (cryptobox.json == null) {
+	if (Cryptobox.json == null) {
 		console.log('remember');
 		console.log(remember);
 

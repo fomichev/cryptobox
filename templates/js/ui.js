@@ -8,14 +8,14 @@ cryptobox.ui.addBr = function(text) {
 }
 
 cryptobox.ui.render = function (name, context) {
-	return cryptobox.measure('render ' + name, function(){
+	return Cryptobox.measure('render ' + name, function(){
 		return Handlebars.templates[name](context);
 	});
 }
 
 cryptobox.ui.init = function(data) {
 	var result = [];
-	cryptobox.measure('ui.init', function(){
+	Cryptobox.measure('ui.init', function(){
 	var map = {};
 
 	var pages = {};

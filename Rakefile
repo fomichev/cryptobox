@@ -118,3 +118,7 @@ task :sprockets do
     end
   end
 end
+
+task :documentation do
+  `rocco lib/*.rb lib/cryptobox/*.rb templates/*.coffee -o doc`
+end

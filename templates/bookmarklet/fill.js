@@ -1,5 +1,4 @@
 //= require cryptobox.js.coffee
-//= require cipher.js.coffee
 
 //= require extern/CryptoJS/components/core.js
 //= require extern/CryptoJS/components/enc-base64.js
@@ -9,11 +8,10 @@
 //= require extern/CryptoJS/components/hmac.js
 //= require extern/CryptoJS/components/pbkdf2.js
 
-//= require js/cryptobox.js
 //= require js/popover.js
 //= require js/form.js
 
-cryptobox.json = openCryptobox();
+Cryptobox.json = openCryptobox();
 
 function unlock(pwd, caption) {
 	formToLink = function(name, form) {
@@ -25,7 +23,7 @@ function unlock(pwd, caption) {
 			'return false;\'>' + name + '</a></div>';
 	}
 
-	var text = Cryptobox.decrypt(pwd, cryptobox.json.pbkdf2.salt, cryptobox.json.ciphertext, cryptobox.json.pbkdf2.iterations, cryptobox.json.aes.keylen, cryptobox.json.aes.iv);
+	var text = Cryptobox.decrypt(pwd, Cryptobox.json.pbkdf2.salt, Cryptobox.json.ciphertext, Cryptobox.json.pbkdf2.iterations, Cryptobox.json.aes.keylen, Cryptobox.json.aes.iv);
 	var data = eval(text);
 	var matched = new Array();
 

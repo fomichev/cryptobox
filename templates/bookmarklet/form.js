@@ -1,4 +1,5 @@
-//= require js/cryptobox.js
+//= require cryptobox.js.coffee
+
 //= require js/popover.js
 //= require js/form.js
 

@@ -1,4 +1,4 @@
-//= require js/cryptobox.js
+//= require cryptobox.js.coffee
 //= require js/form.js
 
 chrome.extension.onMessage.addListener(

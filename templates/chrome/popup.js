@@ -1,5 +1,4 @@
 //= require cryptobox.js.coffee
-//= require cipher.js.coffee
 //= require lock.js.coffee
 
 //= require extern/jquery/jquery.js
@@ -15,7 +14,6 @@
 //= require extern/CryptoJS/components/hmac.js
 //= require extern/CryptoJS/components/pbkdf2.js
 
-//= require js/cryptobox.js
 //= require js/dropbox.js
 //= require js/form.js
 //= require js/ui.js
@@ -195,7 +193,7 @@ $(function() {
 			$('#button-unlock').button('loading');
 			cryptobox.bootstrap.hideAlert();
 
-			cryptobox.open($("#input-password").val(), function(json, error) {
+			Cryptobox.open($("#input-password").val(), function(json, error) {
 				if (error) {
 					$("#button-unlock").button("reset");
 					cryptobox.bootstrap.showAlert(true, error);

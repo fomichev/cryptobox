@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>util.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../cryptobox.html">cryptobox.rb</a>
+          <a class="source" href="config.html">config.rb</a>
+          <a class="source" href="db.html">db.rb</a>
+          <a class="source" href="editor.html">editor.rb</a>
+          <a class="source" href="lang.html">lang.rb</a>
+          <a class="source" href="template.html">template.rb</a>
+          <a class="source" href="util.html">util.rb</a>
+          <a class="source" href="../../templates/cipher.js.html">cipher.js.coffee</a>
+          <a class="source" href="../../templates/cryptobox.js.html">cryptobox.js.coffee</a>
+          <a class="source" href="../../templates/lock.js.html">lock.js.coffee</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>util.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">module</span> <span class="nn">Cryptobox</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">symbolize</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">inject</span><span class="p">({}){</span><span class="o">|</span><span class="n">memo</span><span class="p">,(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span><span class="o">|</span> <span class="n">memo</span><span class="o">[</span><span class="n">k</span><span class="o">.</span><span class="n">to_sym</span><span class="o">]</span> <span class="o">=</span>  <span class="n">symbolize</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="n">memo</span><span class="p">}</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_a?</span> <span class="no">Hash</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">){</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span><span class="n">v</span>    <span class="o">|</span> <span class="n">memo</span>           <span class="o">&lt;&lt;</span> <span class="n">symbolize</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="n">memo</span><span class="p">}</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_a?</span> <span class="nb">Array</span>
+    <span class="n">obj</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">stringify</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">inject</span><span class="p">({}){</span><span class="o">|</span><span class="n">memo</span><span class="p">,(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span><span class="o">|</span> <span class="n">memo</span><span class="o">[</span><span class="n">k</span><span class="o">.</span><span class="n">to_s</span><span class="o">]</span> <span class="o">=</span>  <span class="n">stringify</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="n">memo</span><span class="p">}</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_a?</span> <span class="no">Hash</span>
+    <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">[]</span><span class="p">){</span><span class="o">|</span><span class="n">memo</span><span class="p">,</span><span class="n">v</span>    <span class="o">|</span> <span class="n">memo</span>         <span class="o">&lt;&lt;</span> <span class="n">stringify</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="n">memo</span><span class="p">}</span> <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_a?</span> <span class="nb">Array</span>
+    <span class="n">obj</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">yn</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    <span class="kp">loop</span> <span class="k">do</span>
+      <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">prompt</span><span class="si">}</span><span class="s2"> [y/n]: &quot;</span>
+      <span class="vg">$stdout</span><span class="o">.</span><span class="n">flush</span>
+      <span class="k">case</span> <span class="nb">gets</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">downcase</span>
+      <span class="k">when</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span>
+        <span class="nb">puts</span>
+        <span class="k">return</span> <span class="kp">true</span>
+      <span class="k">when</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span>
+        <span class="nb">puts</span>
+        <span class="k">return</span> <span class="kp">false</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>Ask user password and return it</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">ask_password</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">interactive</span><span class="p">)</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">o</span> <span class="o">=</span> <span class="vg">$stdin</span><span class="p">,</span> <span class="vg">$stdout</span>
+
+    <span class="k">begin</span>
+      <span class="n">i</span> <span class="o">=</span> <span class="n">o</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/dev/tty&#39;</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">interactive</span>
+    <span class="k">rescue</span>
+      <span class="n">interactive</span> <span class="o">=</span> <span class="kp">false</span>
+    <span class="k">end</span>
+
+    <span class="n">o</span><span class="o">.</span><span class="n">print</span> <span class="n">prompt</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">flush</span>
+
+    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">tty?</span>
+      <span class="n">password</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">noecho</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:gets</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">password</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">gets</span>
+    <span class="k">end</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">puts</span>
+    <span class="n">o</span><span class="o">.</span><span class="n">flush</span>
+
+    <span class="n">i</span><span class="o">.</span><span class="n">close</span> <span class="k">if</span> <span class="n">interactive</span>
+
+    <span class="k">return</span> <span class="n">password</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sr">/\n$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Hash</span>
+  <span class="k">def</span> <span class="nf">symbolize_keys</span>
+    <span class="no">Cryptobox</span><span class="o">::</span><span class="n">symbolize</span> <span class="nb">self</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">stringify_keys</span>
+    <span class="no">Cryptobox</span><span class="o">::</span><span class="n">stringify</span> <span class="nb">self</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Array</span>
+  <span class="k">def</span> <span class="nf">symbolize_keys</span>
+    <span class="no">Cryptobox</span><span class="o">::</span><span class="n">symbolize</span> <span class="nb">self</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">stringify_keys</span>
+    <span class="no">Cryptobox</span><span class="o">::</span><span class="n">stringify</span> <span class="nb">self</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
