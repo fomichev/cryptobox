@@ -9,7 +9,7 @@ form.withToken = (form) ->
   for key, value of form.fields
     return true if value == '__token__'
 
-  return false
+  false
 
 # Login to the site using given `form` and `token`. `newWindow` flag
 # tells whether to create a new window (`true`) or not (`false`).
@@ -17,18 +17,16 @@ form.login = (newWindow, form, token) ->
   return if form.broken
 
   # Merge form with token.
-  if token != undefined
-    if form.action == '__token__'
-      form.action = token.form.action
+  if token isnt undefined
+    form.action = token.form.action if form.action is '__token__'
 
     for key, value of form.fields
-      if value == '__token__'
-        form.fields[key] = token.form.fields[key]
+      form.fields[key] = token.form.fields[key] if value is '__token__'
 
   w = null
   if newWindow
     w = window.open(form.action, form.name)
-    return if !w
+    return unless w
   else
     w = window
     document.close()
@@ -44,7 +42,7 @@ form.login = (newWindow, form, token) ->
   html += "cript></body></html>"
 
   w.document.write(html)
-  return w
+  w
 
 # Fill input fields of current page using given `form`.
 form.fill = (form) ->
@@ -58,7 +56,7 @@ form.fill = (form) ->
 
 # Return just name from given `url` (strip prefix and suffix).
 form.sitename = (url) ->
-  return url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '')
+  url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '')
 
 # Find all forms on current page; convert and return them in JSON format.
 form.toJson = () ->
@@ -67,10 +65,10 @@ form.toJson = () ->
   text = ""
 
   for form in document.forms
-    form_elements =  "";
+    form_elements =  ""
 
     for el in form.elements
-      continue if el.name == ""
+      continue if el.name is ""
 
       if form_elements == ""
         form_elements = "\t\t\t\"#{el.name}\": \"#{el.value}\""
@@ -78,7 +76,7 @@ form.toJson = () ->
         form_elements += ",\n\t\t\t\"#{el.name}\": \"#{el.value}\""
 
     method = form.method
-    method = post unless method == 'get'
+    method = post if method isnt 'get'
 
     form_text = "\t\t\"action\": \"#{form.action}\",\n\t\t\"method\": \"#{method}\",\n\t\t\"fields\":\n\t\t{\n#{form_elements}\n\t\t}"
 
@@ -91,4 +89,4 @@ form.toJson = () ->
 
   text += "]" if text
 
-  return text
+  text

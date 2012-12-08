@@ -15,7 +15,7 @@
 //= require lock.js.coffee
 //= require form.js.coffee
 //= require js/dropbox.js
-//= require js/ui.js
+//= require ui.js.coffee
 //= require handlebars.js.coffee
 //= require mobile/templates.js
 
@@ -29,7 +29,7 @@ cryptobox.main.lock = function() {
 }
 
 cryptobox.main.render = function(name, context) {
-	$('body').append(cryptobox.ui.render(name, context));
+	$('body').append(Cryptobox.ui.render(name, context));
 }
 
 cryptobox.main.prepare = function() {
@@ -99,7 +99,7 @@ $(document).ready(function() {
 
 				cryptobox.main.showAlert(true, error);
 			} else {
-				var data = cryptobox.ui.init(json);
+				var data = Cryptobox.ui.init(json);
 				cryptobox.main.render('unlocked', { page: data });
 				$("#input-password").val("");
 				$("#input-filter").focus();

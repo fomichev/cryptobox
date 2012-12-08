@@ -15,7 +15,7 @@
 //= require lock.js.coffee
 //= require form.js.coffee
 //= require js/dropbox.js
-//= require js/ui.js
+//= require ui.js.coffee
 //= require js/password.js
 //= require handlebars.js.coffee
 //= require js/bootstrap.js
@@ -61,10 +61,10 @@ cryptobox.main.detailsClick = function(el) {
 		};
 
 		if (el.form.vars.secret)
-			values['<%= @text[:secret] %>'] = cryptobox.ui.addBr(forms.vars.secret);
+			values['<%= @text[:secret] %>'] = Cryptobox.ui.addBr(forms.vars.secret);
 
 		if (el.form.vars.note)
-			values['<%= @text[:note] %>'] = cryptobox.ui.addBr(forms.vars.note);
+			values['<%= @text[:note] %>'] = Cryptobox.ui.addBr(forms.vars.note);
 
 		cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
 	} else {
@@ -167,7 +167,7 @@ $(function() {
 				$('#button-unlock').button('reset');
 				cryptobox.bootstrap.showAlert(true, error);
 			} else {
-				var data = cryptobox.ui.init(json);
+				var data = Cryptobox.ui.init(json);
 				cryptobox.bootstrap.render('unlocked', { page: data });
 
 				// try to select Sites tab; otherwise select first one

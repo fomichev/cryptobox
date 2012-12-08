@@ -14669,60 +14669,72 @@ cryptobox.dropbox.authenticate = function(remember) {
 	console.log('}}}');
 }
 ;
-cryptobox.ui = {};
+(function() {
+  var ui;
 
-cryptobox.ui.addBr = function(text) {
-	if (text)
-		return text.replace(/\n/g, '<br />');
-	else
-		return "";
-}
+  ui = {};
 
-cryptobox.ui.render = function (name, context) {
-	return Cryptobox.measure('render ' + name, function(){
-		return Handlebars.templates[name](context);
-	});
-}
+  window.Cryptobox.ui = ui;
 
-cryptobox.ui.init = function(data) {
-	var result = [];
-	Cryptobox.measure('ui.init', function(){
-	var map = {};
+  ui.addBr = function(text) {
+    if (text) {
+      return text.replace(/\n/g, '<br />');
+    }
+    return '';
+  };
 
-	var pages = {};
-	for (var i = 0; i < data.length; i++) {
-		var el = data[i];
+  ui.render = function(template, context) {
+    return Cryptobox.measure('render ' + template, function() {
+      return Handlebars.templates[template](context);
+    });
+  };
 
-		if (el.visible == false)
-			continue;
+  ui.init = function(data) {
+    var result;
+    result = [];
+    Cryptobox.measure("ui.init", function() {
+      var el, index, map, p, page_key, pages, tag_key, _i, _len;
+      map = {};
+      pages = {};
+      for (index = _i = 0, _len = data.length; _i < _len; index = ++_i) {
+        el = data[index];
+        if (el.visible === false) {
+          continue;
+        }
+        if (!(el.type in pages)) {
+          pages[el.type] = {};
+        }
+        if (!(el.tag in pages[el.type])) {
+          pages[el.type][el.tag] = [];
+        }
+        el.id = index;
+        pages[el.type][el.tag].push(el);
+      }
+      for (page_key in pages) {
+        p = {
+          id: page_key,
+          name: cryptobox.config.i18n.page[page_key],
+          tag: []
+        };
+        for (tag_key in pages[page_key]) {
+          p.tag.push({
+            name: tag_key,
+            item: pages[page_key][tag_key]
+          });
+        }
+        p.tag.sort(function(a, b) {
+          return a.name > b.name;
+        });
+        result.push(p);
+      }
+      return result.sort(function(a, b) {
+        return a.name > b.name;
+      });
+    });
+    return result;
+  };
 
-		if (!(el.type in pages))
-			pages[el.type] = {};
-
-		if (!(el.tag in pages[el.type]))
-			pages[el.type][el.tag] = [];
-
-		el.id = i;
-		pages[el.type][el.tag].push(el);
-	}
-
-	for (var page_key in pages) {
-		var p = { id: page_key, name: cryptobox.config.i18n.page[page_key], tag: [] };
-
-		for (var tag_key in pages[page_key])
-			p.tag.push({ name: tag_key, item: pages[page_key][tag_key] });
-
-		p.tag.sort(function(a, b) { return a.name > b.name; });
-
-		result.push(p);
-	}
-
-	result.sort(function(a, b) { return a.name > b.name; });
-
-	});
-	return result;
-}
-;
+}).call(this);
 cryptobox.password = {};
 
 cryptobox.password.generate = function(length, includeNumbers, includePunc, includeUc, pronounceable) {
@@ -14904,7 +14916,7 @@ cryptobox.bootstrap.lockInit = function(onMove, timeout, lockCallback) {
 
 cryptobox.bootstrap.render = function(name, context) {
 	$('#content').hide();
-	$('#content').html(cryptobox.ui.render(name, context));
+	$('#content').html(Cryptobox.ui.render(name, context));
 	$('#content').fadeIn();
 }
 

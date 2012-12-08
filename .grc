@@ -4,5 +4,6 @@ find_exclude 'build/*'
 find_exclude 'templates/extern/*'
 find_exclude 'tmp/*'
 find_exclude 'private*/*'
+find_exclude 'templates.js'
 
 force_grep_variant system

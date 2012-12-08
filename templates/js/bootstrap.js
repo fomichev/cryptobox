@@ -65,7 +65,7 @@ cryptobox.bootstrap.lockInit = function(onMove, timeout, lockCallback) {
 
 cryptobox.bootstrap.render = function(name, context) {
 	$('#content').hide();
-	$('#content').html(cryptobox.ui.render(name, context));
+	$('#content').html(Cryptobox.ui.render(name, context));
 	$('#content').fadeIn();
 }
 

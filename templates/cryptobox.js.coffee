@@ -23,30 +23,24 @@ Cryptobox.measure = (name, fn) ->
 
   p "#{name} #{end - begin}ms"
 
-  return result
+  result
 
 # Decrypt base64 encoded `ciphertext` using given password (`pass`) and cipher
 # parameters: base64 encoded PBKDF2 `salt`, number of PBKDF2 `iterations`,
 # AES key length (`keylen`) and AES IV (`iv`). Decrypted plaintext is returned.
 Cryptobox.decrypt = (pass, salt, ciphertext, iterations, keylen, iv) ->
-  secret = CryptoJS.PBKDF2(
-    pass,
-    CryptoJS.enc.Base64.parse(salt),
-    {
-      keySize: keylen / 32,
-      iterations: iterations
-    })
+  secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt),
+    keySize: keylen / 32
+    iterations: iterations
+  )
 
-  result = CryptoJS.AES.decrypt(
-    ciphertext,
-    secret,
-    {
-      mode: CryptoJS.mode.CBC,
-      iv: CryptoJS.enc.Base64.parse(iv),
-      padding: CryptoJS.pad.Pkcs7
-    })
+  result = CryptoJS.AES.decrypt(ciphertext, secret,
+    mode: CryptoJS.mode.CBC
+    iv: CryptoJS.enc.Base64.parse(iv)
+    padding: CryptoJS.pad.Pkcs7
+  )
 
-  return result.toString(CryptoJS.enc.Utf8);
+  result.toString CryptoJS.enc.Utf8
 
 # Open a cryptobox using given `password` and execute `callback` when data has
 # been decrypted. This function gets ciphertext from `Cryptobox.json`
@@ -58,7 +52,7 @@ Cryptobox.open = (password, callback) ->
     setTimeout ->
       try
         data = Cryptobox.measure 'decrypt', ->
-          return JSON.parse(Cryptobox.decrypt(password,
+          JSON.parse(Cryptobox.decrypt(password,
             json.pbkdf2.salt,
             json.ciphertext,
             json.pbkdf2.iterations,
@@ -76,6 +70,6 @@ Cryptobox.open = (password, callback) ->
     cryptobox.dropbox.read (error, data) ->
       if error
         callback(null, "Can't read file 'cryptobox.json (#{error})'")
-        return;
+        return
 
       decrypt($.parseJSON(data), callback)
