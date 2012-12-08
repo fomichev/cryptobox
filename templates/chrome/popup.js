@@ -1,7 +1,3 @@
-//= require cryptobox.js.coffee
-//= require lock.js.coffee
-//= require form.js.coffee
-
 //= require extern/jquery/jquery.js
 //= require extern/bootstrap/js/bootstrap.js
 //= require extern/handlebars/handlebars.runtime.js
@@ -15,10 +11,13 @@
 //= require extern/CryptoJS/components/hmac.js
 //= require extern/CryptoJS/components/pbkdf2.js
 
+//= require cryptobox.js.coffee
+//= require lock.js.coffee
+//= require form.js.coffee
 //= require js/dropbox.js
 //= require js/ui.js
 //= require js/password.js
-//= require js/handlebars.js
+//= require handlebars.js.coffee
 //= require js/bootstrap.js
 //= require chrome/templates.js
 

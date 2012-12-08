@@ -150,8 +150,8 @@
     return _results;
   };
 
-  form.sitename = function(t) {
-    return t.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
+  form.sitename = function(url) {
+    return url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
   };
 
   form.toJson = function() {

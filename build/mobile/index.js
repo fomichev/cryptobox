@@ -1,247 +1,3 @@
-(function() {
-  var Cryptobox;
-
-  Cryptobox = {};
-
-  window.Cryptobox = Cryptobox;
-
-  window.cryptobox = {};
-
-  Cryptobox.json = null;
-
-  window.p = function(s) {
-    return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
-  };
-
-  window.dbg = function(s) {};
-
-  Cryptobox.measure = function(name, fn) {
-    var begin, end, result;
-    begin = Date.now();
-    result = fn();
-    end = Date.now();
-    p("" + name + " " + (end - begin) + "ms");
-    return result;
-  };
-
-  Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
-    var result, secret;
-    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
-      keySize: keylen / 32,
-      iterations: iterations
-    });
-    result = CryptoJS.AES.decrypt(ciphertext, secret, {
-      mode: CryptoJS.mode.CBC,
-      iv: CryptoJS.enc.Base64.parse(iv),
-      padding: CryptoJS.pad.Pkcs7
-    });
-    return result.toString(CryptoJS.enc.Utf8);
-  };
-
-  Cryptobox.open = function(password, callback) {
-    var decrypt;
-    decrypt = function(json, callback) {
-      return setTimeout(function() {
-        var data;
-        try {
-          data = Cryptobox.measure('decrypt', function() {
-            return JSON.parse(Cryptobox.decrypt(password, json.pbkdf2.salt, json.ciphertext, json.pbkdf2.iterations, json.aes.keylen, json.aes.iv));
-          });
-          return callback(data, null);
-        } catch (e) {
-          return callback(null, "<%= @text[:incorrect_password] %> " + e);
-        }
-      }, 10);
-    };
-    if (Cryptobox.json) {
-      return decrypt(Cryptobox.json, callback);
-    } else {
-      return cryptobox.dropbox.read(function(error, data) {
-        if (error) {
-          callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
-          return;
-        }
-        return decrypt($.parseJSON(data), callback);
-      });
-    }
-  };
-
-}).call(this);
-(function() {
-
-  window.Cryptobox.Lock = (function() {
-
-    function Lock(moveCallback, timeout, timeoutCallback) {
-      this.moveCallback = moveCallback;
-      this.timeout = timeout;
-      this.timeoutCallback = timeoutCallback;
-      this.timeoutNow = 0;
-      this.timeoutId = 0;
-    }
-
-    Lock.prototype.start = function() {
-      var body,
-        _this = this;
-      dbg("Start lock");
-      dbg(this);
-      body = document.getElementsByTagName('body')[0];
-      body.addEventListener('mousemove', this.moveCallback);
-      this.timeoutNow = this.timeout;
-      return this.timeoutId = window.setInterval(function() {
-        dbg("Tick lock");
-        _this.timeoutNow--;
-        if (_this.timeoutNow <= 0) {
-          _this.stop();
-          _this.timeoutCallback();
-        }
-        return dbg(_this);
-      }, 1000 * 60);
-    };
-
-    Lock.prototype.rewind = function() {
-      dbg("Rewind lock");
-      dbg(this);
-      return this.timeoutNow = this.timeout;
-    };
-
-    Lock.prototype.stop = function() {
-      dbg("Stop lock");
-      dbg(this);
-      return clearInterval(this.timeoutId);
-    };
-
-    return Lock;
-
-  })();
-
-}).call(this);
-(function() {
-  var form;
-
-  form = {};
-
-  window.Cryptobox.form = form;
-
-  form.withToken = function(form) {
-    var key, value, _ref;
-    if (form.action === '__token__') {
-      return true;
-    }
-    _ref = form.fields;
-    for (key in _ref) {
-      value = _ref[key];
-      if (value === '__token__') {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  form.login = function(newWindow, form, token) {
-    var html, key, value, w, _ref, _ref1;
-    if (form.broken) {
-      return;
-    }
-    if (token !== void 0) {
-      if (form.action === '__token__') {
-        form.action = token.form.action;
-      }
-      _ref = form.fields;
-      for (key in _ref) {
-        value = _ref[key];
-        if (value === '__token__') {
-          form.fields[key] = token.form.fields[key];
-        }
-      }
-    }
-    w = null;
-    if (newWindow) {
-      w = window.open(form.action, form.name);
-      if (!w) {
-        return;
-      }
-    } else {
-      w = window;
-      document.close();
-      document.open();
-    }
-    html = "<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='" + form.method + "' action='" + form.action + "'>";
-    _ref1 = form.fields;
-    for (key in _ref1) {
-      value = _ref1[key];
-      html += "<input type='hidden' name='" + key + "' value='" + form.fields[key] + "' />";
-    }
-    html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s";
-    html += "cript></body></html>";
-    w.document.write(html);
-    return w;
-  };
-
-  form.fill = function(form) {
-    var field, node, value, _i, _len, _ref, _results;
-    _ref = document.querySelectorAll("input[type=text], input[type=password]");
-    _results = [];
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      node = _ref[_i];
-      value = null;
-      for (field in form.fields) {
-        if (field === node.attributes['name'].value) {
-          value = form.fields[field];
-        }
-      }
-      if (value) {
-        _results.push(node.value = value);
-      } else {
-        _results.push(void 0);
-      }
-    }
-    return _results;
-  };
-
-  form.sitename = function(t) {
-    return t.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
-  };
-
-  form.toJson = function() {
-    var address, el, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
-    address = document.URL;
-    name = document.title;
-    text = "";
-    _ref = document.forms;
-    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-      form = _ref[_i];
-      form_elements = "";
-      _ref1 = form.elements;
-      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-        el = _ref1[_j];
-        if (el.name === "") {
-          continue;
-        }
-        if (form_elements === "") {
-          form_elements = "\t\t\t\"" + el.name + "\": \"" + el.value + "\"";
-        } else {
-          form_elements += ",\n\t\t\t\"" + el.name + "\": \"" + el.value + "\"";
-        }
-      }
-      method = form.method;
-      if (method !== 'get') {
-        method = post;
-      }
-      form_text = "\t\t\"action\": \"" + form.action + "\",\n\t\t\"method\": \"" + method + "\",\n\t\t\"fields\":\n\t\t{\n" + form_elements + "\n\t\t}";
-      if (text === "") {
-        text += '[\n';
-      } else {
-        text += ',\n';
-      }
-      text += "{\n\t\"name\": \"" + name + "\",\n\t\"address\": \"" + address + "\",\n\t\"form\":\n\t{\n" + form_text + "\n\t}\n}\n";
-    }
-    if (text) {
-      text += "]";
-    }
-    return text;
-  };
-
-}).call(this);
 /*!
  * jQuery JavaScript Library v1.7.2
  * http://jquery.com/
@@ -19881,6 +19637,250 @@ code.google.com/p/crypto-js/wiki/License
         return PBKDF2.create(cfg).compute(password, salt);
     };
 }());
+(function() {
+  var Cryptobox;
+
+  Cryptobox = {};
+
+  window.Cryptobox = Cryptobox;
+
+  window.cryptobox = {};
+
+  Cryptobox.json = null;
+
+  window.p = function(s) {
+    return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
+  };
+
+  window.dbg = function(s) {};
+
+  Cryptobox.measure = function(name, fn) {
+    var begin, end, result;
+    begin = Date.now();
+    result = fn();
+    end = Date.now();
+    p("" + name + " " + (end - begin) + "ms");
+    return result;
+  };
+
+  Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+    var result, secret;
+    secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
+      keySize: keylen / 32,
+      iterations: iterations
+    });
+    result = CryptoJS.AES.decrypt(ciphertext, secret, {
+      mode: CryptoJS.mode.CBC,
+      iv: CryptoJS.enc.Base64.parse(iv),
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return result.toString(CryptoJS.enc.Utf8);
+  };
+
+  Cryptobox.open = function(password, callback) {
+    var decrypt;
+    decrypt = function(json, callback) {
+      return setTimeout(function() {
+        var data;
+        try {
+          data = Cryptobox.measure('decrypt', function() {
+            return JSON.parse(Cryptobox.decrypt(password, json.pbkdf2.salt, json.ciphertext, json.pbkdf2.iterations, json.aes.keylen, json.aes.iv));
+          });
+          return callback(data, null);
+        } catch (e) {
+          return callback(null, "<%= @text[:incorrect_password] %> " + e);
+        }
+      }, 10);
+    };
+    if (Cryptobox.json) {
+      return decrypt(Cryptobox.json, callback);
+    } else {
+      return cryptobox.dropbox.read(function(error, data) {
+        if (error) {
+          callback(null, "Can't read file 'cryptobox.json (" + error + ")'");
+          return;
+        }
+        return decrypt($.parseJSON(data), callback);
+      });
+    }
+  };
+
+}).call(this);
+(function() {
+
+  window.Cryptobox.Lock = (function() {
+
+    function Lock(moveCallback, timeout, timeoutCallback) {
+      this.moveCallback = moveCallback;
+      this.timeout = timeout;
+      this.timeoutCallback = timeoutCallback;
+      this.timeoutNow = 0;
+      this.timeoutId = 0;
+    }
+
+    Lock.prototype.start = function() {
+      var body,
+        _this = this;
+      dbg("Start lock");
+      dbg(this);
+      body = document.getElementsByTagName('body')[0];
+      body.addEventListener('mousemove', this.moveCallback);
+      this.timeoutNow = this.timeout;
+      return this.timeoutId = window.setInterval(function() {
+        dbg("Tick lock");
+        _this.timeoutNow--;
+        if (_this.timeoutNow <= 0) {
+          _this.stop();
+          _this.timeoutCallback();
+        }
+        return dbg(_this);
+      }, 1000 * 60);
+    };
+
+    Lock.prototype.rewind = function() {
+      dbg("Rewind lock");
+      dbg(this);
+      return this.timeoutNow = this.timeout;
+    };
+
+    Lock.prototype.stop = function() {
+      dbg("Stop lock");
+      dbg(this);
+      return clearInterval(this.timeoutId);
+    };
+
+    return Lock;
+
+  })();
+
+}).call(this);
+(function() {
+  var form;
+
+  form = {};
+
+  window.Cryptobox.form = form;
+
+  form.withToken = function(form) {
+    var key, value, _ref;
+    if (form.action === '__token__') {
+      return true;
+    }
+    _ref = form.fields;
+    for (key in _ref) {
+      value = _ref[key];
+      if (value === '__token__') {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  form.login = function(newWindow, form, token) {
+    var html, key, value, w, _ref, _ref1;
+    if (form.broken) {
+      return;
+    }
+    if (token !== void 0) {
+      if (form.action === '__token__') {
+        form.action = token.form.action;
+      }
+      _ref = form.fields;
+      for (key in _ref) {
+        value = _ref[key];
+        if (value === '__token__') {
+          form.fields[key] = token.form.fields[key];
+        }
+      }
+    }
+    w = null;
+    if (newWindow) {
+      w = window.open(form.action, form.name);
+      if (!w) {
+        return;
+      }
+    } else {
+      w = window;
+      document.close();
+      document.open();
+    }
+    html = "<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='" + form.method + "' action='" + form.action + "'>";
+    _ref1 = form.fields;
+    for (key in _ref1) {
+      value = _ref1[key];
+      html += "<input type='hidden' name='" + key + "' value='" + form.fields[key] + "' />";
+    }
+    html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s";
+    html += "cript></body></html>";
+    w.document.write(html);
+    return w;
+  };
+
+  form.fill = function(form) {
+    var field, node, value, _i, _len, _ref, _results;
+    _ref = document.querySelectorAll("input[type=text], input[type=password]");
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      node = _ref[_i];
+      value = null;
+      for (field in form.fields) {
+        if (field === node.attributes['name'].value) {
+          value = form.fields[field];
+        }
+      }
+      if (value) {
+        _results.push(node.value = value);
+      } else {
+        _results.push(void 0);
+      }
+    }
+    return _results;
+  };
+
+  form.sitename = function(url) {
+    return url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
+  };
+
+  form.toJson = function() {
+    var address, el, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
+    address = document.URL;
+    name = document.title;
+    text = "";
+    _ref = document.forms;
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      form = _ref[_i];
+      form_elements = "";
+      _ref1 = form.elements;
+      for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+        el = _ref1[_j];
+        if (el.name === "") {
+          continue;
+        }
+        if (form_elements === "") {
+          form_elements = "\t\t\t\"" + el.name + "\": \"" + el.value + "\"";
+        } else {
+          form_elements += ",\n\t\t\t\"" + el.name + "\": \"" + el.value + "\"";
+        }
+      }
+      method = form.method;
+      if (method !== 'get') {
+        method = post;
+      }
+      form_text = "\t\t\"action\": \"" + form.action + "\",\n\t\t\"method\": \"" + method + "\",\n\t\t\"fields\":\n\t\t{\n" + form_elements + "\n\t\t}";
+      if (text === "") {
+        text += '[\n';
+      } else {
+        text += ',\n';
+      }
+      text += "{\n\t\"name\": \"" + name + "\",\n\t\"address\": \"" + address + "\",\n\t\"form\":\n\t{\n" + form_text + "\n\t}\n}\n";
+    }
+    if (text) {
+      text += "]";
+    }
+    return text;
+  };
+
+}).call(this);
 cryptobox.dropbox = {};
 cryptobox.dropbox.client = null;
 cryptobox.dropbox.callback = null;
@@ -20105,33 +20105,35 @@ cryptobox.ui.init = function(data) {
 	return result;
 }
 ;
-/*
-Handlebars.registerHelper('nl2br', function(text) {
-	var nl2br = (text + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
-	return new Handlebars.SafeString(nl2br);
-});
-*/
+(function() {
 
+  window.Handlebars.registerHelper('stringify', function(object) {
+    return JSON.stringify(object);
+  });
 
-Handlebars.registerHelper('stringify', function(obj) {
-	return JSON.stringify(obj);
-});
+  window.Handlebars.registerHelper("each_key_value", function(object, options) {
+    var buffer, key, value;
+    buffer = "";
+    for (key in object) {
+      value = object[key];
+      if (object.hasOwnProperty(key)) {
+        buffer += options.fn({
+          key: key,
+          value: value
+        });
+      }
+    }
+    return buffer;
+  });
 
-Handlebars.registerHelper("each_key_value", function(obj, options) {
-	var buffer = "";
+  window.Handlebars.registerHelper('if_eq', function(context, options) {
+    if (context === options.hash.to) {
+      return options.fn(this);
+    }
+    return options.inverse(this);
+  });
 
-	for (var key in obj)
-		if (obj.hasOwnProperty(key))
-			buffer += options.fn({key: key, value: obj[key]});
-
-return buffer;
-});
-
-Handlebars.registerHelper('if_eq', function(context, options) {
-	if (context == options.hash.to)
-		return options.fn(this);
-	return options.inverse(this);
-});
+}).call(this);
 (function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
 templates['locked'] = template(function (Handlebars,depth0,helpers,partials,data) {
@@ -20362,7 +20364,6 @@ function program20(depth0,data) {
   buffer += "\n";
   return buffer;});
 })();
-
 
 
 
