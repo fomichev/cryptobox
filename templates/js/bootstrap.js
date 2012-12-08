@@ -45,7 +45,7 @@ cryptobox.bootstrap.filterInit = function() {
 }
 
 cryptobox.bootstrap.dialogGenerateSubmit = function() {
-	$("#intput-generated-password").val(cryptobox.password.generate(
+	$("#intput-generated-password").val(Cryptobox.password.generate(
 		$("#input-password-length").val(),
 		$("#input-include-num").is(":checked"),
 		$("#input-include-punc").is(":checked"),

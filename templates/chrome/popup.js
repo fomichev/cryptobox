@@ -16,7 +16,7 @@
 //= require form.js.coffee
 //= require js/dropbox.js
 //= require ui.js.coffee
-//= require js/password.js
+//= require password.js.coffee
 //= require handlebars.js.coffee
 //= require js/bootstrap.js
 //= require chrome/templates.js

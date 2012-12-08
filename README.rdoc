@@ -561,6 +561,7 @@ TODO: describe here what libs used and where
 === Desktop HTML
 * Check login with token
 * Bring back button to get form JSON
+* Fix 'make pronounceable password'
 
 === Chrome extension
 * Align locked page with desktop version (left justify)

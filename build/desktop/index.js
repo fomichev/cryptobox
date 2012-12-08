@@ -14735,90 +14735,89 @@ cryptobox.dropbox.authenticate = function(remember) {
   };
 
 }).call(this);
-cryptobox.password = {};
+(function() {
+  var password;
 
-cryptobox.password.generate = function(length, includeNumbers, includePunc, includeUc, pronounceable) {
-	var isVowel = function(c) {
-		c = c.toLowerCase();
+  password = {};
 
-		if (c == 'a')
-			return true;
-		else if (c == 'e')
-			return true;
-		else if (c == 'i')
-			return true;
-		else if (c == 'o')
-			return true;
-		else if (c == 'u')
-			return true;
-		else
-			return false;
-	}
+  window.Cryptobox.password = password;
 
-	Math.seedrandom();
+  password.isVowel = function(c) {
+    c = c.toLowerCase();
+    if (c === "a") {
+      return true;
+    } else if (c === "e") {
+      return true;
+    } else if (c === "i") {
+      return true;
+    } else if (c === "o") {
+      return true;
+    } else if (c === "u") {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-	var pass = "";
+  password.generate = function(length, withNumbers, withPunc, withUc, pronounceable) {
+    var aV, bV, ch, i, num, pass, prevCh;
+    Math.seedrandom();
+    pass = "";
+    i = 0;
+    if (pronounceable) {
+      withNumbers = false;
+      withPunc = false;
+    }
+    while (i < length) {
+      num = Math.random() * 1000;
+      num = Math.floor(num);
+      num = (num % 93) + 33;
+      if (withNumbers === false) {
+        if (num >= 48 && num <= 57) {
+          continue;
+        }
+      }
+      if (withPunc === false) {
+        if (num >= 33 && num <= 47) {
+          continue;
+        }
+        if (num >= 58 && num <= 64) {
+          continue;
+        }
+        if (num >= 91 && num <= 96) {
+          continue;
+        }
+        if (num >= 123 && num <= 126) {
+          continue;
+        }
+      }
+      if (withUc === false) {
+        if (num >= 65 && num <= 90) {
+          continue;
+        }
+      }
+      ch = String.fromCharCode(num);
+      if (pronounceable === true) {
+        if (pass.length >= 1) {
+          prevCh = pass.charAt(i - 1);
+          aV = isVowel(ch);
+          bV = isVowel(prevCh);
+          if (isVowel(ch) && !isVowel(prevCh)) {
 
-	if (pronounceable) {
-		includeNumbers = false;
-		includePunc = false;
-	}
+          } else {
+            if (!(!isVowel(ch) && isVowel(prevCh))) {
+              continue;
+            }
+          }
+        }
+      }
+      pass += ch;
+      i++;
+    }
+    return pass;
+  };
 
-	for (var i = 0; i < length;) {
-		var num = Math.random() * 1000;
-		num = Math.floor(num);
-		/* 33 .. 126 */
-		num = (num % 93) + 33;
-
-		if (includeNumbers == false) {
-			if (num >= 48 && num <= 57)
-			       continue;
-		}
-
-		if (includePunc == false) {
-			if (num >= 33 && num <= 47)
-			       continue;
-
-			if (num >= 58 && num <= 64)
-			       continue;
-
-			if (num >= 91 && num <= 96)
-			       continue;
-
-			if (num >= 123 && num <= 126)
-			       continue;
-		}
-
-		if (includeUc == false) {
-			if (num >= 65 && num <= 90)
-			       continue;
-		}
-
-		var ch = String.fromCharCode(num);
-
-		if (pronounceable == true) {
-			if (pass.length >= 1) {
-				var prevCh = pass.charAt(i - 1);
-
-				var aV = isVowel(ch);
-				var bV = isVowel(prevCh);
-
-				if (isVowel(ch) && !isVowel(prevCh)) {
-				} else if (!isVowel(ch) && isVowel(prevCh)) {
-				} else {
-					continue;
-				}
-			}
-		}
-
-		pass += ch;
-
-		i++;
-	}
-
-	return pass;
-}
-;
+}).call(this);
 (function() {
 
   window.Handlebars.registerHelper('stringify', function(object) {
@@ -14896,7 +14895,7 @@ cryptobox.bootstrap.filterInit = function() {
 }
 
 cryptobox.bootstrap.dialogGenerateSubmit = function() {
-	$("#intput-generated-password").val(cryptobox.password.generate(
+	$("#intput-generated-password").val(Cryptobox.password.generate(
 		$("#input-password-length").val(),
 		$("#input-include-num").is(":checked"),
 		$("#input-include-punc").is(":checked"),
