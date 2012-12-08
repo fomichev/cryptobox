@@ -1,13 +1,13 @@
 //= require cryptobox.js.coffee
-//= require js/form.js
+//= require form.js.coffee
 
 chrome.extension.onMessage.addListener(
 	function(msg, sender, sendResponse) {
 		if (msg.type == 'fillForm') {
-			cryptobox.form.fill(msg.data.form);
+			Cryptobox.form.fill(msg.data.form);
 			sendResponse({});
 		} else if (msg.type == 'getFormJson') {
-			sendResponse(cryptobox.form.toJson());
+			sendResponse(Cryptobox.form.toJson());
 		} else {
 			// unknown message
 		}

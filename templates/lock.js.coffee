@@ -1,14 +1,13 @@
 # Class that implements auto locking on idle functionality.
 class window.Cryptobox.Lock
 
-  # Class constructor which requires callback (`moveCallback`) which is called
-  # when mouse has been moved to update the lock and `timeout` which will
-  # trigger `timeoutCallback` when the lock expires.
+  # Create a new lock with `moveCallback` that is called when move is moved
+  # and `timeoutCallback` that is called when lock `timeout` expires.
   constructor: (@moveCallback, @timeout, @timeoutCallback) ->
     @timeoutNow = 0
     @timeoutId = 0
 
-  # Start auto lock (counting down towards reaching timeout).
+  # Start auto lock (start counting down towards reaching timeout).
   start: ->
     dbg "Start lock"
     dbg this
@@ -30,8 +29,9 @@ class window.Cryptobox.Lock
 
     , 1000 * 60
 
-  # Start lock again with programmed timeout. Mainly, should be called from
-  # the `moveCallback` to update the lock.
+  # Reset lock timeout. Mainly should be called from the `moveCallback`
+  # to indicate that user still interacts with the application and we
+  # don't need to lock it.
   rewind: ->
     dbg "Rewind lock"
     dbg this

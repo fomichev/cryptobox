@@ -1,5 +1,6 @@
 //= require cryptobox.js.coffee
 //= require lock.js.coffee
+//= require form.js.coffee
 
 //= require extern/jquery/jquery.js
 //= require mobile/jquery.mobile.js
@@ -15,7 +16,6 @@
 //= require extern/CryptoJS/components/pbkdf2.js
 
 //= require js/dropbox.js
-//= require js/form.js
 //= require js/ui.js
 //= require js/handlebars.js
 //= require mobile/templates.js
@@ -77,10 +77,10 @@ $(document).ready(function() {
 
 	$('.button-login').live('click', function() {
 		var el = $.parseJSON($(this).attr('json'));
-		if (cryptobox.form.withToken(el.form))
+		if (Cryptobox.form.withToken(el.form))
 			cryptobox.main.showAlert(true, "<%= @text[:no_login_with_token] %>");
 		else
-			cryptobox.form.login(true, el.form);
+			Cryptobox.form.login(true, el.form);
 	});
 
 	$("#form-unlock").live('submit', function(event) {

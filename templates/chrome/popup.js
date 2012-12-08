@@ -1,5 +1,6 @@
 //= require cryptobox.js.coffee
 //= require lock.js.coffee
+//= require form.js.coffee
 
 //= require extern/jquery/jquery.js
 //= require extern/bootstrap/js/bootstrap.js
@@ -15,7 +16,6 @@
 //= require extern/CryptoJS/components/pbkdf2.js
 
 //= require js/dropbox.js
-//= require js/form.js
 //= require js/ui.js
 //= require js/password.js
 //= require js/handlebars.js
@@ -111,7 +111,7 @@ cryptobox.main.showData = function(data) {
 
 		for (var i = 0; i < data.length; i++) {
 			if (data[i].type == 'webform') {
-				if (cryptobox.form.sitename(data[i].address) == cryptobox.form.sitename(t.url)) {
+				if (Cryptobox.form.sitename(data[i].address) == Cryptobox.form.sitename(t.url)) {
 					matched.push(data[i]);
 				} else {
 					if (data[i].visible == true)

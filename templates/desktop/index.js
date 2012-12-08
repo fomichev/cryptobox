@@ -1,5 +1,6 @@
 //= require cryptobox.js.coffee
 //= require lock.js.coffee
+//= require form.js.coffee
 
 //= require extern/jquery/jquery.js
 //= require extern/bootstrap/js/bootstrap.js
@@ -15,7 +16,6 @@
 //= require extern/CryptoJS/components/pbkdf2.js
 
 //= require js/dropbox.js
-//= require js/form.js
 //= require js/ui.js
 //= require js/password.js
 //= require js/handlebars.js
@@ -43,11 +43,11 @@ cryptobox.main.copyToClipboard = function(text) {
 }
 
 cryptobox.main.headerClick = function(el) {
-	if (cryptobox.form.withToken(el.form)) {
+	if (Cryptobox.form.withToken(el.form)) {
 		$('#button-token').attr('href', el.form.action);
 		$('#div-token').modal();
 	} else {
-		cryptobox.form.login(true, el.form);
+		Cryptobox.form.login(true, el.form);
 	}
 }
 

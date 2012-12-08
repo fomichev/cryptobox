@@ -1,7 +1,7 @@
 //= require cryptobox.js.coffee
+//= require form.js.coffee
 
 //= require js/popover.js
-//= require js/form.js
 
 var ta = document.createElement('textarea');
 ta.style.width = '100%';
@@ -11,7 +11,7 @@ ta.style.background = '#000';
 ta.style.color = '#fff';
 ta.style.resize = 'none';
 
-ta.appendChild(document.createTextNode(cryptobox.form.toJson()));
+ta.appendChild(document.createTextNode(Cryptobox.form.toJson()));
 
 cryptobox.popover.show('50%', '50%', ta);
 

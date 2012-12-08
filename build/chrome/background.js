@@ -1,10 +1,13 @@
 (function() {
+  var Cryptobox;
 
-  window.Cryptobox = {};
+  Cryptobox = {};
+
+  window.Cryptobox = Cryptobox;
 
   window.cryptobox = {};
 
-  window.Cryptobox.json = null;
+  Cryptobox.json = null;
 
   window.p = function(s) {
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
@@ -12,7 +15,7 @@
 
   window.dbg = function(s) {};
 
-  window.Cryptobox.measure = function(name, fn) {
+  Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
     result = fn();
@@ -21,7 +24,7 @@
     return result;
   };
 
-  window.Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
+  Cryptobox.decrypt = function(pass, salt, ciphertext, iterations, keylen, iv) {
     var result, secret;
     secret = CryptoJS.PBKDF2(pass, CryptoJS.enc.Base64.parse(salt), {
       keySize: keylen / 32,
@@ -35,7 +38,7 @@
     return result.toString(CryptoJS.enc.Utf8);
   };
 
-  window.Cryptobox.open = function(password, callback) {
+  Cryptobox.open = function(password, callback) {
     var decrypt;
     decrypt = function(json, callback) {
       return setTimeout(function() {

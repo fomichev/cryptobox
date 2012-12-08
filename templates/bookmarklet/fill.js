@@ -1,4 +1,5 @@
 //= require cryptobox.js.coffee
+//= require form.js.coffee
 
 //= require extern/CryptoJS/components/core.js
 //= require extern/CryptoJS/components/enc-base64.js
@@ -9,7 +10,6 @@
 //= require extern/CryptoJS/components/pbkdf2.js
 
 //= require js/popover.js
-//= require js/form.js
 
 Cryptobox.json = openCryptobox();
 
@@ -19,7 +19,7 @@ function unlock(pwd, caption) {
 		var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
 
 		return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
-			'cryptobox.form.fill(' + JSON.stringify(form) + ');' +
+			'Cryptobox.form.fill(' + JSON.stringify(form) + ');' +
 			'return false;\'>' + name + '</a></div>';
 	}
 
@@ -33,8 +33,8 @@ function unlock(pwd, caption) {
 		if (el.type != 'webform')
 			continue;
 
-		var address = cryptobox.form.sitename(document.URL);
-		var action = cryptobox.form.sitename(el.form.action);
+		var address = Cryptobox.form.sitename(document.URL);
+		var action = Cryptobox.form.sitename(el.form.action);
 
 		if (address == action)
 			matched.push(el);
@@ -45,7 +45,7 @@ function unlock(pwd, caption) {
 		window.setTimeout(function () { document.body.click(); }, 1000)
 	} else if (matched.length == 1) {
 		caption.innerHTML = '<%= @text[:wait_for_login] %>';
-		cryptobox.form.fill(matched[0].form);
+		Cryptobox.form.fill(matched[0].form);
 	} else {
 		var r = ''
 		for (var i = 0; i < matched.length; i++) {
