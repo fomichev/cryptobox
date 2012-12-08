@@ -18,7 +18,7 @@
 //= require ui.js.coffee
 //= require password.js.coffee
 //= require handlebars.js.coffee
-//= require js/bootstrap.js
+//= require bootstrap.js.coffee
 //= require desktop/index.js
 //= require desktop/templates.js
 
@@ -56,8 +56,8 @@ cryptobox.main.detailsClick = function(el) {
 
 		var values = {
 			'<%= @text[:address] %>:': $('<a>', { 'target': '_blank', 'href': el.address }).text(el.address),
-			'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
-			'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+			'<%= @text[:username] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
+			'<%= @text[:password] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
 		};
 
 		if (el.form.vars.secret)
@@ -66,7 +66,7 @@ cryptobox.main.detailsClick = function(el) {
 		if (el.form.vars.note)
 			values['<%= @text[:note] %>'] = Cryptobox.ui.addBr(forms.vars.note);
 
-		cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
+		Cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
 	} else {
 		$('#div-details .modal-body').html(el.text);
 	}
@@ -82,7 +82,7 @@ cryptobox.main.lock = function() {
 	$("#div-generate").modal('hide');
 
 	cryptobox.main.prepare();
-	cryptobox.bootstrap.render('locked', this);
+	Cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 }
 
@@ -94,11 +94,11 @@ cryptobox.main.dialogGenerateInit = function() {
 	});
 
 	$('#button-generate').click(function() {
-		cryptobox.bootstrap.dialogGenerateSubmit();
+		Cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 	$("#div-generate").keydown(function(event) {
 		if (event.keyCode == $.ui.keyCode.ENTER)
-			cryptobox.bootstrap.dialogGenerateSubmit();
+			Cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 
 	$("#input-pronounceable").click(function() {
@@ -137,20 +137,20 @@ cryptobox.main.dialogTokenLoginInit = function() {
 cryptobox.main.prepare = function() {
 	cryptobox.dropbox.prepare(
 		function(url) {
-			cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
+			Cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
 		},
 		function(error) {
 			if (error) {
-				cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
+				Cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
 			} else {
-				cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
+				Cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
 			}
 		});
 }
 
 $(function() {
 	cryptobox.main.prepare();
-	cryptobox.bootstrap.render('locked', this);
+	Cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 
 	$("#form-unlock").live('submit', function(event) {
@@ -160,15 +160,15 @@ $(function() {
 
 		$('#button-unlock').button('loading');
 
-		cryptobox.bootstrap.hideAlert();
+		Cryptobox.bootstrap.hideAlert();
 
 		Cryptobox.open($("#input-password").val(), function(json, error) {
 			if (error) {
 				$('#button-unlock').button('reset');
-				cryptobox.bootstrap.showAlert(true, error);
+				Cryptobox.bootstrap.showAlert(true, error);
 			} else {
 				var data = Cryptobox.ui.init(json);
-				cryptobox.bootstrap.render('unlocked', { page: data });
+				Cryptobox.bootstrap.render('unlocked', { page: data });
 
 				// try to select Sites tab; otherwise select first one
 				if ($('div.tab-pane[id="webform"]')) {
@@ -180,13 +180,13 @@ $(function() {
 				}
 				$("#input-filter").focus();
 
-				cryptobox.bootstrap.lockInit(
+				Cryptobox.bootstrap.lockInit(
 					function() { cryptobox.lock.rewind(); },
 					cryptobox.config.lock_timeout_minutes,
 					cryptobox.main.lock);
 				cryptobox.main.dialogTokenLoginInit();
 				cryptobox.main.dialogGenerateInit();
-				cryptobox.bootstrap.filterInit();
+				Cryptobox.bootstrap.filterInit();
 
 				$('.button-login').click(function() {
 					var el = $.parseJSON($(this).parent().parent().attr('json'));

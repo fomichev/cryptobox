@@ -17,7 +17,7 @@ class ChromeOutput < Output
 
     from = File.join(@config[:path][:private], 'cryptobox.json')
     to = File.join(target_prefix, 'cryptobox-data.js')
-    File.open(to, 'w') { |f| f.write("cryptobox.json = #{File.read(from)};") }
+    File.open(to, 'w') { |f| f.write("Cryptobox.json = #{File.read(from)};") }
 
     templates = [
       File.join(@config[:path][:templates], 'chrome', 'popup.rhtml'),

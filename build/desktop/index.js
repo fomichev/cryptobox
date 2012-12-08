@@ -14847,94 +14847,94 @@ cryptobox.dropbox.authenticate = function(remember) {
   });
 
 }).call(this);
-/* common functionality shared between chrome extension and desktop html */
+(function() {
+  var bootstrap;
 
-cryptobox.bootstrap = {};
+  bootstrap = {};
 
-cryptobox.bootstrap._collapsible_id = 0;
-cryptobox.bootstrap.collapsible = function(value, copy) {
-	var id = cryptobox.bootstrap._collapsible_id++;
+  window.Cryptobox.bootstrap = bootstrap;
 
-	return '<button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#collapsible-' + id + '"><%= @text[:button_hide_reveal] %></button>&nbsp;' + copy + '<div id="collapsible-' + id + '" class="collapse">' + value + '</div>';
-}
+  bootstrap.__collapsibleId = 0;
 
-cryptobox.bootstrap.createDetails = function(entry, map) {
-	var items = $();
-	$.each(map, function(k, v) {
-		items = items.add($('<dt>').html(k));
-		items = items.add($('<dd>').html(v));
-	});
+  bootstrap.collapsible = function(value, copy) {
+    var id;
+    id = Cryptobox.bootstrap.__collapsibleId++;
+    return "\"<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
+  };
 
-	$('<dl>', { 'class': 'dl-horizontal' }).html(items).appendTo(entry);
-}
+  bootstrap.createDetails = function(entry, map) {
+    var items;
+    items = $();
+    $.each(map, function(k, v) {
+      items = items.add($('<dt>').html(k));
+      return items = items.add($('<dd>').html(v));
+    });
+    return $('<dl>', {
+      'class': 'dl-horizontal'
+    }).html(items).appendTo(entry);
+  };
 
-cryptobox.bootstrap.filterInit = function() {
-	$("#input-filter").keyup(function() {
-		var text = $("#input-filter").val().toLowerCase();
+  bootstrap.filterInit = function() {
+    return $("#input-filter").keyup(function() {
+      var text;
+      text = $("#input-filter").val().toLowerCase();
+      if (text === "") {
+        $("table").show();
+        return $("tr").show();
+      } else {
+        $("table").show();
+        $("tr").hide();
+        $("tr").filter(function() {
+          if ($('td:first', this).text().toLowerCase().indexOf(text) >= 0) {
+            return true;
+          }
+          return false;
+        }).show();
+        return $('div.active table').each(function() {
+          if ($('tr:visible', this).length === 0) {
+            return $(this).hide();
+          }
+        });
+      }
+    });
+  };
 
-		if (text == "") {
-			$("table").show();
-			$("tr").show();
-		} else {
-			$("table").show();
+  bootstrap.dialogGenerateSubmit = function() {
+    return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
+  };
 
-			$("tr").hide();
-			$("tr").filter(function() {
-				if ($('td:first', this).text().toLowerCase().indexOf(text) >= 0)
-					return true;
-				else
-					return false;
-			}).show();
+  bootstrap.lockInit = function(moveCallback, timeout, timeoutCallback) {
+    cryptobox.lock = new Cryptobox.Lock(moveCallback, timeout, timeoutCallback);
+    cryptobox.lock.start();
+    return $("#button-lock").click(function(event) {
+      event.preventDefault();
+      return timeoutCallback();
+    });
+  };
 
-			$('div.active table').each(function() {
-				if ($('tr:visible', this).length == 0)
-					$(this).hide();
-			});
-		}
-	});
-}
+  bootstrap.render = function(name, context) {
+    $('#content').hide();
+    $('#content').html(Cryptobox.ui.render(name, context));
+    return $('#content').fadeIn();
+  };
 
-cryptobox.bootstrap.dialogGenerateSubmit = function() {
-	$("#intput-generated-password").val(Cryptobox.password.generate(
-		$("#input-password-length").val(),
-		$("#input-include-num").is(":checked"),
-		$("#input-include-punc").is(":checked"),
-		$("#input-include-uc").is(":checked"),
-		$("#input-pronounceable").is(":checked")));
-}
+  bootstrap.showAlert = function(error, text) {
+    if (error) {
+      $('#div-alert').addClass('alert-error');
+    } else {
+      $('#div-alert').addClass('alert-info');
+    }
+    $("#div-alert").html(text);
+    return $("#div-alert").fadeIn();
+  };
 
-cryptobox.bootstrap.lockInit = function(onMove, timeout, lockCallback) {
-	cryptobox.lock = new Cryptobox.Lock(onMove, timeout, lockCallback);
-	cryptobox.lock.start();
+  bootstrap.hideAlert = function() {
+    $('#div-alert').removeClass('alert-error');
+    $('#div-alert').removeClass('alert-info');
+    return $("#div-alert").fadeOut();
+  };
 
-	$("#button-lock").click(function(event) {
-		event.preventDefault();
-		lockCallback();
-	});
-}
-
-cryptobox.bootstrap.render = function(name, context) {
-	$('#content').hide();
-	$('#content').html(Cryptobox.ui.render(name, context));
-	$('#content').fadeIn();
-}
-
-cryptobox.bootstrap.showAlert = function(error, text) {
-	if (error)
-		$('#div-alert').addClass('alert-error');
-	else
-		$('#div-alert').addClass('alert-info');
-
-	$("#div-alert").html(text);
-	$("#div-alert").fadeIn();
-}
-
-cryptobox.bootstrap.hideAlert = function() {
-	$('#div-alert').removeClass('alert-error');
-	$('#div-alert').removeClass('alert-info');
-	$("#div-alert").fadeOut();
-}
-;
+}).call(this);
 
 
 
@@ -14993,8 +14993,8 @@ cryptobox.main.detailsClick = function(el) {
 
 		var values = {
 			'<%= @text[:address] %>:': $('<a>', { 'target': '_blank', 'href': el.address }).text(el.address),
-			'<%= @text[:username] %>:': cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
-			'<%= @text[:password] %>:': cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+			'<%= @text[:username] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
+			'<%= @text[:password] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
 		};
 
 		if (el.form.vars.secret)
@@ -15003,7 +15003,7 @@ cryptobox.main.detailsClick = function(el) {
 		if (el.form.vars.note)
 			values['<%= @text[:note] %>'] = Cryptobox.ui.addBr(forms.vars.note);
 
-		cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
+		Cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
 	} else {
 		$('#div-details .modal-body').html(el.text);
 	}
@@ -15019,7 +15019,7 @@ cryptobox.main.lock = function() {
 	$("#div-generate").modal('hide');
 
 	cryptobox.main.prepare();
-	cryptobox.bootstrap.render('locked', this);
+	Cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 }
 
@@ -15031,11 +15031,11 @@ cryptobox.main.dialogGenerateInit = function() {
 	});
 
 	$('#button-generate').click(function() {
-		cryptobox.bootstrap.dialogGenerateSubmit();
+		Cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 	$("#div-generate").keydown(function(event) {
 		if (event.keyCode == $.ui.keyCode.ENTER)
-			cryptobox.bootstrap.dialogGenerateSubmit();
+			Cryptobox.bootstrap.dialogGenerateSubmit();
 	});
 
 	$("#input-pronounceable").click(function() {
@@ -15074,20 +15074,20 @@ cryptobox.main.dialogTokenLoginInit = function() {
 cryptobox.main.prepare = function() {
 	cryptobox.dropbox.prepare(
 		function(url) {
-			cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
+			Cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
 		},
 		function(error) {
 			if (error) {
-				cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
+				Cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
 			} else {
-				cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
+				Cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
 			}
 		});
 }
 
 $(function() {
 	cryptobox.main.prepare();
-	cryptobox.bootstrap.render('locked', this);
+	Cryptobox.bootstrap.render('locked', this);
 	$("#input-password").focus();
 
 	$("#form-unlock").live('submit', function(event) {
@@ -15097,15 +15097,15 @@ $(function() {
 
 		$('#button-unlock').button('loading');
 
-		cryptobox.bootstrap.hideAlert();
+		Cryptobox.bootstrap.hideAlert();
 
 		Cryptobox.open($("#input-password").val(), function(json, error) {
 			if (error) {
 				$('#button-unlock').button('reset');
-				cryptobox.bootstrap.showAlert(true, error);
+				Cryptobox.bootstrap.showAlert(true, error);
 			} else {
 				var data = Cryptobox.ui.init(json);
-				cryptobox.bootstrap.render('unlocked', { page: data });
+				Cryptobox.bootstrap.render('unlocked', { page: data });
 
 				// try to select Sites tab; otherwise select first one
 				if ($('div.tab-pane[id="webform"]')) {
@@ -15117,13 +15117,13 @@ $(function() {
 				}
 				$("#input-filter").focus();
 
-				cryptobox.bootstrap.lockInit(
+				Cryptobox.bootstrap.lockInit(
 					function() { cryptobox.lock.rewind(); },
 					cryptobox.config.lock_timeout_minutes,
 					cryptobox.main.lock);
 				cryptobox.main.dialogTokenLoginInit();
 				cryptobox.main.dialogGenerateInit();
-				cryptobox.bootstrap.filterInit();
+				Cryptobox.bootstrap.filterInit();
 
 				$('.button-login').click(function() {
 					var el = $.parseJSON($(this).parent().parent().attr('json'));
