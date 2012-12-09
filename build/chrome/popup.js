@@ -14270,8 +14270,6 @@ code.google.com/p/crypto-js/wiki/License
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -14329,9 +14327,8 @@ code.google.com/p/crypto-js/wiki/License
 
   Lock = (function() {
 
-    function Lock(moveCallback, timeout, timeoutCallback) {
-      this.moveCallback = moveCallback;
-      this.timeout = timeout;
+    function Lock(timeoutSec, timeoutCallback) {
+      this.timeoutSec = timeoutSec;
       this.timeoutCallback = timeoutCallback;
       this.timeoutNow = 0;
       this.timeoutId = 0;
@@ -14340,32 +14337,35 @@ code.google.com/p/crypto-js/wiki/License
     Lock.prototype.start = function() {
       var body,
         _this = this;
-      dbg("Start lock");
-      dbg(this);
       body = document.getElementsByTagName('body')[0];
-      body.addEventListener('mousemove', this.moveCallback);
-      this.timeoutNow = this.timeout;
-      return this.timeoutId = window.setInterval(function() {
+      body.addEventListener('mousemove', function() {
+        return _this.rewind();
+      });
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      this.timeoutNow = this.timeoutSec;
+      this.timeoutId = setInterval(function() {
         dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          _this.timeoutCallback();
+          return _this.timeoutCallback();
         }
-        return dbg(_this);
       }, 1000 * 60);
+      return p("Start lock " + this.timeoutId);
     };
 
     Lock.prototype.rewind = function() {
-      dbg("Rewind lock");
-      dbg(this);
-      return this.timeoutNow = this.timeout;
+      return this.timeoutNow = this.timeoutSec;
     };
 
     Lock.prototype.stop = function() {
-      dbg("Stop lock");
-      dbg(this);
-      return clearInterval(this.timeoutId);
+      p("Stop lock " + this.timeoutId);
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      return this.timeoutId = 0;
     };
 
     return Lock;
@@ -14934,20 +14934,40 @@ function program5(depth0,data) {
 
   AppDelegate = (function() {
 
-    function AppDelegate() {
-      p('Initialize application delegate');
-    }
+    function AppDelegate() {}
 
-    AppDelegate.prototype.prepare = function() {};
+    AppDelegate.prototype.shutdown = function(preserve) {
+      this.alert(false, null);
+      this.render("locked", this);
+      return this.state(Cryptobox.App.prototype.STATE_LOCKED);
+    };
 
-    AppDelegate.prototype.render = function(template, context) {};
+    AppDelegate.prototype.prepare = function() {
+      var _this = this;
+      return this.lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes, function() {
+        return _this.shutdown(true);
+      });
+    };
 
-    AppDelegate.prototype.alert = function(error, message) {};
-
-    AppDelegate.prototype.state = function(state) {};
-
-    AppDelegate.prototype.restoreSession = function() {
-      return null;
+    AppDelegate.prototype.state = function(state) {
+      var _this = this;
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_LOCKED:
+          this.lock.stop();
+          p('try to focus input field');
+          $("#input-password").focus();
+          return cryptobox.dropbox.prepare((function(url) {
+            return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
+          }), function(error) {
+            if (error) {
+              return this.alert(true, "Dropbox authentication error");
+            } else {
+              return this.alert(false, "Successfully restored Dropbox credentials");
+            }
+          });
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          return this.lock.start();
+      }
     };
 
     AppDelegate.prototype.prepareJson = function(json, callback) {
@@ -14955,6 +14975,14 @@ function program5(depth0,data) {
         page: Cryptobox.ui.init(json)
       });
     };
+
+    AppDelegate.prototype.restore = function() {
+      return null;
+    };
+
+    AppDelegate.prototype.render = function(template, context) {};
+
+    AppDelegate.prototype.alert = function(error, message) {};
 
     return AppDelegate;
 
@@ -14987,12 +15015,11 @@ function program5(depth0,data) {
       var json,
         _this = this;
       this.delegate.prepare();
-      json = this.delegate.restoreSession();
+      json = this.delegate.restore();
       if (json) {
         return this.unlock(json);
       } else {
         this.delegate.render('locked', this);
-        $("#input-password").focus();
         this.delegate.state(this.STATE_LOCKED);
         return $("#form-unlock").live('submit', function(event) {
           event.preventDefault();
@@ -15021,35 +15048,11 @@ function program5(depth0,data) {
 
 }).call(this);
 (function() {
-  var bootstrap,
+  var filterInit,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  bootstrap = {};
-
-  window.Cryptobox.bootstrap = bootstrap;
-
-  bootstrap.__collapsibleId = 0;
-
-  bootstrap.collapsible = function(value, copy) {
-    var id;
-    id = Cryptobox.bootstrap.__collapsibleId++;
-    return "\"<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
-  };
-
-  bootstrap.createDetails = function(entry, map) {
-    var items;
-    items = $();
-    $.each(map, function(k, v) {
-      items = items.add($('<dt>').html(k));
-      return items = items.add($('<dd>').html(v));
-    });
-    return $('<dl>', {
-      'class': 'dl-horizontal'
-    }).html(items).appendTo(entry);
-  };
-
-  bootstrap.filterInit = function() {
+  filterInit = function() {
     return $("#input-filter").keyup(function() {
       var text;
       text = $("#input-filter").val().toLowerCase();
@@ -15074,63 +15077,25 @@ function program5(depth0,data) {
     });
   };
 
-  bootstrap.dialogGenerateSubmit = function() {
-    return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
-  };
-
-  bootstrap.lockInit = function(moveCallback, timeout, timeoutCallback) {
-    cryptobox.lock = new Cryptobox.Lock(moveCallback, timeout, timeoutCallback);
-    cryptobox.lock.start();
-    return $("#button-lock").click(function(event) {
-      event.preventDefault();
-      return timeoutCallback();
-    });
-  };
-
-  bootstrap.render = function(name, context) {
-    $('#content').hide();
-    $('#content').html(Cryptobox.ui.render(name, context));
-    return $('#content').fadeIn();
-  };
-
-  bootstrap.showAlert = function(error, text) {
-    if (error) {
-      $('#div-alert').addClass('alert-error');
-    } else {
-      $('#div-alert').addClass('alert-info');
-    }
-    $("#div-alert").html(text);
-    return $("#div-alert").fadeIn();
-  };
-
-  bootstrap.hideAlert = function() {
-    $('#div-alert').removeClass('alert-error');
-    $('#div-alert').removeClass('alert-info');
-    return $("#div-alert").fadeOut();
-  };
-
   Cryptobox.BootstrapAppDelegate = (function(_super) {
 
     __extends(BootstrapAppDelegate, _super);
 
     function BootstrapAppDelegate() {
-      BootstrapAppDelegate.__super__.constructor.call(this);
+      return BootstrapAppDelegate.__super__.constructor.apply(this, arguments);
     }
 
-    BootstrapAppDelegate.prototype.render = function(template, context) {
-      return Cryptobox.bootstrap.render(template, context);
-    };
-
-    BootstrapAppDelegate.prototype.alert = function(error, message) {
-      if (message) {
-        return Cryptobox.bootstrap.showAlert(error, message);
-      } else {
-        return Cryptobox.bootstrap.hideAlert();
-      }
+    BootstrapAppDelegate.prototype.prepare = function() {
+      var _this = this;
+      BootstrapAppDelegate.__super__.prepare.call(this);
+      return $("#button-lock").live("click", function(event) {
+        event.preventDefault();
+        return _this.shutdown(false);
+      });
     };
 
     BootstrapAppDelegate.prototype.state = function(state) {
-      var _this = this;
+      BootstrapAppDelegate.__super__.state.call(this, state);
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           return $('#button-unlock').button('reset');
@@ -15138,11 +15103,54 @@ function program5(depth0,data) {
           return $('#button-unlock').button('loading');
         case Cryptobox.App.prototype.STATE_UNLOCKED:
           $('#button-unlock').button('reset');
-          Cryptobox.bootstrap.lockInit(function() {
-            return cryptobox.lock.rewind();
-          }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
-          return Cryptobox.bootstrap.filterInit();
+          return filterInit();
       }
+    };
+
+    BootstrapAppDelegate.prototype.render = function(template, context) {
+      $('#content').hide();
+      $('#content').html(Cryptobox.ui.render(template, context));
+      return $('#content').fadeIn();
+    };
+
+    BootstrapAppDelegate.prototype.alert = function(error, message) {
+      if (message) {
+        if (error) {
+          $('#div-alert').addClass('alert-error');
+        } else {
+          $('#div-alert').addClass('alert-info');
+        }
+        $("#div-alert").html(text);
+        return $("#div-alert").fadeIn();
+      } else {
+        $('#div-alert').removeClass('alert-error');
+        $('#div-alert').removeClass('alert-info');
+        return $("#div-alert").fadeOut();
+      }
+    };
+
+    BootstrapAppDelegate.__collapsibleId = 0;
+
+    BootstrapAppDelegate.collapsible = function(value, copy) {
+      var id;
+      id = this.__collapsibleId++;
+      return "<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
+    };
+
+    BootstrapAppDelegate.createDetails = function(entry, map) {
+      var items;
+      items = $();
+      $.each(map, function(k, v) {
+        items = items.add($('<dt>').html(k));
+        return items = items.add($('<dd>').html(v));
+      });
+      return $('<dl>', {
+        'class': 'dl-horizontal'
+      }).html(items).appendTo(entry);
+    };
+
+    BootstrapAppDelegate.dialogGenerateSubmit = function() {
+      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
     };
 
     return BootstrapAppDelegate;
@@ -15151,40 +15159,36 @@ function program5(depth0,data) {
 
 }).call(this);
 (function() {
-  var ChromeAppDelegate,
+  var ChromeAppDelegate, cleanClipboard, copyToClipboard, detailsClick, sendTo, sendToContentScript, show,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  cryptobox.browser = {};
-
-  cryptobox.browser.sendTo = function(tab, message, callback) {
+  sendTo = function(tab, message, callback) {
     return chrome.tabs.sendMessage(tab.id, message, function(response) {
       return callback(response);
     });
   };
 
-  cryptobox.browser.sendToContentScript = function(message, callback) {
+  sendToContentScript = function(message, callback) {
     return chrome.tabs.getSelected(null, function(tab) {
-      return cryptobox.browser.sendTo(tab, message, callback);
+      return sendTo(tab, message, callback);
     });
   };
 
-  cryptobox.browser.copyToClipboard = function(text) {
+  copyToClipboard = function(text) {
     chrome.extension.getBackgroundPage().clipboardCopyNum++;
     return chrome.extension.sendRequest({
       text: text
     });
   };
 
-  cryptobox.browser.cleanClipboard = function(text) {
+  cleanClipboard = function() {
     if (chrome.extension.getBackgroundPage().clipboardCopyNum !== 0) {
-      return cryptobox.browser.copyToClipboard("<%= @text[:cleared_clipboard] %>");
+      return copyToClipboard("<%= @text[:cleared_clipboard] %>");
     }
   };
 
-  cryptobox.main = {};
-
-  cryptobox.main.show = function(div) {
+  show = function(div) {
     $("#div-locked").hide();
     $("#div-unlocked").hide();
     $("#div-details").hide();
@@ -15199,39 +15203,18 @@ function program5(depth0,data) {
     return $(div).fadeIn();
   };
 
-  cryptobox.main.detailsClick = function(el) {
+  detailsClick = function(el) {
     var copy, values;
     copy = function(value) {
       return "<a class=\"btn btn-mini btn-success button-copy\" href=\"#\" value=\"" + value + "\"><%= @text[:button_copy] %></a>";
     };
     $("#div-details-body").html("");
     values = {
-      "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, copy(el.form.vars.user)),
-      "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
+      "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copy(el.form.vars.user)),
+      "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
     };
-    Cryptobox.bootstrap.createDetails($("#div-details-body"), values);
-    return cryptobox.main.show("#div-details");
-  };
-
-  cryptobox.main.lock = function() {
-    chrome.extension.getBackgroundPage().json = null;
-    cryptobox.browser.cleanClipboard();
-    Cryptobox.bootstrap.render("locked", this);
-    cryptobox.main.show("#div-locked");
-    cryptobox.main.prepare();
-    return $("#input-password").focus();
-  };
-
-  cryptobox.main.prepare = function() {
-    return cryptobox.dropbox.prepare((function(url) {
-      return Cryptobox.bootstrap.showAlert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
-    }), function(error) {
-      if (error) {
-        return Cryptobox.bootstrap.showAlert(true, "Dropbox authentication error");
-      } else {
-        return Cryptobox.bootstrap.showAlert(false, "Successfully restored Dropbox credentials");
-      }
-    });
+    Cryptobox.BootstrapAppDelegate.createDetails($("#div-details-body"), values);
+    return show("#div-details");
   };
 
   ChromeAppDelegate = (function(_super) {
@@ -15242,37 +15225,46 @@ function program5(depth0,data) {
       ChromeAppDelegate.__super__.constructor.call(this);
     }
 
-    ChromeAppDelegate.prototype.restoreSession = function() {
+    ChromeAppDelegate.prototype.shutdown = function(preserve) {
+      ChromeAppDelegate.__super__.shutdown.call(this, preserve);
+      chrome.extension.getBackgroundPage().lock.stop();
+      if (preserve == null) {
+        chrome.extension.getBackgroundPage().json = null;
+      }
+      cleanClipboard();
+      return show("#div-locked");
+    };
+
+    ChromeAppDelegate.prototype.restore = function() {
       if (chrome.extension.getBackgroundPage().json != null) {
-        chrome.extension.getBackgroundPage().lock.rewind();
         return chrome.extension.getBackgroundPage().json;
       }
       return null;
     };
 
     ChromeAppDelegate.prototype.state = function(state) {
+      var _this = this;
       ChromeAppDelegate.__super__.state.call(this, state);
       switch (state) {
         case Cryptobox.App.prototype.STATE_UNLOCKED:
-          chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(function() {
-            return chrome.extension.getBackgroundPage().lock.rewind();
-          }, cryptobox.config.lock_timeout_minutes, function() {
+          chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes, function() {
             return chrome.extension.getBackgroundPage().json = null;
           });
           chrome.extension.getBackgroundPage().lock.start();
           $("#div-login-details").hide();
-          return cryptobox.main.show("#div-unlocked");
+          return show("#div-unlocked");
       }
     };
 
     ChromeAppDelegate.prototype.prepare = function() {
+      ChromeAppDelegate.__super__.prepare.call(this);
       $(".button-copy").live("click", function() {
-        return cryptobox.browser.copyToClipboard($(this).attr("value"));
+        return copyToClipboard($(this).attr("value"));
       });
       $(".button-login-matched").live("click", function() {
         var el;
         el = $.parseJSON($(this).parent().parent().attr("json"));
-        cryptobox.browser.sendToContentScript({
+        sendToContentScript({
           type: "fillForm",
           data: el
         }, function() {});
@@ -15291,27 +15283,27 @@ function program5(depth0,data) {
       $(".button-details").live("click", function() {
         var el;
         el = $.parseJSON($(this).parent().parent().attr("json"));
-        return cryptobox.main.detailsClick(el);
+        return detailsClick(el);
       });
       $("#button-hide-generate").live("click", function() {
-        return cryptobox.main.show("#div-unlocked");
+        return show("#div-unlocked");
       });
       $("#button-generate-show").live("click", function() {
-        return cryptobox.main.show("#div-generate");
+        return show("#div-generate");
       });
       $("#button-generate").live("click", function() {
-        return Cryptobox.bootstrap.dialogGenerateSubmit();
+        return Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit();
       });
       $("#button-get-json").live("click", function() {
-        return cryptobox.browser.sendToContentScript({
+        return sendToContentScript({
           type: "getFormJson"
         }, function(text) {
           $("#div-details-body").html("<textarea class=\"span6\" rows=\"20\">" + text + "</textarea>");
-          return cryptobox.main.show("#div-details");
+          return show("#div-details");
         });
       });
       return $("#button-hide-details").live("click", function() {
-        return cryptobox.main.show("#div-unlocked");
+        return show("#div-unlocked");
       });
     };
 

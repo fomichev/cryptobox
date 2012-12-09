@@ -13,8 +13,6 @@
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -192,6 +190,60 @@
     }
     return text;
   };
+
+}).call(this);
+(function() {
+  var Popover;
+
+  Popover = (function() {
+
+    function Popover(width, height) {
+      var bg, paddingDiv;
+      this.popover = document.createElement("div");
+      this.popover.style.position = "absolute";
+      this.popover.style.zIndex = 99999;
+      this.popover.style.top = 0;
+      this.popover.style.left = 0;
+      this.popover.style.width = width;
+      this.popover.style.height = height;
+      paddingDiv = document.createElement("div");
+      this.popover.appendChild(paddingDiv);
+      paddingDiv.style.paddingTop = "20px";
+      paddingDiv.style.paddingLeft = "20px";
+      paddingDiv.style.paddingRight = "40px";
+      paddingDiv.style.paddingBottom = "20px";
+      bg = document.createElement("div");
+      paddingDiv.appendChild(bg);
+      bg.style.color = "#fff";
+      bg.style.background = "#000";
+      bg.style.opacity = 0.8;
+      bg.style.width = "100%";
+      bg.style.height = "100%";
+      bg.style.padding = "10px";
+      bg.style.border = "0 none";
+      bg.style.borderRadius = "6px";
+      bg.style.boxShadow = "0 0 8px rgba(0,0,0,.8)";
+    }
+
+    Popover.prototype.add = function(node) {
+      bg.appendChild(node);
+      this.popover.onclick = function(e) {
+        return e.stopPropagation();
+      };
+      return document.body.onclick = function() {
+        return this.popover.parentNode.removeChild(this.popover);
+      };
+    };
+
+    Popover.prototype.show = function() {
+      return document.body.appendChild(this.popover);
+    };
+
+    return Popover;
+
+  })();
+
+  window.Cryptobox.Popover = Popover;
 
 }).call(this);
 /*
@@ -2494,145 +2546,116 @@ code.google.com/p/crypto-js/wiki/License
         return PBKDF2.create(cfg).compute(password, salt);
     };
 }());
-cryptobox.popover = {};
+(function() {
+  var buttonDiv, buttonUnlock, caption, div, form, input, popover, unlock;
 
-cryptobox.popover.show = function(width, height, node) {
-	var popover = document.createElement('div');
-	document.body.appendChild(popover);
-	popover.style.position = 'absolute';
-	popover.style.zIndex = 99999;
-	popover.style.top = 0;
-	popover.style.left = 0;
-	popover.style.width = width;
-	popover.style.height = height;
+  unlock = function(pwd, caption) {
+    var action, address, data, el, formToLink, i, matched, r, text;
+    formToLink = function(name, form) {
+      var aStyle, divStyle;
+      divStyle = "style=\"border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;\"";
+      aStyle = "style=\"color: #fff; font-size: 18px; text-decoration: none;\"";
+      return "<div " + divStyle + "><a " + aStyle + " href=\"#\" onClick='javascript:" + "Cryptobox.form.fill(" + JSON.stringify(form) + ");" + "return false;'>" + name + "</a></div>";
+    };
+    text = Cryptobox.decrypt(pwd, Cryptobox.json.pbkdf2.salt, Cryptobox.json.ciphertext, Cryptobox.json.pbkdf2.iterations, Cryptobox.json.aes.keylen, Cryptobox.json.aes.iv);
+    data = JSON.parse(text);
+    matched = new Array();
+    i = 0;
+    while (i < data.length) {
+      el = data[i];
+      if (el.type !== "webform") {
+        continue;
+      }
+      address = Cryptobox.form.sitename(document.URL);
+      action = Cryptobox.form.sitename(el.form.action);
+      if (address === action) {
+        matched.push(el);
+      }
+      i++;
+    }
+    if (matched.length === 0) {
+      caption.innerHTML = "<%= @text[:login_not_found] %>";
+      return window.setTimeout((function() {
+        return document.body.click();
+      }), 1000);
+    } else if (matched.length === 1) {
+      caption.innerHTML = "<%= @text[:wait_for_login] %>";
+      return Cryptobox.form.fill(matched[0].form);
+    } else {
+      r = "";
+      i = 0;
+      while (i < matched.length) {
+        el = matched[i];
+        r += formToLink(el.name + " (" + el.form.vars.user + ")", el.form);
+        i++;
+      }
+      return caption.innerHTML = "<%= @text[:select_login] %>" + r;
+    }
+  };
 
-	var paddingDiv = document.createElement('div');
-	popover.appendChild(paddingDiv);
+  Cryptobox.json = openCryptobox();
 
-	paddingDiv.style.paddingTop = '20px';
-	paddingDiv.style.paddingLeft = '20px';
-	paddingDiv.style.paddingRight = '40px';
-	paddingDiv.style.paddingBottom = '20px';
+  div = document.createElement("div");
 
-	var bg = document.createElement('div');
-	paddingDiv.appendChild(bg);
+  div.style.textAlign = "center";
 
-	bg.style.color = '#fff';
-	bg.style.background = '#000';
-	bg.style.opacity = 0.8;
-	bg.style.width = '100%';
-	bg.style.height = '100%';
-	bg.style.padding = '10px';
-	bg.style.border = '0 none';
-	bg.style.borderRadius = '6px';
-	bg.style.boxShadow = '0 0 8px rgba(0,0,0,.8)';
+  caption = document.createElement("h1");
 
-	bg.appendChild(node);
+  caption.appendChild(document.createTextNode("<%= @text[:locked_title] %>"));
 
-	popover.onclick = function(e) { e.stopPropagation(); }
-	document.body.onclick = function() { popover.parentNode.removeChild(popover); }
-}
-;
+  div.appendChild(caption);
 
+  form = document.createElement("form");
 
+  input = document.createElement("input");
 
+  input.type = "password";
 
+  input.style.border = "1px solid #006";
 
+  input.style.fontSize = "18px";
 
+  buttonUnlock = document.createElement("input");
 
+  buttonUnlock.type = "submit";
 
+  buttonUnlock.style.border = "1px solid #006";
 
+  buttonUnlock.style.fontSize = "14px";
 
+  buttonUnlock.value = "<%= @text[:button_unlock] %>";
 
+  buttonDiv = document.createElement("div");
 
+  buttonDiv.style.marginTop = "20px";
 
-Cryptobox.json = openCryptobox();
+  buttonDiv.appendChild(buttonUnlock);
 
-function unlock(pwd, caption) {
-	formToLink = function(name, form) {
-		var divStyle = 'style="border: 0 none; border-radius: 6px; background-color: #111; padding: 10px; margin: 5px; text-align: left;"';
-		var aStyle = 'style="color: #fff; font-size: 18px; text-decoration: none;"';
+  form.appendChild(input);
 
-		return '<div ' + divStyle + '><a ' + aStyle + ' href="#" onClick=\'javascript:' +
-			'Cryptobox.form.fill(' + JSON.stringify(form) + ');' +
-			'return false;\'>' + name + '</a></div>';
-	}
+  form.appendChild(buttonDiv);
 
-	var text = Cryptobox.decrypt(pwd, Cryptobox.json.pbkdf2.salt, Cryptobox.json.ciphertext, Cryptobox.json.pbkdf2.iterations, Cryptobox.json.aes.keylen, Cryptobox.json.aes.iv);
-	var data = eval(text);
-	var matched = new Array();
+  div.appendChild(form);
 
-	for (var i = 0; i < data.length; i++) {
-		var el = data[i];
+  form.onsubmit = function() {
+    try {
+      div.removeChild(form);
+      unlock(input.value, caption);
+    } catch (e) {
+      caption.innerHTML = e;
+      window.setTimeout((function() {
+        return document.body.click();
+      }), 1000);
+    }
+    return false;
+  };
 
-		if (el.type != 'webform')
-			continue;
+  popover = new Cryptobox.Popover("320", "165");
 
-		var address = Cryptobox.form.sitename(document.URL);
-		var action = Cryptobox.form.sitename(el.form.action);
+  popover.add(div);
 
-		if (address == action)
-			matched.push(el);
-	}
+  popover.show();
 
-	if (matched.length == 0) {
-		caption.innerHTML = '<%= @text[:login_not_found] %>';
-		window.setTimeout(function () { document.body.click(); }, 1000)
-	} else if (matched.length == 1) {
-		caption.innerHTML = '<%= @text[:wait_for_login] %>';
-		Cryptobox.form.fill(matched[0].form);
-	} else {
-		var r = ''
-		for (var i = 0; i < matched.length; i++) {
-			var el = matched[i];
-			r += formToLink(el.name + ' (' + el.form.vars.user + ')', el.form);
-		}
+  input.focus();
 
-		caption.innerHTML = '<%= @text[:select_login] %>' + r;
-	}
-}
-
-var div = document.createElement('div');
-div.style.textAlign = 'center';
-
-var caption = document.createElement('h1');
-caption.appendChild(document.createTextNode('<%= @text[:locked_title] %>'));
-div.appendChild(caption);
-
-var form = document.createElement('form');
-
-var input = document.createElement('input');
-input.type = "password";
-input.style.border = "1px solid #006";
-input.style.fontSize = '18px';
-
-var buttonUnlock = document.createElement('input');
-buttonUnlock.type = "submit";
-buttonUnlock.style.border = "1px solid #006";
-buttonUnlock.style.fontSize = '14px';
-buttonUnlock.value = "<%= @text[:button_unlock] %>";
-
-var buttonDiv = document.createElement('div');
-buttonDiv.style.marginTop = '20px';
-buttonDiv.appendChild(buttonUnlock);
-
-form.appendChild(input);
-form.appendChild(buttonDiv);
-div.appendChild(form);
-
-form.onsubmit = function() {
-	try {
-		div.removeChild(form);
-
-		unlock(input.value, caption);
-	} catch(e) {
-		caption.innerHTML = e;
-
-		window.setTimeout(function () { document.body.click(); }, 1000);
-	}
-	return false;
-}
-
-cryptobox.popover.show('320', '165', div);
-
-input.focus();
+}).call(this);

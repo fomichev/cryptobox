@@ -553,6 +553,7 @@ TODO: describe here what libs used and where
 * fill bookmarklet: add support for 'dropbox'
 
 === Common JS
+* templates -> src
 * eliminate cryptobox.ui.init (integrate in cryptobox.open and convert
   chrome plugin to its format)
 * keep passwords in memory encrypted (with some temporary key), decrypt as soon

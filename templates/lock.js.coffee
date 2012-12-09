@@ -1,21 +1,20 @@
-# Class that implements auto locking on idle functionality.
+# Class that implements auto locking.
 class Lock
-  # Create a new lock with `moveCallback` that is called when move is moved
-  # and `timeoutCallback` that is called when lock `timeout` expires.
-  constructor: (@moveCallback, @timeout, @timeoutCallback) ->
+  # Create a new lock with `timeoutCallback` that is called when
+  # lock `timeoutSec` expires.
+  constructor: (@timeoutSec, @timeoutCallback) ->
     @timeoutNow = 0
     @timeoutId = 0
 
   # Start auto lock (start counting down towards reaching timeout).
   start: ->
-    dbg "Start lock"
-    dbg this
-
     body = document.getElementsByTagName('body')[0]
-    body.addEventListener('mousemove', @moveCallback)
+    body.addEventListener('mousemove', => @rewind())
 
-    @timeoutNow = @timeout
-    @timeoutId = window.setInterval =>
+    clearInterval(@timeoutId) if @timeoutId != 0
+
+    @timeoutNow = @timeoutSec
+    @timeoutId = setInterval =>
       dbg "Tick lock"
 
       @timeoutNow--
@@ -24,25 +23,21 @@ class Lock
         @stop()
         @timeoutCallback()
 
-      dbg this
-
     , 1000 * 60
 
-  # Reset lock timeout. Mainly should be called from the `moveCallback`
-  # to indicate that user still interacts with the application and we
-  # don't need to lock it.
-  rewind: ->
-    dbg "Rewind lock"
-    dbg this
+    p "Start lock #{@timeoutId}"
 
-    @timeoutNow = @timeout
+  # Reset lock timeout. Called when mouse has been moved to indicate that user
+  # still interacts with the application and we don't need to lock it.
+  rewind: ->
+    @timeoutNow = @timeoutSec
 
   # Stop lock immediately.
   stop: ->
-    dbg "Stop lock"
-    dbg this
+    p "Stop lock #{@timeoutId}"
 
-    clearInterval(@timeoutId)
+    clearInterval(@timeoutId) if @timeoutId != 0
+    @timeoutId = 0
 
 # Export class.
 window.Cryptobox.Lock = Lock

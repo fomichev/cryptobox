@@ -13,8 +13,6 @@
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();

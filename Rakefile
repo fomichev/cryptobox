@@ -92,7 +92,7 @@ task :sprockets do
   env.append_path 'templates'
   env.append_path 'build'
 
-  assets = %w{ desktop/index.js.coffee desktop/index.css mobile/index.js.coffee mobile/index.css bookmarklet/fill.js bookmarklet/form.js chrome/background.js.coffee chrome/content.js.coffee chrome/popup.js.coffee chrome/popup.css }
+  assets = %w{ desktop/index.js.coffee desktop/index.css mobile/index.js.coffee mobile/index.css bookmarklet/fill.js.coffee bookmarklet/form.js.coffee chrome/background.js.coffee chrome/content.js.coffee chrome/popup.js.coffee chrome/popup.css }
 
   Dir.mkdir build_dir unless Dir.exist? build_dir
 

@@ -23,10 +23,8 @@
 #= require app.js.coffee
 #= require bootstrap.js.coffee
 
-
-cryptobox.main = {}
-
-cryptobox.main.copyToClipboard = (text) ->
+# Create HTML snippet which uses clippy to copy `text` into clipboard.
+copyToClipboard = (text) ->
   t = ""
   pathToClippy = "clippy.swf"
   t += "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" width=\"110\" height=\"14\">"
@@ -40,14 +38,16 @@ cryptobox.main.copyToClipboard = (text) ->
   t += "</object>"
   t
 
-cryptobox.main.headerClick = (el) ->
+# Handle row header click event.
+headerClick = (el) ->
   if Cryptobox.form.withToken(el.form)
     $("#button-token").attr "href", el.form.action
     $("#div-token").modal()
   else
     Cryptobox.form.login true, el.form
 
-cryptobox.main.detailsClick = (el) ->
+# Handle row details click event.
+detailsClick = (el) ->
   if el.type is "webform"
     $("#div-details .modal-body").html ""
     values =
@@ -55,36 +55,28 @@ cryptobox.main.detailsClick = (el) ->
         target: "_blank"
         href: el.address
       ).text(el.address)
-      "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user))
-      "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+      "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copyToClipboard(el.form.vars.user))
+      "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copyToClipboard(el.form.vars.pass))
 
     values["<%= @text[:secret] %>"] = Cryptobox.ui.addBr(forms.vars.secret)  if el.form.vars.secret
     values["<%= @text[:note] %>"] = Cryptobox.ui.addBr(forms.vars.note)  if el.form.vars.note
-    Cryptobox.bootstrap.createDetails $("#div-details .modal-body"), values
+    Cryptobox.BootstrapAppDelegate.createDetails $("#div-details .modal-body"), values
   else
     $("#div-details .modal-body").html el.text
   $("#div-details .modal-header h3").text el.name
   $("#div-details").modal()
 
-cryptobox.main.lock = ->
-  cryptobox.lock.stop()
-  $("#div-token").modal "hide"
-  $("#div-details").modal "hide"
-  $("#div-generate").modal "hide"
-  cryptobox.main.prepare()
-  Cryptobox.bootstrap.render "locked", this
-  $("#input-password").focus()
-
-cryptobox.main.dialogGenerateInit = ->
+# Initialize password generation dialog.
+dialogGenerateInit = ->
   $("#button-generate-show").click (event) ->
     event.preventDefault()
     $("#div-generate").modal()
 
   $("#button-generate").click ->
-    Cryptobox.bootstrap.dialogGenerateSubmit()
+    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()
 
   $("#div-generate").keydown (event) ->
-    Cryptobox.bootstrap.dialogGenerateSubmit()  if event.keyCode is $.ui.keyCode.ENTER
+    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()  if event.keyCode is $.ui.keyCode.ENTER
 
   $("#input-pronounceable").click ->
     if $("#input-pronounceable").is(":checked")
@@ -95,34 +87,23 @@ cryptobox.main.dialogGenerateInit = ->
       $("#input-include-punc").removeAttr "disabled"
 
 
-cryptobox.main.dialogTokenLoginSubmit = (url, name, keys, values, tokens) ->
+# Handle submit event of token login dialog.
+dialogTokenLoginSubmit = (url, name, keys, values, tokens) ->
   tokenJson = $.parseJSON($("#input-json").val())
   return  if not tokenJson or tokenJson is ""
   $("#input-json").val ""
   $("#div-token").modal "hide"
   formLogin true, el.form, tokenJson
 
-cryptobox.main.dialogTokenLoginInit = ->
+# Initialize token login dialog.
+dialogTokenLoginInit = ->
   $("#button-token-login").click ->
-    cryptobox.main.dialogTokenLoginSubmit url, name, keys, values, tokens
+    dialogTokenLoginSubmit url, name, keys, values, tokens
 
   $("#div-token").keydown (event) ->
-    cryptobox.main.dialogTokenLoginSubmit url, name, keys, values, tokens  if event.keyCode is $.ui.keyCode.ENTER
-
-
-cryptobox.main.prepare = ->
-  cryptobox.dropbox.prepare ((url) ->
-    Cryptobox.bootstrap.showAlert false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>"
-  ), (error) ->
-    if error
-      Cryptobox.bootstrap.showAlert true, "Dropbox authentication error"
-    else
-      Cryptobox.bootstrap.showAlert false, "Successfully restored Dropbox credentials"
+    dialogTokenLoginSubmit url, name, keys, values, tokens  if event.keyCode is $.ui.keyCode.ENTER
 
 class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
-  constructor: ->
-    super()
-
   state: (state) ->
     super(state)
 
@@ -138,19 +119,27 @@ class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
           $('div.tab-pane:first').addClass('in').addClass('active')
           $('#ul-nav li:first').addClass('active')
 
-        cryptobox.main.dialogTokenLoginInit()
-        cryptobox.main.dialogGenerateInit()
+        dialogTokenLoginInit()
+        dialogGenerateInit()
 
   prepare: ->
-    cryptobox.main.prepare()
+    super()
 
     $('.button-login').live 'click', ->
       el = $.parseJSON($(this).parent().parent().attr('json'))
-      cryptobox.main.headerClick(el)
+      headerClick(el)
 
     $('.button-details').live 'click', ->
       el = $.parseJSON($(this).parent().parent().attr('json'))
-      cryptobox.main.detailsClick(el)
+      detailsClick(el)
+
+  shutdown: (preserve) ->
+    # Ignore the `preserve` argument and don't preserve state.
+    super(preserve)
+
+    $("#div-token").modal "hide"
+    $("#div-details").modal "hide"
+    $("#div-generate").modal "hide"
 
 $ ->
   delegate = new DesktopAppDelegate()

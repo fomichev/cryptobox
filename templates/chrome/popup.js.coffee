@@ -23,72 +23,65 @@
 #= require app.js.coffee
 #= require bootstrap.js.coffee
 
-cryptobox.browser = {}
-cryptobox.browser.sendTo = (tab, message, callback) ->
+# Send `message` to given `tab` and execute `callback` upon response arrival.
+sendTo = (tab, message, callback) ->
   chrome.tabs.sendMessage tab.id, message, (response) ->
-    callback response
+    callback(response)
 
-cryptobox.browser.sendToContentScript = (message, callback) ->
+# Send `message` to content script and execute `callback` upon response arrival.
+sendToContentScript = (message, callback) ->
   chrome.tabs.getSelected null, (tab) ->
-    cryptobox.browser.sendTo tab, message, callback
+    sendTo(tab, message, callback)
 
-
-cryptobox.browser.copyToClipboard = (text) ->
+# Copy `text` to clipboard.
+copyToClipboard = (text) ->
   chrome.extension.getBackgroundPage().clipboardCopyNum++
-  chrome.extension.sendRequest text: text
+  chrome.extension.sendRequest({ text: text })
 
-cryptobox.browser.cleanClipboard = (text) ->
-  cryptobox.browser.copyToClipboard "<%= @text[:cleared_clipboard] %>"  unless chrome.extension.getBackgroundPage().clipboardCopyNum is 0
+# Clean clipboard (actually paste some stub text)
+cleanClipboard = () ->
+  copyToClipboard "<%= @text[:cleared_clipboard] %>"  unless chrome.extension.getBackgroundPage().clipboardCopyNum is 0
 
-cryptobox.main = {}
-cryptobox.main.show = (div) ->
+# Show specified `div`.
+show = (div) ->
   $("#div-locked").hide()
   $("#div-unlocked").hide()
   $("#div-details").hide()
   $("#div-generate").hide()
   if div is "#div-unlocked" or div is "#div-details" or div is "#div-generate"
-    $("#div-navbar").fadeIn()  unless $("#div-locked").is(":visible")
+    $("#div-navbar").fadeIn() unless $("#div-locked").is(":visible")
   else
     $("#div-navbar").hide()
   $(div).fadeIn()
 
-cryptobox.main.detailsClick = (el) ->
+# Handle row details click event.
+detailsClick = (el) ->
   copy = (value) ->
     "<a class=\"btn btn-mini btn-success button-copy\" href=\"#\" value=\"" + value + "\"><%= @text[:button_copy] %></a>"
 
   $("#div-details-body").html ""
   values =
-    "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, copy(el.form.vars.user))
-    "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
+    "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copy(el.form.vars.user))
+    "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
 
-  Cryptobox.bootstrap.createDetails $("#div-details-body"), values
-  cryptobox.main.show "#div-details"
+  Cryptobox.BootstrapAppDelegate.createDetails($("#div-details-body"), values)
+  show("#div-details")
 
-cryptobox.main.lock = ->
-  chrome.extension.getBackgroundPage().json = null
-  cryptobox.browser.cleanClipboard()
-  Cryptobox.bootstrap.render "locked", this
-  cryptobox.main.show "#div-locked"
-  cryptobox.main.prepare()
-  $("#input-password").focus()
-
-cryptobox.main.prepare = ->
-  cryptobox.dropbox.prepare ((url) ->
-    Cryptobox.bootstrap.showAlert false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>"
-  ), (error) ->
-    if error
-      Cryptobox.bootstrap.showAlert true, "Dropbox authentication error"
-    else
-      Cryptobox.bootstrap.showAlert false, "Successfully restored Dropbox credentials"
-
-
+# Class that extends application delegate for Chrome extension.
 class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
   constructor: ->
     super()
 
-  restoreSession: ->
+  shutdown: (preserve) ->
+    super(preserve)
+
+    chrome.extension.getBackgroundPage().lock.stop()
+    chrome.extension.getBackgroundPage().json = null unless preserve?
+    cleanClipboard()
+    show("#div-locked")
+
+  restore: ->
     if chrome.extension.getBackgroundPage().json?
-      chrome.extension.getBackgroundPage().lock.rewind()
       return chrome.extension.getBackgroundPage().json
 
     null
@@ -98,23 +91,23 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
 
     switch state
       when Cryptobox.App::STATE_UNLOCKED
-        chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(->
-          chrome.extension.getBackgroundPage().lock.rewind()
-        , cryptobox.config.lock_timeout_minutes, ->
-          chrome.extension.getBackgroundPage().json = null
-        )
+        chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(
+          cryptobox.config.lock_timeout_minutes,
+          => chrome.extension.getBackgroundPage().json = null)
         chrome.extension.getBackgroundPage().lock.start()
 
         $("#div-login-details").hide()
-        cryptobox.main.show "#div-unlocked"
+        show("#div-unlocked")
 
   prepare: ->
+    super()
+
     $(".button-copy").live "click", ->
-      cryptobox.browser.copyToClipboard $(this).attr("value")
+      copyToClipboard $(this).attr("value")
 
     $(".button-login-matched").live "click", ->
       el = $.parseJSON($(this).parent().parent().attr("json"))
-      cryptobox.browser.sendToContentScript
+      sendToContentScript
         type: "fillForm"
         data: el
       , ->
@@ -132,27 +125,27 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
 
     $(".button-details").live "click", ->
       el = $.parseJSON($(this).parent().parent().attr("json"))
-      cryptobox.main.detailsClick el
+      detailsClick(el)
 
     $("#button-hide-generate").live "click", ->
-      cryptobox.main.show "#div-unlocked"
+      show("#div-unlocked")
 
     $("#button-generate-show").live "click", ->
-      cryptobox.main.show "#div-generate"
+      show("#div-generate")
 
     $("#button-generate").live "click", ->
-      Cryptobox.bootstrap.dialogGenerateSubmit()
+      Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()
 
     $("#button-get-json").live "click", ->
-      cryptobox.browser.sendToContentScript
+      sendToContentScript
         type: "getFormJson"
       , (text) ->
         $("#div-details-body").html "<textarea class=\"span6\" rows=\"20\">" + text + "</textarea>"
-        cryptobox.main.show "#div-details"
+        show("#div-details")
 
 
     $("#button-hide-details").live "click", ->
-      cryptobox.main.show "#div-unlocked"
+      show("#div-unlocked")
 
   prepareJson: (json, callback) ->
     chrome.extension.getBackgroundPage().json = json
@@ -165,9 +158,9 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
       while i < json.length
         if json[i].type is "webform"
           if Cryptobox.form.sitename(json[i].address) is Cryptobox.form.sitename(t.url)
-            matched.push json[i]
+            matched.push(json[i])
           else
-            unmatched.push json[i]  if json[i].visible is true
+            unmatched.push(json[i]) if json[i].visible is true
         i++
 
       callback({ matched: matched, unmatched: unmatched })

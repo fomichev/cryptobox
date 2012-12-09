@@ -3,13 +3,13 @@
 
 chrome.extension.onMessage.addListener (msg, sender, sendResponse) ->
   if msg.type is "fillForm"
-    Cryptobox.form.fill msg.data.form
-    sendResponse {}
+    Cryptobox.form.fill(msg.data.form)
+    sendResponse({})
   else if msg.type is "getFormJson"
-    sendResponse Cryptobox.form.toJson()
+    sendResponse(Cryptobox.form.toJson())
   else
     # Unknown message, handle it?
-    sendResponse {}
+    sendResponse({})
 
 # Ctrl-\ shortcut 
 window.addEventListener "keyup", ((e) ->

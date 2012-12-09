@@ -13,8 +13,6 @@
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -71,6 +69,8 @@
   var fill;
 
   fill = {};
+
+  chrome.extension.getBackgroundPage().json = null;
 
   chrome.extension.onRequest.addListener(function(msg, sender, sendResponse) {
     var body, ta;

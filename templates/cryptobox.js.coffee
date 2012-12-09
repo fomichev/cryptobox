@@ -11,9 +11,6 @@ Cryptobox.json = null
 window.p = (s) ->
   console?.log(s)
 
-# Simple wrapper around `console.log` for debugging purposes.
-window.dbg = (s) ->
-
 # Measure execution time of given function (`fn`) and print it on console
 # with appropriate `name`. Result of the `fn` execution is returned.
 Cryptobox.measure = (name, fn) ->

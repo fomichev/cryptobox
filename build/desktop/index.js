@@ -14270,8 +14270,6 @@ code.google.com/p/crypto-js/wiki/License
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -14329,9 +14327,8 @@ code.google.com/p/crypto-js/wiki/License
 
   Lock = (function() {
 
-    function Lock(moveCallback, timeout, timeoutCallback) {
-      this.moveCallback = moveCallback;
-      this.timeout = timeout;
+    function Lock(timeoutSec, timeoutCallback) {
+      this.timeoutSec = timeoutSec;
       this.timeoutCallback = timeoutCallback;
       this.timeoutNow = 0;
       this.timeoutId = 0;
@@ -14340,32 +14337,35 @@ code.google.com/p/crypto-js/wiki/License
     Lock.prototype.start = function() {
       var body,
         _this = this;
-      dbg("Start lock");
-      dbg(this);
       body = document.getElementsByTagName('body')[0];
-      body.addEventListener('mousemove', this.moveCallback);
-      this.timeoutNow = this.timeout;
-      return this.timeoutId = window.setInterval(function() {
+      body.addEventListener('mousemove', function() {
+        return _this.rewind();
+      });
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      this.timeoutNow = this.timeoutSec;
+      this.timeoutId = setInterval(function() {
         dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          _this.timeoutCallback();
+          return _this.timeoutCallback();
         }
-        return dbg(_this);
       }, 1000 * 60);
+      return p("Start lock " + this.timeoutId);
     };
 
     Lock.prototype.rewind = function() {
-      dbg("Rewind lock");
-      dbg(this);
-      return this.timeoutNow = this.timeout;
+      return this.timeoutNow = this.timeoutSec;
     };
 
     Lock.prototype.stop = function() {
-      dbg("Stop lock");
-      dbg(this);
-      return clearInterval(this.timeoutId);
+      p("Stop lock " + this.timeoutId);
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      return this.timeoutId = 0;
     };
 
     return Lock;
@@ -14968,20 +14968,40 @@ function program10(depth0,data) {
 
   AppDelegate = (function() {
 
-    function AppDelegate() {
-      p('Initialize application delegate');
-    }
+    function AppDelegate() {}
 
-    AppDelegate.prototype.prepare = function() {};
+    AppDelegate.prototype.shutdown = function(preserve) {
+      this.alert(false, null);
+      this.render("locked", this);
+      return this.state(Cryptobox.App.prototype.STATE_LOCKED);
+    };
 
-    AppDelegate.prototype.render = function(template, context) {};
+    AppDelegate.prototype.prepare = function() {
+      var _this = this;
+      return this.lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes, function() {
+        return _this.shutdown(true);
+      });
+    };
 
-    AppDelegate.prototype.alert = function(error, message) {};
-
-    AppDelegate.prototype.state = function(state) {};
-
-    AppDelegate.prototype.restoreSession = function() {
-      return null;
+    AppDelegate.prototype.state = function(state) {
+      var _this = this;
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_LOCKED:
+          this.lock.stop();
+          p('try to focus input field');
+          $("#input-password").focus();
+          return cryptobox.dropbox.prepare((function(url) {
+            return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
+          }), function(error) {
+            if (error) {
+              return this.alert(true, "Dropbox authentication error");
+            } else {
+              return this.alert(false, "Successfully restored Dropbox credentials");
+            }
+          });
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          return this.lock.start();
+      }
     };
 
     AppDelegate.prototype.prepareJson = function(json, callback) {
@@ -14989,6 +15009,14 @@ function program10(depth0,data) {
         page: Cryptobox.ui.init(json)
       });
     };
+
+    AppDelegate.prototype.restore = function() {
+      return null;
+    };
+
+    AppDelegate.prototype.render = function(template, context) {};
+
+    AppDelegate.prototype.alert = function(error, message) {};
 
     return AppDelegate;
 
@@ -15021,12 +15049,11 @@ function program10(depth0,data) {
       var json,
         _this = this;
       this.delegate.prepare();
-      json = this.delegate.restoreSession();
+      json = this.delegate.restore();
       if (json) {
         return this.unlock(json);
       } else {
         this.delegate.render('locked', this);
-        $("#input-password").focus();
         this.delegate.state(this.STATE_LOCKED);
         return $("#form-unlock").live('submit', function(event) {
           event.preventDefault();
@@ -15055,35 +15082,11 @@ function program10(depth0,data) {
 
 }).call(this);
 (function() {
-  var bootstrap,
+  var filterInit,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  bootstrap = {};
-
-  window.Cryptobox.bootstrap = bootstrap;
-
-  bootstrap.__collapsibleId = 0;
-
-  bootstrap.collapsible = function(value, copy) {
-    var id;
-    id = Cryptobox.bootstrap.__collapsibleId++;
-    return "\"<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
-  };
-
-  bootstrap.createDetails = function(entry, map) {
-    var items;
-    items = $();
-    $.each(map, function(k, v) {
-      items = items.add($('<dt>').html(k));
-      return items = items.add($('<dd>').html(v));
-    });
-    return $('<dl>', {
-      'class': 'dl-horizontal'
-    }).html(items).appendTo(entry);
-  };
-
-  bootstrap.filterInit = function() {
+  filterInit = function() {
     return $("#input-filter").keyup(function() {
       var text;
       text = $("#input-filter").val().toLowerCase();
@@ -15108,63 +15111,25 @@ function program10(depth0,data) {
     });
   };
 
-  bootstrap.dialogGenerateSubmit = function() {
-    return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
-  };
-
-  bootstrap.lockInit = function(moveCallback, timeout, timeoutCallback) {
-    cryptobox.lock = new Cryptobox.Lock(moveCallback, timeout, timeoutCallback);
-    cryptobox.lock.start();
-    return $("#button-lock").click(function(event) {
-      event.preventDefault();
-      return timeoutCallback();
-    });
-  };
-
-  bootstrap.render = function(name, context) {
-    $('#content').hide();
-    $('#content').html(Cryptobox.ui.render(name, context));
-    return $('#content').fadeIn();
-  };
-
-  bootstrap.showAlert = function(error, text) {
-    if (error) {
-      $('#div-alert').addClass('alert-error');
-    } else {
-      $('#div-alert').addClass('alert-info');
-    }
-    $("#div-alert").html(text);
-    return $("#div-alert").fadeIn();
-  };
-
-  bootstrap.hideAlert = function() {
-    $('#div-alert').removeClass('alert-error');
-    $('#div-alert').removeClass('alert-info');
-    return $("#div-alert").fadeOut();
-  };
-
   Cryptobox.BootstrapAppDelegate = (function(_super) {
 
     __extends(BootstrapAppDelegate, _super);
 
     function BootstrapAppDelegate() {
-      BootstrapAppDelegate.__super__.constructor.call(this);
+      return BootstrapAppDelegate.__super__.constructor.apply(this, arguments);
     }
 
-    BootstrapAppDelegate.prototype.render = function(template, context) {
-      return Cryptobox.bootstrap.render(template, context);
-    };
-
-    BootstrapAppDelegate.prototype.alert = function(error, message) {
-      if (message) {
-        return Cryptobox.bootstrap.showAlert(error, message);
-      } else {
-        return Cryptobox.bootstrap.hideAlert();
-      }
+    BootstrapAppDelegate.prototype.prepare = function() {
+      var _this = this;
+      BootstrapAppDelegate.__super__.prepare.call(this);
+      return $("#button-lock").live("click", function(event) {
+        event.preventDefault();
+        return _this.shutdown(false);
+      });
     };
 
     BootstrapAppDelegate.prototype.state = function(state) {
-      var _this = this;
+      BootstrapAppDelegate.__super__.state.call(this, state);
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           return $('#button-unlock').button('reset');
@@ -15172,11 +15137,54 @@ function program10(depth0,data) {
           return $('#button-unlock').button('loading');
         case Cryptobox.App.prototype.STATE_UNLOCKED:
           $('#button-unlock').button('reset');
-          Cryptobox.bootstrap.lockInit(function() {
-            return cryptobox.lock.rewind();
-          }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
-          return Cryptobox.bootstrap.filterInit();
+          return filterInit();
       }
+    };
+
+    BootstrapAppDelegate.prototype.render = function(template, context) {
+      $('#content').hide();
+      $('#content').html(Cryptobox.ui.render(template, context));
+      return $('#content').fadeIn();
+    };
+
+    BootstrapAppDelegate.prototype.alert = function(error, message) {
+      if (message) {
+        if (error) {
+          $('#div-alert').addClass('alert-error');
+        } else {
+          $('#div-alert').addClass('alert-info');
+        }
+        $("#div-alert").html(text);
+        return $("#div-alert").fadeIn();
+      } else {
+        $('#div-alert').removeClass('alert-error');
+        $('#div-alert').removeClass('alert-info');
+        return $("#div-alert").fadeOut();
+      }
+    };
+
+    BootstrapAppDelegate.__collapsibleId = 0;
+
+    BootstrapAppDelegate.collapsible = function(value, copy) {
+      var id;
+      id = this.__collapsibleId++;
+      return "<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
+    };
+
+    BootstrapAppDelegate.createDetails = function(entry, map) {
+      var items;
+      items = $();
+      $.each(map, function(k, v) {
+        items = items.add($('<dt>').html(k));
+        return items = items.add($('<dd>').html(v));
+      });
+      return $('<dl>', {
+        'class': 'dl-horizontal'
+      }).html(items).appendTo(entry);
+    };
+
+    BootstrapAppDelegate.dialogGenerateSubmit = function() {
+      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
     };
 
     return BootstrapAppDelegate;
@@ -15185,13 +15193,11 @@ function program10(depth0,data) {
 
 }).call(this);
 (function() {
-  var DesktopAppDelegate,
+  var DesktopAppDelegate, copyToClipboard, detailsClick, dialogGenerateInit, dialogTokenLoginInit, dialogTokenLoginSubmit, headerClick,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  cryptobox.main = {};
-
-  cryptobox.main.copyToClipboard = function(text) {
+  copyToClipboard = function(text) {
     var pathToClippy, t;
     t = "";
     pathToClippy = "clippy.swf";
@@ -15207,7 +15213,7 @@ function program10(depth0,data) {
     return t;
   };
 
-  cryptobox.main.headerClick = function(el) {
+  headerClick = function(el) {
     if (Cryptobox.form.withToken(el.form)) {
       $("#button-token").attr("href", el.form.action);
       return $("#div-token").modal();
@@ -15216,7 +15222,7 @@ function program10(depth0,data) {
     }
   };
 
-  cryptobox.main.detailsClick = function(el) {
+  detailsClick = function(el) {
     var values;
     if (el.type === "webform") {
       $("#div-details .modal-body").html("");
@@ -15225,8 +15231,8 @@ function program10(depth0,data) {
           target: "_blank",
           href: el.address
         }).text(el.address),
-        "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
-        "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+        "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copyToClipboard(el.form.vars.user)),
+        "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copyToClipboard(el.form.vars.pass))
       };
       if (el.form.vars.secret) {
         values["<%= @text[:secret] %>"] = Cryptobox.ui.addBr(forms.vars.secret);
@@ -15234,7 +15240,7 @@ function program10(depth0,data) {
       if (el.form.vars.note) {
         values["<%= @text[:note] %>"] = Cryptobox.ui.addBr(forms.vars.note);
       }
-      Cryptobox.bootstrap.createDetails($("#div-details .modal-body"), values);
+      Cryptobox.BootstrapAppDelegate.createDetails($("#div-details .modal-body"), values);
     } else {
       $("#div-details .modal-body").html(el.text);
     }
@@ -15242,27 +15248,17 @@ function program10(depth0,data) {
     return $("#div-details").modal();
   };
 
-  cryptobox.main.lock = function() {
-    cryptobox.lock.stop();
-    $("#div-token").modal("hide");
-    $("#div-details").modal("hide");
-    $("#div-generate").modal("hide");
-    cryptobox.main.prepare();
-    Cryptobox.bootstrap.render("locked", this);
-    return $("#input-password").focus();
-  };
-
-  cryptobox.main.dialogGenerateInit = function() {
+  dialogGenerateInit = function() {
     $("#button-generate-show").click(function(event) {
       event.preventDefault();
       return $("#div-generate").modal();
     });
     $("#button-generate").click(function() {
-      return Cryptobox.bootstrap.dialogGenerateSubmit();
+      return Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit();
     });
     $("#div-generate").keydown(function(event) {
       if (event.keyCode === $.ui.keyCode.ENTER) {
-        return Cryptobox.bootstrap.dialogGenerateSubmit();
+        return Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit();
       }
     });
     return $("#input-pronounceable").click(function() {
@@ -15276,7 +15272,7 @@ function program10(depth0,data) {
     });
   };
 
-  cryptobox.main.dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
+  dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
     var tokenJson;
     tokenJson = $.parseJSON($("#input-json").val());
     if (!tokenJson || tokenJson === "") {
@@ -15287,25 +15283,13 @@ function program10(depth0,data) {
     return formLogin(true, el.form, tokenJson);
   };
 
-  cryptobox.main.dialogTokenLoginInit = function() {
+  dialogTokenLoginInit = function() {
     $("#button-token-login").click(function() {
-      return cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
+      return dialogTokenLoginSubmit(url, name, keys, values, tokens);
     });
     return $("#div-token").keydown(function(event) {
       if (event.keyCode === $.ui.keyCode.ENTER) {
-        return cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
-      }
-    });
-  };
-
-  cryptobox.main.prepare = function() {
-    return cryptobox.dropbox.prepare((function(url) {
-      return Cryptobox.bootstrap.showAlert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
-    }), function(error) {
-      if (error) {
-        return Cryptobox.bootstrap.showAlert(true, "Dropbox authentication error");
-      } else {
-        return Cryptobox.bootstrap.showAlert(false, "Successfully restored Dropbox credentials");
+        return dialogTokenLoginSubmit(url, name, keys, values, tokens);
       }
     });
   };
@@ -15315,7 +15299,7 @@ function program10(depth0,data) {
     __extends(DesktopAppDelegate, _super);
 
     function DesktopAppDelegate() {
-      DesktopAppDelegate.__super__.constructor.call(this);
+      return DesktopAppDelegate.__super__.constructor.apply(this, arguments);
     }
 
     DesktopAppDelegate.prototype.state = function(state) {
@@ -15331,23 +15315,30 @@ function program10(depth0,data) {
             $('div.tab-pane:first').addClass('in').addClass('active');
             $('#ul-nav li:first').addClass('active');
           }
-          cryptobox.main.dialogTokenLoginInit();
-          return cryptobox.main.dialogGenerateInit();
+          dialogTokenLoginInit();
+          return dialogGenerateInit();
       }
     };
 
     DesktopAppDelegate.prototype.prepare = function() {
-      cryptobox.main.prepare();
+      DesktopAppDelegate.__super__.prepare.call(this);
       $('.button-login').live('click', function() {
         var el;
         el = $.parseJSON($(this).parent().parent().attr('json'));
-        return cryptobox.main.headerClick(el);
+        return headerClick(el);
       });
       return $('.button-details').live('click', function() {
         var el;
         el = $.parseJSON($(this).parent().parent().attr('json'));
-        return cryptobox.main.detailsClick(el);
+        return detailsClick(el);
       });
+    };
+
+    DesktopAppDelegate.prototype.shutdown = function(preserve) {
+      DesktopAppDelegate.__super__.shutdown.call(this, preserve);
+      $("#div-token").modal("hide");
+      $("#div-details").modal("hide");
+      return $("#div-generate").modal("hide");
     };
 
     return DesktopAppDelegate;

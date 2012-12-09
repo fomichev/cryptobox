@@ -13,8 +13,6 @@
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -194,60 +192,85 @@
   };
 
 }).call(this);
-cryptobox.popover = {};
+(function() {
+  var Popover;
 
-cryptobox.popover.show = function(width, height, node) {
-	var popover = document.createElement('div');
-	document.body.appendChild(popover);
-	popover.style.position = 'absolute';
-	popover.style.zIndex = 99999;
-	popover.style.top = 0;
-	popover.style.left = 0;
-	popover.style.width = width;
-	popover.style.height = height;
+  Popover = (function() {
 
-	var paddingDiv = document.createElement('div');
-	popover.appendChild(paddingDiv);
+    function Popover(width, height) {
+      var bg, paddingDiv;
+      this.popover = document.createElement("div");
+      this.popover.style.position = "absolute";
+      this.popover.style.zIndex = 99999;
+      this.popover.style.top = 0;
+      this.popover.style.left = 0;
+      this.popover.style.width = width;
+      this.popover.style.height = height;
+      paddingDiv = document.createElement("div");
+      this.popover.appendChild(paddingDiv);
+      paddingDiv.style.paddingTop = "20px";
+      paddingDiv.style.paddingLeft = "20px";
+      paddingDiv.style.paddingRight = "40px";
+      paddingDiv.style.paddingBottom = "20px";
+      bg = document.createElement("div");
+      paddingDiv.appendChild(bg);
+      bg.style.color = "#fff";
+      bg.style.background = "#000";
+      bg.style.opacity = 0.8;
+      bg.style.width = "100%";
+      bg.style.height = "100%";
+      bg.style.padding = "10px";
+      bg.style.border = "0 none";
+      bg.style.borderRadius = "6px";
+      bg.style.boxShadow = "0 0 8px rgba(0,0,0,.8)";
+    }
 
-	paddingDiv.style.paddingTop = '20px';
-	paddingDiv.style.paddingLeft = '20px';
-	paddingDiv.style.paddingRight = '40px';
-	paddingDiv.style.paddingBottom = '20px';
+    Popover.prototype.add = function(node) {
+      bg.appendChild(node);
+      this.popover.onclick = function(e) {
+        return e.stopPropagation();
+      };
+      return document.body.onclick = function() {
+        return this.popover.parentNode.removeChild(this.popover);
+      };
+    };
 
-	var bg = document.createElement('div');
-	paddingDiv.appendChild(bg);
+    Popover.prototype.show = function() {
+      return document.body.appendChild(this.popover);
+    };
 
-	bg.style.color = '#fff';
-	bg.style.background = '#000';
-	bg.style.opacity = 0.8;
-	bg.style.width = '100%';
-	bg.style.height = '100%';
-	bg.style.padding = '10px';
-	bg.style.border = '0 none';
-	bg.style.borderRadius = '6px';
-	bg.style.boxShadow = '0 0 8px rgba(0,0,0,.8)';
+    return Popover;
 
-	bg.appendChild(node);
+  })();
 
-	popover.onclick = function(e) { e.stopPropagation(); }
-	document.body.onclick = function() { popover.parentNode.removeChild(popover); }
-}
-;
+  window.Cryptobox.Popover = Popover;
 
+}).call(this);
+(function() {
+  var popover, ta;
 
+  ta = document.createElement("textarea");
 
+  ta.style.width = "100%";
 
+  ta.style.height = "100%";
 
-var ta = document.createElement('textarea');
-ta.style.width = '100%';
-ta.style.height = '100%';
-ta.style.border = '0 none';
-ta.style.background = '#000';
-ta.style.color = '#fff';
-ta.style.resize = 'none';
+  ta.style.border = "0 none";
 
-ta.appendChild(document.createTextNode(Cryptobox.form.toJson()));
+  ta.style.background = "#000";
 
-cryptobox.popover.show('50%', '50%', ta);
+  ta.style.color = "#fff";
 
-ta.select();
+  ta.style.resize = "none";
+
+  ta.appendChild(document.createTextNode(Cryptobox.form.toJson()));
+
+  popover = new Cryptobox.Popover("50%", "50%");
+
+  popover.add(ta);
+
+  popover.show();
+
+  ta.select();
+
+}).call(this);

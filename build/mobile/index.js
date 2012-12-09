@@ -19658,8 +19658,6 @@ code.google.com/p/crypto-js/wiki/License
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
-  window.dbg = function(s) {};
-
   Cryptobox.measure = function(name, fn) {
     var begin, end, result;
     begin = Date.now();
@@ -19717,9 +19715,8 @@ code.google.com/p/crypto-js/wiki/License
 
   Lock = (function() {
 
-    function Lock(moveCallback, timeout, timeoutCallback) {
-      this.moveCallback = moveCallback;
-      this.timeout = timeout;
+    function Lock(timeoutSec, timeoutCallback) {
+      this.timeoutSec = timeoutSec;
       this.timeoutCallback = timeoutCallback;
       this.timeoutNow = 0;
       this.timeoutId = 0;
@@ -19728,32 +19725,35 @@ code.google.com/p/crypto-js/wiki/License
     Lock.prototype.start = function() {
       var body,
         _this = this;
-      dbg("Start lock");
-      dbg(this);
       body = document.getElementsByTagName('body')[0];
-      body.addEventListener('mousemove', this.moveCallback);
-      this.timeoutNow = this.timeout;
-      return this.timeoutId = window.setInterval(function() {
+      body.addEventListener('mousemove', function() {
+        return _this.rewind();
+      });
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      this.timeoutNow = this.timeoutSec;
+      this.timeoutId = setInterval(function() {
         dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          _this.timeoutCallback();
+          return _this.timeoutCallback();
         }
-        return dbg(_this);
       }, 1000 * 60);
+      return p("Start lock " + this.timeoutId);
     };
 
     Lock.prototype.rewind = function() {
-      dbg("Rewind lock");
-      dbg(this);
-      return this.timeoutNow = this.timeout;
+      return this.timeoutNow = this.timeoutSec;
     };
 
     Lock.prototype.stop = function() {
-      dbg("Stop lock");
-      dbg(this);
-      return clearInterval(this.timeoutId);
+      p("Stop lock " + this.timeoutId);
+      if (this.timeoutId !== 0) {
+        clearInterval(this.timeoutId);
+      }
+      return this.timeoutId = 0;
     };
 
     return Lock;
@@ -20390,20 +20390,40 @@ function program20(depth0,data) {
 
   AppDelegate = (function() {
 
-    function AppDelegate() {
-      p('Initialize application delegate');
-    }
+    function AppDelegate() {}
 
-    AppDelegate.prototype.prepare = function() {};
+    AppDelegate.prototype.shutdown = function(preserve) {
+      this.alert(false, null);
+      this.render("locked", this);
+      return this.state(Cryptobox.App.prototype.STATE_LOCKED);
+    };
 
-    AppDelegate.prototype.render = function(template, context) {};
+    AppDelegate.prototype.prepare = function() {
+      var _this = this;
+      return this.lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes, function() {
+        return _this.shutdown(true);
+      });
+    };
 
-    AppDelegate.prototype.alert = function(error, message) {};
-
-    AppDelegate.prototype.state = function(state) {};
-
-    AppDelegate.prototype.restoreSession = function() {
-      return null;
+    AppDelegate.prototype.state = function(state) {
+      var _this = this;
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_LOCKED:
+          this.lock.stop();
+          p('try to focus input field');
+          $("#input-password").focus();
+          return cryptobox.dropbox.prepare((function(url) {
+            return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
+          }), function(error) {
+            if (error) {
+              return this.alert(true, "Dropbox authentication error");
+            } else {
+              return this.alert(false, "Successfully restored Dropbox credentials");
+            }
+          });
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          return this.lock.start();
+      }
     };
 
     AppDelegate.prototype.prepareJson = function(json, callback) {
@@ -20411,6 +20431,14 @@ function program20(depth0,data) {
         page: Cryptobox.ui.init(json)
       });
     };
+
+    AppDelegate.prototype.restore = function() {
+      return null;
+    };
+
+    AppDelegate.prototype.render = function(template, context) {};
+
+    AppDelegate.prototype.alert = function(error, message) {};
 
     return AppDelegate;
 
@@ -20443,12 +20471,11 @@ function program20(depth0,data) {
       var json,
         _this = this;
       this.delegate.prepare();
-      json = this.delegate.restoreSession();
+      json = this.delegate.restore();
       if (json) {
         return this.unlock(json);
       } else {
         this.delegate.render('locked', this);
-        $("#input-password").focus();
         this.delegate.state(this.STATE_LOCKED);
         return $("#form-unlock").live('submit', function(event) {
           event.preventDefault();
@@ -20481,42 +20508,6 @@ function program20(depth0,data) {
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  cryptobox.main = {};
-
-  Cryptobox.main = {};
-
-  cryptobox.main.lock = function() {
-    cryptobox.lock.stop();
-    $.mobile.changePage("#div-locked", "slideup");
-    cryptobox.main.prepare();
-    return $("#input-password").focus();
-  };
-
-  cryptobox.main.render = function(name, context) {
-    return $("body").append(Cryptobox.ui.render(name, context));
-  };
-
-  cryptobox.main.prepare = function() {
-    return cryptobox.dropbox.prepare((function(url) {
-      return Cryptobox.main.showAlert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
-    }), function(error) {
-      if (error) {
-        return Cryptobox.main.showAlert(true, "Dropbox authentication error");
-      } else {
-        return Cryptobox.main.showAlert(false, "Successfully restored Dropbox credentials");
-      }
-    });
-  };
-
-  Cryptobox.main.showAlert = function(error, text) {
-    $("#div-alert").html(text);
-    return $("#div-alert").show();
-  };
-
-  Cryptobox.main.hideAlert = function() {
-    return $("#div-alert").hide();
-  };
-
   MobileAppDelegate = (function(_super) {
 
     __extends(MobileAppDelegate, _super);
@@ -20525,6 +20516,20 @@ function program20(depth0,data) {
       MobileAppDelegate.__super__.constructor.call(this);
     }
 
+    MobileAppDelegate.prototype.alert = function(error, message) {
+      if (message != null) {
+        $("#div-alert").html(message);
+        return $("#div-alert").show();
+      } else {
+        return $("#div-alert").hide();
+      }
+    };
+
+    MobileAppDelegate.prototype.shutdown = function(preserve) {
+      MobileAppDelegate.__super__.shutdown.call(this, preserve);
+      return $.mobile.changePage("#div-locked", "slideup");
+    };
+
     MobileAppDelegate.prototype.render = function(template, context) {
       $("body").append(Cryptobox.ui.render(template, context));
       if (template === 'locked') {
@@ -20532,15 +20537,8 @@ function program20(depth0,data) {
       }
     };
 
-    MobileAppDelegate.prototype.alert = function(error, message) {
-      if (message) {
-        return Cryptobox.main.showAlert(error, message);
-      } else {
-        return Cryptobox.main.hideAlert();
-      }
-    };
-
     MobileAppDelegate.prototype.state = function(state) {
+      MobileAppDelegate.__super__.state.call(this, state);
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           $('#button-unlock').val('<%= @text[:button_unlock] %>');
@@ -20556,24 +20554,20 @@ function program20(depth0,data) {
     };
 
     MobileAppDelegate.prototype.prepare = function() {
-      p('here');
-      cryptobox.main.prepare();
-      p('there');
-      cryptobox.lock = new Cryptobox.Lock(function() {
-        return cryptobox.lock.rewind();
-      }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
+      var _this = this;
+      MobileAppDelegate.__super__.prepare.call(this);
       $("#div-locked").live("pageshow", function(event, data) {
         return $(".generated").remove();
       });
       $(".button-lock").live("click", function(event) {
         event.preventDefault();
-        return cryptobox.main.lock();
+        return _this.shutdown(true);
       });
       return $(".button-login").live("click", function() {
         var el;
-        el = $.parseJSON($(this).attr("json"));
+        el = $.parseJSON($(_this).attr("json"));
         if (Cryptobox.form.withToken(el.form)) {
-          return Cryptobox.main.showAlert(true, "<%= @text[:no_login_with_token] %>");
+          return _this.alert(true, "<%= @text[:no_login_with_token] %>");
         } else {
           return Cryptobox.form.login(true, el.form);
         }
