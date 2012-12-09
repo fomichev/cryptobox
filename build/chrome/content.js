@@ -64,6 +64,19 @@
     }
   };
 
+  Cryptobox.addBr = function(text) {
+    if (text) {
+      return text.replace(/\n/g, '<br />');
+    }
+    return '';
+  };
+
+  Cryptobox.render = function(template, context) {
+    return Cryptobox.measure('render ' + template, function() {
+      return Handlebars.templates[template](context);
+    });
+  };
+
 }).call(this);
 (function() {
   var form;

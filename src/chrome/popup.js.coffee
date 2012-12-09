@@ -15,7 +15,6 @@
 #= require lock.js.coffee
 #= require form.js.coffee
 #= require js/dropbox.js
-#= require ui.js.coffee
 #= require password.js.coffee
 #= require handlebars.js.coffee
 #= require chrome/templates.js

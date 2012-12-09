@@ -70,3 +70,13 @@ Cryptobox.open = (password, callback) ->
         return
 
       decrypt($.parseJSON(data), callback)
+
+# Convert `\n` to `<br />` in `text` and return it.
+Cryptobox.addBr = (text) ->
+  return text.replace(/\n/g, '<br />') if text
+  ''
+
+# Render and return `template` in given `context`.
+Cryptobox.render = (template, context) ->
+  Cryptobox.measure 'render ' + template, ->
+    Handlebars.templates[template] context

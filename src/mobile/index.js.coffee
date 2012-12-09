@@ -15,7 +15,6 @@
 #= require lock.js.coffee
 #= require form.js.coffee
 #= require js/dropbox.js
-#= require ui.js.coffee
 #= require handlebars.js.coffee
 #= require mobile/templates.js
 
@@ -39,7 +38,7 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
     $.mobile.changePage "#div-locked", "slideup"
 
   render: (template, context) ->
-    $("body").append Cryptobox.ui.render(template, context)
+    $("body").append Cryptobox.render(template, context)
 
     if template == 'locked'
       $.mobile.initializePage()

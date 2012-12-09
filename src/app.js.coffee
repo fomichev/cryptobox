@@ -37,7 +37,38 @@ class AppDelegate
   # Do some application specific processing of `cryptobox.json` and call
   # `callback` with the context afterwards.
   prepareJson: (json, callback) ->
-    callback({ page: Cryptobox.ui.init(json) })
+    result = []
+    Cryptobox.measure "ui.init", ->
+      map = {}
+      pages = {}
+
+      for el, index in json
+        continue  if el.visible is false
+        pages[el.type] = {}  unless el.type of pages
+        pages[el.type][el.tag] = []  unless el.tag of pages[el.type]
+        el.id = index
+        pages[el.type][el.tag].push el
+
+      for page_key of pages
+        p =
+          id: page_key
+          name: cryptobox.config.i18n.page[page_key]
+          tag: []
+
+        for tag_key of pages[page_key]
+          p.tag.push
+            name: tag_key
+            item: pages[page_key][tag_key]
+
+        p.tag.sort (a, b) ->
+          a.name > b.name
+
+        result.push p
+
+      result.sort (a, b) ->
+        a.name > b.name
+
+    callback({ page: result })
 
   # Return preserved `cryptobox.json` data from saved session (may be used to
   # preserve state between multiple runs).

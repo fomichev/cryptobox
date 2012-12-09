@@ -45,7 +45,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
 
   render: (template, context) ->
     $('#content').hide()
-    $('#content').html(Cryptobox.ui.render(template, context))
+    $('#content').html(Cryptobox.render(template, context))
     $('#content').fadeIn()
 
   alert: (error, message) ->

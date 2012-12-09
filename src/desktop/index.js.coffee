@@ -15,7 +15,6 @@
 #= require lock.js.coffee
 #= require form.js.coffee
 #= require js/dropbox.js
-#= require ui.js.coffee
 #= require password.js.coffee
 #= require handlebars.js.coffee
 #= require desktop/templates.js
@@ -58,8 +57,8 @@ detailsClick = (el) ->
       "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copyToClipboard(el.form.vars.user))
       "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copyToClipboard(el.form.vars.pass))
 
-    values["<%= @text[:secret] %>"] = Cryptobox.ui.addBr(forms.vars.secret)  if el.form.vars.secret
-    values["<%= @text[:note] %>"] = Cryptobox.ui.addBr(forms.vars.note)  if el.form.vars.note
+    values["<%= @text[:secret] %>"] = Cryptobox.addBr(forms.vars.secret)  if el.form.vars.secret
+    values["<%= @text[:note] %>"] = Cryptobox.addBr(forms.vars.note)  if el.form.vars.note
     Cryptobox.BootstrapAppDelegate.createDetails $("#div-details .modal-body"), values
   else
     $("#div-details .modal-body").html el.text

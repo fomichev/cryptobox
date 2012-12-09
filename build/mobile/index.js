@@ -19709,15 +19709,28 @@ code.google.com/p/crypto-js/wiki/License
     }
   };
 
+  Cryptobox.addBr = function(text) {
+    if (text) {
+      return text.replace(/\n/g, '<br />');
+    }
+    return '';
+  };
+
+  Cryptobox.render = function(template, context) {
+    return Cryptobox.measure('render ' + template, function() {
+      return Handlebars.templates[template](context);
+    });
+  };
+
 }).call(this);
 (function() {
   var Lock;
 
   Lock = (function() {
 
-    function Lock(timeoutSec, timeoutCallback) {
+    function Lock(timeoutSec, callback) {
       this.timeoutSec = timeoutSec;
-      this.timeoutCallback = timeoutCallback;
+      this.callback = callback;
       this.timeoutNow = 0;
       this.timeoutId = 0;
     }
@@ -19738,7 +19751,7 @@ code.google.com/p/crypto-js/wiki/License
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
-          return _this.timeoutCallback();
+          return _this.callback();
         }
       }, 1000 * 60);
       return p("Start lock " + this.timeoutId);
@@ -20061,72 +20074,6 @@ cryptobox.dropbox.authenticate = function(remember) {
 }
 ;
 (function() {
-  var ui;
-
-  ui = {};
-
-  window.Cryptobox.ui = ui;
-
-  ui.addBr = function(text) {
-    if (text) {
-      return text.replace(/\n/g, '<br />');
-    }
-    return '';
-  };
-
-  ui.render = function(template, context) {
-    return Cryptobox.measure('render ' + template, function() {
-      return Handlebars.templates[template](context);
-    });
-  };
-
-  ui.init = function(data) {
-    var result;
-    result = [];
-    Cryptobox.measure("ui.init", function() {
-      var el, index, map, p, page_key, pages, tag_key, _i, _len;
-      map = {};
-      pages = {};
-      for (index = _i = 0, _len = data.length; _i < _len; index = ++_i) {
-        el = data[index];
-        if (el.visible === false) {
-          continue;
-        }
-        if (!(el.type in pages)) {
-          pages[el.type] = {};
-        }
-        if (!(el.tag in pages[el.type])) {
-          pages[el.type][el.tag] = [];
-        }
-        el.id = index;
-        pages[el.type][el.tag].push(el);
-      }
-      for (page_key in pages) {
-        p = {
-          id: page_key,
-          name: cryptobox.config.i18n.page[page_key],
-          tag: []
-        };
-        for (tag_key in pages[page_key]) {
-          p.tag.push({
-            name: tag_key,
-            item: pages[page_key][tag_key]
-          });
-        }
-        p.tag.sort(function(a, b) {
-          return a.name > b.name;
-        });
-        result.push(p);
-      }
-      return result.sort(function(a, b) {
-        return a.name > b.name;
-      });
-    });
-    return result;
-  };
-
-}).call(this);
-(function() {
 
   window.Handlebars.registerHelper('stringify', function(object) {
     return JSON.stringify(object);
@@ -20427,8 +20374,49 @@ function program20(depth0,data) {
     };
 
     AppDelegate.prototype.prepareJson = function(json, callback) {
+      var result;
+      result = [];
+      Cryptobox.measure("ui.init", function() {
+        var el, index, map, p, page_key, pages, tag_key, _i, _len;
+        map = {};
+        pages = {};
+        for (index = _i = 0, _len = json.length; _i < _len; index = ++_i) {
+          el = json[index];
+          if (el.visible === false) {
+            continue;
+          }
+          if (!(el.type in pages)) {
+            pages[el.type] = {};
+          }
+          if (!(el.tag in pages[el.type])) {
+            pages[el.type][el.tag] = [];
+          }
+          el.id = index;
+          pages[el.type][el.tag].push(el);
+        }
+        for (page_key in pages) {
+          p = {
+            id: page_key,
+            name: cryptobox.config.i18n.page[page_key],
+            tag: []
+          };
+          for (tag_key in pages[page_key]) {
+            p.tag.push({
+              name: tag_key,
+              item: pages[page_key][tag_key]
+            });
+          }
+          p.tag.sort(function(a, b) {
+            return a.name > b.name;
+          });
+          result.push(p);
+        }
+        return result.sort(function(a, b) {
+          return a.name > b.name;
+        });
+      });
       return callback({
-        page: Cryptobox.ui.init(json)
+        page: result
       });
     };
 
@@ -20531,7 +20519,7 @@ function program20(depth0,data) {
     };
 
     MobileAppDelegate.prototype.render = function(template, context) {
-      $("body").append(Cryptobox.ui.render(template, context));
+      $("body").append(Cryptobox.render(template, context));
       if (template === 'locked') {
         return $.mobile.initializePage();
       }

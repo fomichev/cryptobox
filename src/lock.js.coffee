@@ -1,12 +1,12 @@
 # Class that implements auto locking.
 class Lock
-  # Create a new lock with `timeoutCallback` that is called when
+  # Create a new lock with `callback` that is called when
   # lock `timeoutSec` expires.
-  constructor: (@timeoutSec, @timeoutCallback) ->
+  constructor: (@timeoutSec, @callback) ->
     @timeoutNow = 0
     @timeoutId = 0
 
-  # Start auto lock (start counting down towards reaching timeout).
+  # Start auto lock (start counting down towards reaching the timeout).
   start: ->
     body = document.getElementsByTagName('body')[0]
     body.addEventListener('mousemove', => @rewind())
@@ -21,7 +21,7 @@ class Lock
 
       if @timeoutNow <= 0
         @stop()
-        @timeoutCallback()
+        @callback()
 
     , 1000 * 60
 
