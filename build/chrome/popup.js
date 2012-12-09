@@ -14325,8 +14325,9 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
+  var Lock;
 
-  window.Cryptobox.Lock = (function() {
+  Lock = (function() {
 
     function Lock(moveCallback, timeout, timeoutCallback) {
       this.moveCallback = moveCallback;
@@ -14370,6 +14371,8 @@ code.google.com/p/crypto-js/wiki/License
     return Lock;
 
   })();
+
+  window.Cryptobox.Lock = Lock;
 
 }).call(this);
 (function() {
@@ -14848,7 +14851,179 @@ cryptobox.dropbox.authenticate = function(remember) {
 
 }).call(this);
 (function() {
-  var bootstrap;
+  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['locked'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  
+
+
+  return "<div id=\"div-locked\">\n	<div id=\"div-alert\" class=\"alert alert-error\"></div>\n\n	<h1><%= @text[:locked_title] %></h1>\n\n	<div id=\"div-locked\">\n		<form id=\"form-unlock\">\n			<input id=\"input-password\" size=\"16\" type=\"password\">\n\n			<% unless @embed %>\n				<label><input id=\"input-remember\" type=\"checkbox\" checked=\"checked\" /> <%= @text[:remember_dropbox_credentials] %></label>\n			<% end %>\n\n			<div>\n				<button id=\"button-unlock\" type=\"submit\" class=\"btn btn-primary\" data-loading-text=\"<%= @text[:button_unlock_decrypt] %>\">\n					<i class=\"icon-lock\"></i> <%= @text[:button_unlock] %>\n				</button>\n			</div>\n		</form>\n	</div>\n</div>\n";});
+templates['unlocked'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers;
+  var buffer = "", stack1, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\n		<table class=\"table table-hover\">\n		<tbody>\n		";
+  stack1 = depth0.matched;
+  stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(2, program2, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n		</tbody>\n		</table>\n	";
+  return buffer;}
+function program2(depth0,data) {
+  
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n			<tr json=\"";
+  foundHelper = helpers.stringify;
+  stack1 = foundHelper ? foundHelper.call(depth0, depth0, {hash:{}}) : helperMissing.call(depth0, "stringify", depth0, {hash:{}});
+  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login-matched\" href=\"#\">";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + " (";
+  stack1 = depth0.form;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.vars;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.user;
+  stack1 = typeof stack1 === functionType ? stack1() : stack1;
+  buffer += escapeExpression(stack1) + ")</a>\n			</td>\n			<td>\n				<button class=\"button-details btn btn-mini btn-primary pull-right\" type=\"button\">\n					<%= @text[:button_details] %>\n				</button>\n			</td>\n			</tr>\n		";
+  return buffer;}
+
+function program4(depth0,data) {
+  
+  var buffer = "", stack1;
+  buffer += "\n		<table class=\"table table-hover\">\n		<caption><h3><%= @text[:unmatched_sites] %></h3></caption>\n		<tbody>\n		";
+  stack1 = depth0.unmatched;
+  stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(5, program5, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	";
+  return buffer;}
+function program5(depth0,data) {
+  
+  var buffer = "", stack1, foundHelper;
+  buffer += "\n			<tr json=\"";
+  foundHelper = helpers.stringify;
+  stack1 = foundHelper ? foundHelper.call(depth0, depth0, {hash:{}}) : helperMissing.call(depth0, "stringify", depth0, {hash:{}});
+  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login-unmatched\" href=\"#\">";
+  foundHelper = helpers.name;
+  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
+  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + " (";
+  stack1 = depth0.form;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.vars;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.user;
+  stack1 = typeof stack1 === functionType ? stack1() : stack1;
+  buffer += escapeExpression(stack1) + ")</a>\n			</td>\n			<td>\n				<button class=\"button-details btn btn-mini btn-primary pull-right\" type=\"button\">\n					<%= @text[:button_details] %>\n				</button>\n			</td>\n			</tr>\n		";
+  return buffer;}
+
+  buffer += "<div id=\"div-navbar\" class=\"navbar\">\n	<div class=\"navbar-inner\">\n		<form class=\"navbar-search pull-left\">\n			<input type=\"text\" id=\"input-filter\" class=\"search-query\" placeholder=\"<%= @text[:filter] %>\">\n		</form>\n		<ul class=\"nav pull-right\">\n			<li class=\"dropdown\">\n			<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><%= @text[:actions] %> <b class=\"caret\"></b></a>\n				<ul class=\"dropdown-menu\">\n					<li><a id=\"button-generate-show\" href=\"#\"><i class=\"icon-asterisk\"></i> <%= @text[:button_generate] %></a></li>\n					<li><a id=\"button-get-json\" href=\"#\"><i class=\"icon-list\"></i> Fetch form</a></li>\n					<li><a id=\"button-lock\" href=\"#\"><i class=\"icon-lock\"></i> <%= @text[:button_lock] %></a></li>\n				</ul>\n			</li>\n		</ul>\n	</div>\n</div>\n\n<div id=\"div-unlocked\">\n	";
+  stack1 = depth0.matched;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.length;
+  stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n	";
+  stack1 = depth0.unmatched;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.length;
+  stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(4, program4, data)});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n\n	</tbody></table>\n</div>\n\n<div id=\"div-details\">\n	<div id=\"div-details-body\"></div>\n\n	<form>\n		<div class=\"pull-right\">\n		<button id=\"button-hide-details\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></button>\n		</div>\n	</form>\n</div>\n\n<div id=\"div-generate\">\n	<form>\n		<label><%= @text[:generate_length] %></label>\n		<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-pronounceable\" /> <%= @text[:generate_pronounceable] %>\n		</label>\n		<label><%= @text[:generated] %></label>\n		<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n	</form>\n\n	<div class=\"pull-right\">\n		<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		<a id=\"button-hide-generate\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></a>\n	</div>\n	<div class=\"clearfix\"></div>\n</div>\n";
+  return buffer;});
+})();
+(function() {
+  var App, AppDelegate;
+
+  AppDelegate = (function() {
+
+    function AppDelegate() {
+      p('Initialize application delegate');
+    }
+
+    AppDelegate.prototype.prepare = function() {};
+
+    AppDelegate.prototype.render = function(template, context) {};
+
+    AppDelegate.prototype.alert = function(error, message) {};
+
+    AppDelegate.prototype.state = function(state) {};
+
+    AppDelegate.prototype.restoreSession = function() {
+      return null;
+    };
+
+    AppDelegate.prototype.prepareJson = function(json, callback) {
+      return callback({
+        page: Cryptobox.ui.init(json)
+      });
+    };
+
+    return AppDelegate;
+
+  })();
+
+  App = (function() {
+
+    App.prototype.STATE_LOCKED = 1;
+
+    App.prototype.STATE_LOADING = 2;
+
+    App.prototype.STATE_UNLOCKED = 3;
+
+    function App(delegate) {
+      this.delegate = delegate;
+      p('Initialize application');
+    }
+
+    App.prototype.unlock = function(json) {
+      var _this = this;
+      return this.delegate.prepareJson(json, function(context) {
+        _this.delegate.render('unlocked', context);
+        $("#input-password").val("");
+        $("#input-filter").focus();
+        return _this.delegate.state(_this.STATE_UNLOCKED);
+      });
+    };
+
+    App.prototype.run = function() {
+      var json,
+        _this = this;
+      this.delegate.prepare();
+      json = this.delegate.restoreSession();
+      if (json) {
+        return this.unlock(json);
+      } else {
+        this.delegate.render('locked', this);
+        $("#input-password").focus();
+        this.delegate.state(this.STATE_LOCKED);
+        return $("#form-unlock").live('submit', function(event) {
+          event.preventDefault();
+          cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
+          _this.delegate.alert(false, null);
+          _this.delegate.state(_this.STATE_LOADING);
+          return Cryptobox.open($("#input-password").val(), function(json, error) {
+            if (error) {
+              _this.delegate.alert(true, error);
+              return _this.delegate.state(_this.STATE_LOCKED);
+            } else {
+              return _this.unlock(json);
+            }
+          });
+        });
+      }
+    };
+
+    return App;
+
+  })();
+
+  window.Cryptobox.App = App;
+
+  window.Cryptobox.AppDelegate = AppDelegate;
+
+}).call(this);
+(function() {
+  var bootstrap,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   bootstrap = {};
 
@@ -14934,304 +15109,248 @@ cryptobox.dropbox.authenticate = function(remember) {
     return $("#div-alert").fadeOut();
   };
 
+  Cryptobox.BootstrapAppDelegate = (function(_super) {
+
+    __extends(BootstrapAppDelegate, _super);
+
+    function BootstrapAppDelegate() {
+      BootstrapAppDelegate.__super__.constructor.call(this);
+    }
+
+    BootstrapAppDelegate.prototype.render = function(template, context) {
+      return Cryptobox.bootstrap.render(template, context);
+    };
+
+    BootstrapAppDelegate.prototype.alert = function(error, message) {
+      if (message) {
+        return Cryptobox.bootstrap.showAlert(error, message);
+      } else {
+        return Cryptobox.bootstrap.hideAlert();
+      }
+    };
+
+    BootstrapAppDelegate.prototype.state = function(state) {
+      var _this = this;
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_LOCKED:
+          return $('#button-unlock').button('reset');
+        case Cryptobox.App.prototype.STATE_LOADING:
+          return $('#button-unlock').button('loading');
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          $('#button-unlock').button('reset');
+          Cryptobox.bootstrap.lockInit(function() {
+            return cryptobox.lock.rewind();
+          }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
+          return Cryptobox.bootstrap.filterInit();
+      }
+    };
+
+    return BootstrapAppDelegate;
+
+  })(Cryptobox.AppDelegate);
+
 }).call(this);
 (function() {
-  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['locked'] = template(function (Handlebars,depth0,helpers,partials,data) {
-  helpers = helpers || Handlebars.helpers;
-  
-
-
-  return "<div id=\"div-locked\">\n	<div id=\"div-alert\" class=\"alert alert-error\"></div>\n\n	<h1><%= @text[:locked_title] %></h1>\n\n	<div id=\"div-locked\">\n		<form id=\"form-unlock\">\n			<input id=\"input-password\" size=\"16\" type=\"password\">\n\n			<% unless @embed %>\n				<label><input id=\"input-remember\" type=\"checkbox\" checked=\"checked\" /> <%= @text[:remember_dropbox_credentials] %></label>\n			<% end %>\n\n			<div>\n				<button id=\"button-unlock\" type=\"submit\" class=\"btn btn-primary\" data-loading-text=\"<%= @text[:button_unlock_decrypt] %>\">\n					<i class=\"icon-lock\"></i> <%= @text[:button_unlock] %>\n				</button>\n			</div>\n		</form>\n	</div>\n</div>\n";});
-templates['unlocked'] = template(function (Handlebars,depth0,helpers,partials,data) {
-  helpers = helpers || Handlebars.helpers;
-  var buffer = "", stack1, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
-
-function program1(depth0,data) {
-  
-  var buffer = "", stack1;
-  buffer += "\n		<table class=\"table table-hover\">\n		<tbody>\n		";
-  stack1 = depth0.matched;
-  stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(2, program2, data)});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</tbody>\n		</table>\n	";
-  return buffer;}
-function program2(depth0,data) {
-  
-  var buffer = "", stack1, foundHelper;
-  buffer += "\n			<tr json=\"";
-  foundHelper = helpers.stringify;
-  stack1 = foundHelper ? foundHelper.call(depth0, depth0, {hash:{}}) : helperMissing.call(depth0, "stringify", depth0, {hash:{}});
-  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login-matched\" href=\"#\">";
-  foundHelper = helpers.name;
-  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + " (";
-  stack1 = depth0.form;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.vars;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.user;
-  stack1 = typeof stack1 === functionType ? stack1() : stack1;
-  buffer += escapeExpression(stack1) + ")</a>\n			</td>\n			<td>\n				<button class=\"button-details btn btn-mini btn-primary pull-right\" type=\"button\">\n					<%= @text[:button_details] %>\n				</button>\n			</td>\n			</tr>\n		";
-  return buffer;}
-
-function program4(depth0,data) {
-  
-  var buffer = "", stack1;
-  buffer += "\n		<table class=\"table table-hover\">\n		<caption><h3><%= @text[:unmatched_sites] %></h3></caption>\n		<tbody>\n		";
-  stack1 = depth0.unmatched;
-  stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(5, program5, data)});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n	";
-  return buffer;}
-function program5(depth0,data) {
-  
-  var buffer = "", stack1, foundHelper;
-  buffer += "\n			<tr json=\"";
-  foundHelper = helpers.stringify;
-  stack1 = foundHelper ? foundHelper.call(depth0, depth0, {hash:{}}) : helperMissing.call(depth0, "stringify", depth0, {hash:{}});
-  buffer += escapeExpression(stack1) + "\">\n			<td>\n				<a class=\"button-login-unmatched\" href=\"#\">";
-  foundHelper = helpers.name;
-  if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + " (";
-  stack1 = depth0.form;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.vars;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.user;
-  stack1 = typeof stack1 === functionType ? stack1() : stack1;
-  buffer += escapeExpression(stack1) + ")</a>\n			</td>\n			<td>\n				<button class=\"button-details btn btn-mini btn-primary pull-right\" type=\"button\">\n					<%= @text[:button_details] %>\n				</button>\n			</td>\n			</tr>\n		";
-  return buffer;}
-
-  buffer += "<div id=\"div-navbar\" class=\"navbar\">\n	<div class=\"navbar-inner\">\n		<form class=\"navbar-search pull-left\">\n			<input type=\"text\" id=\"input-filter\" class=\"search-query\" placeholder=\"<%= @text[:filter] %>\">\n		</form>\n		<ul class=\"nav pull-right\">\n			<li class=\"dropdown\">\n			<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><%= @text[:actions] %> <b class=\"caret\"></b></a>\n				<ul class=\"dropdown-menu\">\n					<li><a id=\"button-generate-show\" href=\"#\"><i class=\"icon-asterisk\"></i> <%= @text[:button_generate] %></a></li>\n					<li><a id=\"button-get-json\" href=\"#\"><i class=\"icon-list\"></i> Fetch form</a></li>\n					<li><a id=\"button-lock\" href=\"#\"><i class=\"icon-lock\"></i> <%= @text[:button_lock] %></a></li>\n				</ul>\n			</li>\n		</ul>\n	</div>\n</div>\n\n<div id=\"div-unlocked\">\n	";
-  stack1 = depth0.matched;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.length;
-  stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(1, program1, data)});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n	";
-  stack1 = depth0.unmatched;
-  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.length;
-  stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(4, program4, data)});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n	</tbody></table>\n</div>\n\n<div id=\"div-details\">\n	<div id=\"div-details-body\"></div>\n\n	<form>\n		<div class=\"pull-right\">\n		<button id=\"button-hide-details\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></button>\n		</div>\n	</form>\n</div>\n\n<div id=\"div-generate\">\n	<form>\n		<label><%= @text[:generate_length] %></label>\n		<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n		</label>\n		<label class=\"checkbox\">\n			<input type=\"checkbox\" id=\"input-pronounceable\" /> <%= @text[:generate_pronounceable] %>\n		</label>\n		<label><%= @text[:generated] %></label>\n		<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n	</form>\n\n	<div class=\"pull-right\">\n		<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		<a id=\"button-hide-generate\" href=\"#\" class=\"btn\"><%= @text[:button_close] %></a>\n	</div>\n	<div class=\"clearfix\"></div>\n</div>\n";
-  return buffer;});
-})();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cryptobox.browser = {};
-
-cryptobox.browser.sendTo = function(tab, message, callback) {
-	chrome.tabs.sendMessage(tab.id, message, function(response) {
-		callback(response);
-	});
-}
-
-cryptobox.browser.sendToContentScript = function(message, callback) {
-	chrome.tabs.getSelected(null, function(tab) {
-		cryptobox.browser.sendTo(tab, message, callback);
-	});
-}
-
-cryptobox.browser.copyToClipboard = function(text) {
-	chrome.extension.getBackgroundPage().clipboardCopyNum++;
-	chrome.extension.sendRequest({ text: text });
-}
-
-cryptobox.browser.cleanClipboard = function(text) {
-	if (chrome.extension.getBackgroundPage().clipboardCopyNum != 0)
-		cryptobox.browser.copyToClipboard('<%= @text[:cleared_clipboard] %>');
-}
-
-cryptobox.main = {};
-
-cryptobox.main.show = function(div) {
-	$("#div-locked").hide();
-	$("#div-unlocked").hide();
-	$("#div-details").hide();
-	$("#div-generate").hide();
-
-	if (div == '#div-unlocked' || div == '#div-details' || div == '#div-generate') {
-		if (!$("#div-locked").is(":visible"))
-			$("#div-navbar").fadeIn();
-	} else {
-		$("#div-navbar").hide();
-	}
-
-	$(div).fadeIn();
-}
-
-cryptobox.main.detailsClick = function(el) {
-	var copy = function(value) {
-		return '<a class="btn btn-mini btn-success button-copy" href="#" value="' + value + '"><%= @text[:button_copy] %></a>';
-	}
-
-	$('#div-details-body').html('');
-
-	var values = {
-		'<%= @text[:username] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.user, copy(el.form.vars.user)),
-		'<%= @text[:password] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
-	};
-
-	Cryptobox.bootstrap.createDetails($('#div-details-body'), values);
-
-	cryptobox.main.show('#div-details');
-}
-
-cryptobox.main.lock = function() {
-	chrome.extension.getBackgroundPage().json = null;
-	cryptobox.browser.cleanClipboard();
-	Cryptobox.bootstrap.render('locked', this);
-	cryptobox.main.show('#div-locked');
-	cryptobox.main.prepare();
-	$("#input-password").focus();
-}
-
-cryptobox.main.prepare = function() {
-	cryptobox.dropbox.prepare(
-		function(url) {
-			Cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
-		},
-		function(error) {
-			if (error) {
-				Cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
-			} else {
-				Cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
-			}
-		});
-}
-
-cryptobox.main.showData = function(data) {
-	chrome.tabs.getSelected(null, function (t) {
-		var matched = [];
-		var unmatched = [];
-
-		for (var i = 0; i < data.length; i++) {
-			if (data[i].type == 'webform') {
-				if (Cryptobox.form.sitename(data[i].address) == Cryptobox.form.sitename(t.url)) {
-					matched.push(data[i]);
-				} else {
-					if (data[i].visible == true)
-						unmatched.push(data[i]);
-				}
-			}
-		}
-
-		Cryptobox.bootstrap.render('unlocked', { matched: matched, unmatched: unmatched });
-
-		$("#div-login-details").hide();
-
-		$('.button-login-matched').click(function() {
-			var el = $.parseJSON($(this).parent().parent().attr('json'));
-			cryptobox.browser.sendToContentScript({ type: 'fillForm', data: el }, function() {});
-			window.close();
-		});
-
-		$('.button-login-unmatched').click(function() {
-			var el = $.parseJSON($(this).parent().parent().attr('json'));
-			chrome.tabs.create({ url: el.address, selected: true }, function(tab) {
-				chrome.extension.getBackgroundPage().fill[tab.id] = el;
-			});
-		});
-
-		$('.button-details').click(function() {
-			var el = $.parseJSON($(this).parent().parent().attr('json'));
-			cryptobox.main.detailsClick(el);
-		});
-
-		Cryptobox.bootstrap.lockInit(
-			function() { chrome.extension.getBackgroundPage().lock.rewind(); cryptobox.lock.rewind(); },
-			cryptobox.config.lock_timeout_minutes,
-			cryptobox.main.lock);
-		Cryptobox.bootstrap.filterInit();
-
-		$('#button-hide-generate').click(function() {
-			cryptobox.main.show('#div-unlocked');
-		});
-
-		$('#button-generate-show').click(function() {
-			cryptobox.main.show('#div-generate');
-		});
-
-		$('#button-generate').click(function() {
-			Cryptobox.bootstrap.dialogGenerateSubmit();
-		});
-
-		$('#button-get-json').click(function() {
-			cryptobox.browser.sendToContentScript({ type: 'getFormJson' }, function(text) {
-				$('#div-details-body').html('<textarea class="span6" rows="20">' + text + '</textarea>');
-				cryptobox.main.show('#div-details');
-			});
-		});
-
-		$('#button-hide-details').click(function() {
-			cryptobox.main.show('#div-unlocked');
-		});
-
-		cryptobox.main.show("#div-unlocked");
-		$("#input-filter").focus();
-	});
-}
-
-$(function() {
-	chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
-
-	if (chrome.extension.getBackgroundPage().json != null) {
-		chrome.extension.getBackgroundPage().lock.rewind();
-		cryptobox.main.showData(chrome.extension.getBackgroundPage().json);
-	} else {
-		cryptobox.main.lock();
-
-		$("#form-unlock").live('submit', function(event) {
-			event.preventDefault();
-
-			cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
-
-			$('#button-unlock').button('loading');
-			Cryptobox.bootstrap.hideAlert();
-
-			Cryptobox.open($("#input-password").val(), function(json, error) {
-				if (error) {
-					$("#button-unlock").button("reset");
-					Cryptobox.bootstrap.showAlert(true, error);
-				} else {
-					$("#input-password").val("");
-
-					chrome.extension.getBackgroundPage().json = json;
-
-					chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(
-						function() { chrome.extension.getBackgroundPage().lock.rewind(); },
-						cryptobox.config.lock_timeout_minutes,
-						function() { chrome.extension.getBackgroundPage().json = null; }
-						);
-
-					chrome.extension.getBackgroundPage().lock.start();
-
-					cryptobox.main.showData(json);
-				}
-			});
-		});
-	}
-
-	$('.button-copy').live('click', function() {
-		cryptobox.browser.copyToClipboard($(this).attr('value'));
-	});
-});
+  var ChromeAppDelegate,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  cryptobox.browser = {};
+
+  cryptobox.browser.sendTo = function(tab, message, callback) {
+    return chrome.tabs.sendMessage(tab.id, message, function(response) {
+      return callback(response);
+    });
+  };
+
+  cryptobox.browser.sendToContentScript = function(message, callback) {
+    return chrome.tabs.getSelected(null, function(tab) {
+      return cryptobox.browser.sendTo(tab, message, callback);
+    });
+  };
+
+  cryptobox.browser.copyToClipboard = function(text) {
+    chrome.extension.getBackgroundPage().clipboardCopyNum++;
+    return chrome.extension.sendRequest({
+      text: text
+    });
+  };
+
+  cryptobox.browser.cleanClipboard = function(text) {
+    if (chrome.extension.getBackgroundPage().clipboardCopyNum !== 0) {
+      return cryptobox.browser.copyToClipboard("<%= @text[:cleared_clipboard] %>");
+    }
+  };
+
+  cryptobox.main = {};
+
+  cryptobox.main.show = function(div) {
+    $("#div-locked").hide();
+    $("#div-unlocked").hide();
+    $("#div-details").hide();
+    $("#div-generate").hide();
+    if (div === "#div-unlocked" || div === "#div-details" || div === "#div-generate") {
+      if (!$("#div-locked").is(":visible")) {
+        $("#div-navbar").fadeIn();
+      }
+    } else {
+      $("#div-navbar").hide();
+    }
+    return $(div).fadeIn();
+  };
+
+  cryptobox.main.detailsClick = function(el) {
+    var copy, values;
+    copy = function(value) {
+      return "<a class=\"btn btn-mini btn-success button-copy\" href=\"#\" value=\"" + value + "\"><%= @text[:button_copy] %></a>";
+    };
+    $("#div-details-body").html("");
+    values = {
+      "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, copy(el.form.vars.user)),
+      "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
+    };
+    Cryptobox.bootstrap.createDetails($("#div-details-body"), values);
+    return cryptobox.main.show("#div-details");
+  };
+
+  cryptobox.main.lock = function() {
+    chrome.extension.getBackgroundPage().json = null;
+    cryptobox.browser.cleanClipboard();
+    Cryptobox.bootstrap.render("locked", this);
+    cryptobox.main.show("#div-locked");
+    cryptobox.main.prepare();
+    return $("#input-password").focus();
+  };
+
+  cryptobox.main.prepare = function() {
+    return cryptobox.dropbox.prepare((function(url) {
+      return Cryptobox.bootstrap.showAlert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
+    }), function(error) {
+      if (error) {
+        return Cryptobox.bootstrap.showAlert(true, "Dropbox authentication error");
+      } else {
+        return Cryptobox.bootstrap.showAlert(false, "Successfully restored Dropbox credentials");
+      }
+    });
+  };
+
+  ChromeAppDelegate = (function(_super) {
+
+    __extends(ChromeAppDelegate, _super);
+
+    function ChromeAppDelegate() {
+      ChromeAppDelegate.__super__.constructor.call(this);
+    }
+
+    ChromeAppDelegate.prototype.restoreSession = function() {
+      if (chrome.extension.getBackgroundPage().json != null) {
+        chrome.extension.getBackgroundPage().lock.rewind();
+        return chrome.extension.getBackgroundPage().json;
+      }
+      return null;
+    };
+
+    ChromeAppDelegate.prototype.state = function(state) {
+      ChromeAppDelegate.__super__.state.call(this, state);
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(function() {
+            return chrome.extension.getBackgroundPage().lock.rewind();
+          }, cryptobox.config.lock_timeout_minutes, function() {
+            return chrome.extension.getBackgroundPage().json = null;
+          });
+          chrome.extension.getBackgroundPage().lock.start();
+          $("#div-login-details").hide();
+          return cryptobox.main.show("#div-unlocked");
+      }
+    };
+
+    ChromeAppDelegate.prototype.prepare = function() {
+      $(".button-copy").live("click", function() {
+        return cryptobox.browser.copyToClipboard($(this).attr("value"));
+      });
+      $(".button-login-matched").live("click", function() {
+        var el;
+        el = $.parseJSON($(this).parent().parent().attr("json"));
+        cryptobox.browser.sendToContentScript({
+          type: "fillForm",
+          data: el
+        }, function() {});
+        return window.close();
+      });
+      $(".button-login-unmatched").live("click", function() {
+        var el;
+        el = $.parseJSON($(this).parent().parent().attr("json"));
+        return chrome.tabs.create({
+          url: el.address,
+          selected: true
+        }, function(tab) {
+          return chrome.extension.getBackgroundPage().fill[tab.id] = el;
+        });
+      });
+      $(".button-details").live("click", function() {
+        var el;
+        el = $.parseJSON($(this).parent().parent().attr("json"));
+        return cryptobox.main.detailsClick(el);
+      });
+      $("#button-hide-generate").live("click", function() {
+        return cryptobox.main.show("#div-unlocked");
+      });
+      $("#button-generate-show").live("click", function() {
+        return cryptobox.main.show("#div-generate");
+      });
+      $("#button-generate").live("click", function() {
+        return Cryptobox.bootstrap.dialogGenerateSubmit();
+      });
+      $("#button-get-json").live("click", function() {
+        return cryptobox.browser.sendToContentScript({
+          type: "getFormJson"
+        }, function(text) {
+          $("#div-details-body").html("<textarea class=\"span6\" rows=\"20\">" + text + "</textarea>");
+          return cryptobox.main.show("#div-details");
+        });
+      });
+      return $("#button-hide-details").live("click", function() {
+        return cryptobox.main.show("#div-unlocked");
+      });
+    };
+
+    ChromeAppDelegate.prototype.prepareJson = function(json, callback) {
+      chrome.extension.getBackgroundPage().json = json;
+      return chrome.tabs.getSelected(null, function(t) {
+        var i, matched, unmatched;
+        matched = [];
+        unmatched = [];
+        i = 0;
+        while (i < json.length) {
+          if (json[i].type === "webform") {
+            if (Cryptobox.form.sitename(json[i].address) === Cryptobox.form.sitename(t.url)) {
+              matched.push(json[i]);
+            } else {
+              if (json[i].visible === true) {
+                unmatched.push(json[i]);
+              }
+            }
+          }
+          i++;
+        }
+        return callback({
+          matched: matched,
+          unmatched: unmatched
+        });
+      });
+    };
+
+    return ChromeAppDelegate;
+
+  })(Cryptobox.BootstrapAppDelegate);
+
+  $(function() {
+    var app, delegate;
+    chrome.extension.getBackgroundPage().clipboardCopyNum = 0;
+    delegate = new ChromeAppDelegate();
+    app = new Cryptobox.App(delegate);
+    return app.run();
+  });
+
+}).call(this);

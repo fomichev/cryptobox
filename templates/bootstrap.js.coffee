@@ -92,3 +92,31 @@ bootstrap.hideAlert = ->
   $('#div-alert').removeClass('alert-error')
   $('#div-alert').removeClass('alert-info')
   $("#div-alert").fadeOut()
+
+class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
+  constructor: ->
+    super()
+
+  render: (template, context) ->
+    Cryptobox.bootstrap.render(template, context)
+
+  alert: (error, message) ->
+    if message
+      Cryptobox.bootstrap.showAlert(error, message)
+    else
+      Cryptobox.bootstrap.hideAlert()
+
+  state: (state) ->
+    switch state
+      when Cryptobox.App::STATE_LOCKED
+        $('#button-unlock').button('reset')
+      when Cryptobox.App::STATE_LOADING
+        $('#button-unlock').button('loading')
+      when Cryptobox.App::STATE_UNLOCKED
+        $('#button-unlock').button('reset')
+
+        Cryptobox.bootstrap.lockInit(
+          => cryptobox.lock.rewind(),
+          cryptobox.config.lock_timeout_minutes,
+          cryptobox.main.lock)
+        Cryptobox.bootstrap.filterInit()

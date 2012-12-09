@@ -14325,8 +14325,9 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
+  var Lock;
 
-  window.Cryptobox.Lock = (function() {
+  Lock = (function() {
 
     function Lock(moveCallback, timeout, timeoutCallback) {
       this.moveCallback = moveCallback;
@@ -14370,6 +14371,8 @@ code.google.com/p/crypto-js/wiki/License
     return Lock;
 
   })();
+
+  window.Cryptobox.Lock = Lock;
 
 }).call(this);
 (function() {
@@ -14848,297 +14851,6 @@ cryptobox.dropbox.authenticate = function(remember) {
 
 }).call(this);
 (function() {
-  var bootstrap;
-
-  bootstrap = {};
-
-  window.Cryptobox.bootstrap = bootstrap;
-
-  bootstrap.__collapsibleId = 0;
-
-  bootstrap.collapsible = function(value, copy) {
-    var id;
-    id = Cryptobox.bootstrap.__collapsibleId++;
-    return "\"<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
-  };
-
-  bootstrap.createDetails = function(entry, map) {
-    var items;
-    items = $();
-    $.each(map, function(k, v) {
-      items = items.add($('<dt>').html(k));
-      return items = items.add($('<dd>').html(v));
-    });
-    return $('<dl>', {
-      'class': 'dl-horizontal'
-    }).html(items).appendTo(entry);
-  };
-
-  bootstrap.filterInit = function() {
-    return $("#input-filter").keyup(function() {
-      var text;
-      text = $("#input-filter").val().toLowerCase();
-      if (text === "") {
-        $("table").show();
-        return $("tr").show();
-      } else {
-        $("table").show();
-        $("tr").hide();
-        $("tr").filter(function() {
-          if ($('td:first', this).text().toLowerCase().indexOf(text) >= 0) {
-            return true;
-          }
-          return false;
-        }).show();
-        return $('div.active table').each(function() {
-          if ($('tr:visible', this).length === 0) {
-            return $(this).hide();
-          }
-        });
-      }
-    });
-  };
-
-  bootstrap.dialogGenerateSubmit = function() {
-    return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
-  };
-
-  bootstrap.lockInit = function(moveCallback, timeout, timeoutCallback) {
-    cryptobox.lock = new Cryptobox.Lock(moveCallback, timeout, timeoutCallback);
-    cryptobox.lock.start();
-    return $("#button-lock").click(function(event) {
-      event.preventDefault();
-      return timeoutCallback();
-    });
-  };
-
-  bootstrap.render = function(name, context) {
-    $('#content').hide();
-    $('#content').html(Cryptobox.ui.render(name, context));
-    return $('#content').fadeIn();
-  };
-
-  bootstrap.showAlert = function(error, text) {
-    if (error) {
-      $('#div-alert').addClass('alert-error');
-    } else {
-      $('#div-alert').addClass('alert-info');
-    }
-    $("#div-alert").html(text);
-    return $("#div-alert").fadeIn();
-  };
-
-  bootstrap.hideAlert = function() {
-    $('#div-alert').removeClass('alert-error');
-    $('#div-alert').removeClass('alert-info');
-    return $("#div-alert").fadeOut();
-  };
-
-}).call(this);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cryptobox.main = {};
-
-cryptobox.main.copyToClipboard = function(text) {
-	var t = '';
-	var pathToClippy = 'clippy.swf';
-
-	t += '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="110" height="14">';
-	t += '<param name="movie" value="' + pathToClippy + '"/>';
-	t += '<param name="allowScriptAccess" value="always" />';
-	t += '<param name="quality" value="high" />';
-	t += '<param name="scale" value="noscale" />';
-	t += '<param name="FlashVars" value="text=#' + text + '">';
-	t += '<param name="bgcolor" value="#fff">';
-	t += '<embed src="' + pathToClippy + '" width="110" height="14" name="clippy" quality="high" allowScriptAccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" FlashVars="text=' + text + '" bgcolor="#fff" />';
-	t += '</object>';
-
-	return t;
-}
-
-cryptobox.main.headerClick = function(el) {
-	if (Cryptobox.form.withToken(el.form)) {
-		$('#button-token').attr('href', el.form.action);
-		$('#div-token').modal();
-	} else {
-		Cryptobox.form.login(true, el.form);
-	}
-}
-
-cryptobox.main.detailsClick = function(el) {
-	if (el.type == 'webform') {
-		$('#div-details .modal-body').html('');
-
-		var values = {
-			'<%= @text[:address] %>:': $('<a>', { 'target': '_blank', 'href': el.address }).text(el.address),
-			'<%= @text[:username] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
-			'<%= @text[:password] %>:': Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
-		};
-
-		if (el.form.vars.secret)
-			values['<%= @text[:secret] %>'] = Cryptobox.ui.addBr(forms.vars.secret);
-
-		if (el.form.vars.note)
-			values['<%= @text[:note] %>'] = Cryptobox.ui.addBr(forms.vars.note);
-
-		Cryptobox.bootstrap.createDetails($('#div-details .modal-body'), values);
-	} else {
-		$('#div-details .modal-body').html(el.text);
-	}
-	$('#div-details .modal-header h3').text(el.name);
-	$('#div-details').modal();
-}
-
-cryptobox.main.lock = function() {
-	cryptobox.lock.stop();
-
-	$('#div-token').modal('hide');
-	$('#div-details').modal('hide');
-	$("#div-generate").modal('hide');
-
-	cryptobox.main.prepare();
-	Cryptobox.bootstrap.render('locked', this);
-	$("#input-password").focus();
-}
-
-cryptobox.main.dialogGenerateInit = function() {
-	$("#button-generate-show").click(function(event) {
-		event.preventDefault();
-		$("#div-generate").modal();
-
-	});
-
-	$('#button-generate').click(function() {
-		Cryptobox.bootstrap.dialogGenerateSubmit();
-	});
-	$("#div-generate").keydown(function(event) {
-		if (event.keyCode == $.ui.keyCode.ENTER)
-			Cryptobox.bootstrap.dialogGenerateSubmit();
-	});
-
-	$("#input-pronounceable").click(function() {
-		if ($("#input-pronounceable").is(":checked")) {
-			$("#input-include-num").attr("disabled", true);
-			$("#input-include-punc").attr("disabled", true);
-		} else {
-			$("#input-include-num").removeAttr("disabled");
-			$("#input-include-punc").removeAttr("disabled");
-		}
-	});
-}
-
-cryptobox.main.dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
-	var tokenJson = $.parseJSON($("#input-json").val());
-
-	if (!tokenJson || tokenJson == "")
-		return;
-
-	$("#input-json").val("");
-	$("#div-token").modal('hide');
-
-	formLogin(true, el.form, tokenJson);
-}
-
-cryptobox.main.dialogTokenLoginInit = function() {
-	$('#button-token-login').click(function (){
-		cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
-	});
-	$("#div-token").keydown(function(event) {
-		if (event.keyCode == $.ui.keyCode.ENTER)
-			cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
-	});
-}
-
-cryptobox.main.prepare = function() {
-	cryptobox.dropbox.prepare(
-		function(url) {
-			Cryptobox.bootstrap.showAlert(false, 'Dropbox authentication required: <p><a href="' + url + '" target="_blank">' + url + '</a></p>');
-		},
-		function(error) {
-			if (error) {
-				Cryptobox.bootstrap.showAlert(true, 'Dropbox authentication error');
-			} else {
-				Cryptobox.bootstrap.showAlert(false, 'Successfully restored Dropbox credentials');
-			}
-		});
-}
-
-$(function() {
-	cryptobox.main.prepare();
-	Cryptobox.bootstrap.render('locked', this);
-	$("#input-password").focus();
-
-	$("#form-unlock").live('submit', function(event) {
-		event.preventDefault();
-
-		cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
-
-		$('#button-unlock').button('loading');
-
-		Cryptobox.bootstrap.hideAlert();
-
-		Cryptobox.open($("#input-password").val(), function(json, error) {
-			if (error) {
-				$('#button-unlock').button('reset');
-				Cryptobox.bootstrap.showAlert(true, error);
-			} else {
-				var data = Cryptobox.ui.init(json);
-				Cryptobox.bootstrap.render('unlocked', { page: data });
-
-				// try to select Sites tab; otherwise select first one
-				if ($('div.tab-pane[id="webform"]')) {
-					$('div.tab-pane[id="webform"]').addClass('in').addClass('active');
-					$('#ul-nav li a[href="#webform"]').parent().addClass('active');
-				} else {
-					$('div.tab-pane:first').addClass('in').addClass('active');
-					$('#ul-nav li:first').addClass('active');
-				}
-				$("#input-filter").focus();
-
-				Cryptobox.bootstrap.lockInit(
-					function() { cryptobox.lock.rewind(); },
-					cryptobox.config.lock_timeout_minutes,
-					cryptobox.main.lock);
-				cryptobox.main.dialogTokenLoginInit();
-				cryptobox.main.dialogGenerateInit();
-				Cryptobox.bootstrap.filterInit();
-
-				$('.button-login').click(function() {
-					var el = $.parseJSON($(this).parent().parent().attr('json'));
-					cryptobox.main.headerClick(el);
-				});
-
-				$('.button-details').click(function() {
-					var el = $.parseJSON($(this).parent().parent().attr('json'));
-					cryptobox.main.detailsClick(el);
-				});
-			}
-		});
-	});
-});
-(function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
 templates['locked'] = template(function (Handlebars,depth0,helpers,partials,data) {
   helpers = helpers || Handlebars.helpers;
@@ -15251,3 +14963,402 @@ function program10(depth0,data) {
   buffer += "\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div id=\"div-details\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3></h3>\n		</div>\n		<div class=\"modal-body\"></div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-generate\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_generate] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<form>\n				<label><%= @text[:generate_length] %></label>\n				<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-pronounceable\" /> <%= @text[:generate_pronounceable] %>\n				</label>\n				<label><%= @text[:generated] %></label>\n				<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n			</form>\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-token\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_token] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<input type=\"text\" id=\"input-json\" />\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-token\" href=\"#\" class=\"btn btn-success\" target=\"_blank\"><%= @text[:get_token] %></a>\n			<a id=\"button-token-login\" href=\"#\" class=\"btn btn-primary\"><%= @text[:log_in] %></a>\n		</div>\n	</div>\n</div>\n";
   return buffer;});
 })();
+(function() {
+  var App, AppDelegate;
+
+  AppDelegate = (function() {
+
+    function AppDelegate() {
+      p('Initialize application delegate');
+    }
+
+    AppDelegate.prototype.prepare = function() {};
+
+    AppDelegate.prototype.render = function(template, context) {};
+
+    AppDelegate.prototype.alert = function(error, message) {};
+
+    AppDelegate.prototype.state = function(state) {};
+
+    AppDelegate.prototype.restoreSession = function() {
+      return null;
+    };
+
+    AppDelegate.prototype.prepareJson = function(json, callback) {
+      return callback({
+        page: Cryptobox.ui.init(json)
+      });
+    };
+
+    return AppDelegate;
+
+  })();
+
+  App = (function() {
+
+    App.prototype.STATE_LOCKED = 1;
+
+    App.prototype.STATE_LOADING = 2;
+
+    App.prototype.STATE_UNLOCKED = 3;
+
+    function App(delegate) {
+      this.delegate = delegate;
+      p('Initialize application');
+    }
+
+    App.prototype.unlock = function(json) {
+      var _this = this;
+      return this.delegate.prepareJson(json, function(context) {
+        _this.delegate.render('unlocked', context);
+        $("#input-password").val("");
+        $("#input-filter").focus();
+        return _this.delegate.state(_this.STATE_UNLOCKED);
+      });
+    };
+
+    App.prototype.run = function() {
+      var json,
+        _this = this;
+      this.delegate.prepare();
+      json = this.delegate.restoreSession();
+      if (json) {
+        return this.unlock(json);
+      } else {
+        this.delegate.render('locked', this);
+        $("#input-password").focus();
+        this.delegate.state(this.STATE_LOCKED);
+        return $("#form-unlock").live('submit', function(event) {
+          event.preventDefault();
+          cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
+          _this.delegate.alert(false, null);
+          _this.delegate.state(_this.STATE_LOADING);
+          return Cryptobox.open($("#input-password").val(), function(json, error) {
+            if (error) {
+              _this.delegate.alert(true, error);
+              return _this.delegate.state(_this.STATE_LOCKED);
+            } else {
+              return _this.unlock(json);
+            }
+          });
+        });
+      }
+    };
+
+    return App;
+
+  })();
+
+  window.Cryptobox.App = App;
+
+  window.Cryptobox.AppDelegate = AppDelegate;
+
+}).call(this);
+(function() {
+  var bootstrap,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  bootstrap = {};
+
+  window.Cryptobox.bootstrap = bootstrap;
+
+  bootstrap.__collapsibleId = 0;
+
+  bootstrap.collapsible = function(value, copy) {
+    var id;
+    id = Cryptobox.bootstrap.__collapsibleId++;
+    return "\"<button type=\"button\" class=\"btn btn-mini\" data-toggle=\"collapse\" data-target=\"#collapsible-" + id + "\">\n  <%= @text[:button_hide_reveal] %>\n</button>\n&nbsp;" + copy + "\n<div id=\"collapsible-" + id + "\" class=\"collapse\">" + value + "</div>";
+  };
+
+  bootstrap.createDetails = function(entry, map) {
+    var items;
+    items = $();
+    $.each(map, function(k, v) {
+      items = items.add($('<dt>').html(k));
+      return items = items.add($('<dd>').html(v));
+    });
+    return $('<dl>', {
+      'class': 'dl-horizontal'
+    }).html(items).appendTo(entry);
+  };
+
+  bootstrap.filterInit = function() {
+    return $("#input-filter").keyup(function() {
+      var text;
+      text = $("#input-filter").val().toLowerCase();
+      if (text === "") {
+        $("table").show();
+        return $("tr").show();
+      } else {
+        $("table").show();
+        $("tr").hide();
+        $("tr").filter(function() {
+          if ($('td:first', this).text().toLowerCase().indexOf(text) >= 0) {
+            return true;
+          }
+          return false;
+        }).show();
+        return $('div.active table').each(function() {
+          if ($('tr:visible', this).length === 0) {
+            return $(this).hide();
+          }
+        });
+      }
+    });
+  };
+
+  bootstrap.dialogGenerateSubmit = function() {
+    return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
+  };
+
+  bootstrap.lockInit = function(moveCallback, timeout, timeoutCallback) {
+    cryptobox.lock = new Cryptobox.Lock(moveCallback, timeout, timeoutCallback);
+    cryptobox.lock.start();
+    return $("#button-lock").click(function(event) {
+      event.preventDefault();
+      return timeoutCallback();
+    });
+  };
+
+  bootstrap.render = function(name, context) {
+    $('#content').hide();
+    $('#content').html(Cryptobox.ui.render(name, context));
+    return $('#content').fadeIn();
+  };
+
+  bootstrap.showAlert = function(error, text) {
+    if (error) {
+      $('#div-alert').addClass('alert-error');
+    } else {
+      $('#div-alert').addClass('alert-info');
+    }
+    $("#div-alert").html(text);
+    return $("#div-alert").fadeIn();
+  };
+
+  bootstrap.hideAlert = function() {
+    $('#div-alert').removeClass('alert-error');
+    $('#div-alert').removeClass('alert-info');
+    return $("#div-alert").fadeOut();
+  };
+
+  Cryptobox.BootstrapAppDelegate = (function(_super) {
+
+    __extends(BootstrapAppDelegate, _super);
+
+    function BootstrapAppDelegate() {
+      BootstrapAppDelegate.__super__.constructor.call(this);
+    }
+
+    BootstrapAppDelegate.prototype.render = function(template, context) {
+      return Cryptobox.bootstrap.render(template, context);
+    };
+
+    BootstrapAppDelegate.prototype.alert = function(error, message) {
+      if (message) {
+        return Cryptobox.bootstrap.showAlert(error, message);
+      } else {
+        return Cryptobox.bootstrap.hideAlert();
+      }
+    };
+
+    BootstrapAppDelegate.prototype.state = function(state) {
+      var _this = this;
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_LOCKED:
+          return $('#button-unlock').button('reset');
+        case Cryptobox.App.prototype.STATE_LOADING:
+          return $('#button-unlock').button('loading');
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          $('#button-unlock').button('reset');
+          Cryptobox.bootstrap.lockInit(function() {
+            return cryptobox.lock.rewind();
+          }, cryptobox.config.lock_timeout_minutes, cryptobox.main.lock);
+          return Cryptobox.bootstrap.filterInit();
+      }
+    };
+
+    return BootstrapAppDelegate;
+
+  })(Cryptobox.AppDelegate);
+
+}).call(this);
+(function() {
+  var DesktopAppDelegate,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  cryptobox.main = {};
+
+  cryptobox.main.copyToClipboard = function(text) {
+    var pathToClippy, t;
+    t = "";
+    pathToClippy = "clippy.swf";
+    t += "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" width=\"110\" height=\"14\">";
+    t += "<param name=\"movie\" value=\"" + pathToClippy + "\"/>";
+    t += "<param name=\"allowScriptAccess\" value=\"always\" />";
+    t += "<param name=\"quality\" value=\"high\" />";
+    t += "<param name=\"scale\" value=\"noscale\" />";
+    t += "<param name=\"FlashVars\" value=\"text=#" + text + "\">";
+    t += "<param name=\"bgcolor\" value=\"#fff\">";
+    t += "<embed src=\"" + pathToClippy + "\" width=\"110\" height=\"14\" name=\"clippy\" quality=\"high\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" FlashVars=\"text=" + text + "\" bgcolor=\"#fff\" />";
+    t += "</object>";
+    return t;
+  };
+
+  cryptobox.main.headerClick = function(el) {
+    if (Cryptobox.form.withToken(el.form)) {
+      $("#button-token").attr("href", el.form.action);
+      return $("#div-token").modal();
+    } else {
+      return Cryptobox.form.login(true, el.form);
+    }
+  };
+
+  cryptobox.main.detailsClick = function(el) {
+    var values;
+    if (el.type === "webform") {
+      $("#div-details .modal-body").html("");
+      values = {
+        "<%= @text[:address] %>:": $("<a>", {
+          target: "_blank",
+          href: el.address
+        }).text(el.address),
+        "<%= @text[:username] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.user, cryptobox.main.copyToClipboard(el.form.vars.user)),
+        "<%= @text[:password] %>:": Cryptobox.bootstrap.collapsible(el.form.vars.pass, cryptobox.main.copyToClipboard(el.form.vars.pass))
+      };
+      if (el.form.vars.secret) {
+        values["<%= @text[:secret] %>"] = Cryptobox.ui.addBr(forms.vars.secret);
+      }
+      if (el.form.vars.note) {
+        values["<%= @text[:note] %>"] = Cryptobox.ui.addBr(forms.vars.note);
+      }
+      Cryptobox.bootstrap.createDetails($("#div-details .modal-body"), values);
+    } else {
+      $("#div-details .modal-body").html(el.text);
+    }
+    $("#div-details .modal-header h3").text(el.name);
+    return $("#div-details").modal();
+  };
+
+  cryptobox.main.lock = function() {
+    cryptobox.lock.stop();
+    $("#div-token").modal("hide");
+    $("#div-details").modal("hide");
+    $("#div-generate").modal("hide");
+    cryptobox.main.prepare();
+    Cryptobox.bootstrap.render("locked", this);
+    return $("#input-password").focus();
+  };
+
+  cryptobox.main.dialogGenerateInit = function() {
+    $("#button-generate-show").click(function(event) {
+      event.preventDefault();
+      return $("#div-generate").modal();
+    });
+    $("#button-generate").click(function() {
+      return Cryptobox.bootstrap.dialogGenerateSubmit();
+    });
+    $("#div-generate").keydown(function(event) {
+      if (event.keyCode === $.ui.keyCode.ENTER) {
+        return Cryptobox.bootstrap.dialogGenerateSubmit();
+      }
+    });
+    return $("#input-pronounceable").click(function() {
+      if ($("#input-pronounceable").is(":checked")) {
+        $("#input-include-num").attr("disabled", true);
+        return $("#input-include-punc").attr("disabled", true);
+      } else {
+        $("#input-include-num").removeAttr("disabled");
+        return $("#input-include-punc").removeAttr("disabled");
+      }
+    });
+  };
+
+  cryptobox.main.dialogTokenLoginSubmit = function(url, name, keys, values, tokens) {
+    var tokenJson;
+    tokenJson = $.parseJSON($("#input-json").val());
+    if (!tokenJson || tokenJson === "") {
+      return;
+    }
+    $("#input-json").val("");
+    $("#div-token").modal("hide");
+    return formLogin(true, el.form, tokenJson);
+  };
+
+  cryptobox.main.dialogTokenLoginInit = function() {
+    $("#button-token-login").click(function() {
+      return cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
+    });
+    return $("#div-token").keydown(function(event) {
+      if (event.keyCode === $.ui.keyCode.ENTER) {
+        return cryptobox.main.dialogTokenLoginSubmit(url, name, keys, values, tokens);
+      }
+    });
+  };
+
+  cryptobox.main.prepare = function() {
+    return cryptobox.dropbox.prepare((function(url) {
+      return Cryptobox.bootstrap.showAlert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
+    }), function(error) {
+      if (error) {
+        return Cryptobox.bootstrap.showAlert(true, "Dropbox authentication error");
+      } else {
+        return Cryptobox.bootstrap.showAlert(false, "Successfully restored Dropbox credentials");
+      }
+    });
+  };
+
+  DesktopAppDelegate = (function(_super) {
+
+    __extends(DesktopAppDelegate, _super);
+
+    function DesktopAppDelegate() {
+      DesktopAppDelegate.__super__.constructor.call(this);
+    }
+
+    DesktopAppDelegate.prototype.state = function(state) {
+      DesktopAppDelegate.__super__.state.call(this, state);
+      switch (state) {
+        case Cryptobox.App.prototype.STATE_UNLOCKED:
+          if ($('div.tab-pane[id="webform"]')) {
+            p('a');
+            $('div.tab-pane[id="webform"]').addClass('in').addClass('active');
+            $('#ul-nav li a[href="#webform"]').parent().addClass('active');
+          } else {
+            p('b');
+            $('div.tab-pane:first').addClass('in').addClass('active');
+            $('#ul-nav li:first').addClass('active');
+          }
+          cryptobox.main.dialogTokenLoginInit();
+          return cryptobox.main.dialogGenerateInit();
+      }
+    };
+
+    DesktopAppDelegate.prototype.prepare = function() {
+      cryptobox.main.prepare();
+      $('.button-login').live('click', function() {
+        var el;
+        el = $.parseJSON($(this).parent().parent().attr('json'));
+        return cryptobox.main.headerClick(el);
+      });
+      return $('.button-details').live('click', function() {
+        var el;
+        el = $.parseJSON($(this).parent().parent().attr('json'));
+        return cryptobox.main.detailsClick(el);
+      });
+    };
+
+    return DesktopAppDelegate;
+
+  })(Cryptobox.BootstrapAppDelegate);
+
+  $(function() {
+    var app, delegate;
+    delegate = new DesktopAppDelegate();
+    app = new Cryptobox.App(delegate);
+    return app.run();
+  });
+
+}).call(this);

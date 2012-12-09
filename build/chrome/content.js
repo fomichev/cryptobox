@@ -194,28 +194,23 @@
   };
 
 }).call(this);
+(function() {
 
+  chrome.extension.onMessage.addListener(function(msg, sender, sendResponse) {
+    if (msg.type === "fillForm") {
+      Cryptobox.form.fill(msg.data.form);
+      return sendResponse({});
+    } else if (msg.type === "getFormJson") {
+      return sendResponse(Cryptobox.form.toJson());
+    } else {
+      return sendResponse({});
+    }
+  });
 
+  window.addEventListener("keyup", (function(e) {
+    if (e.ctrlKey && e.keyCode) {
+      return e.keyCode === 220;
+    }
+  }), false);
 
-chrome.extension.onMessage.addListener(
-	function(msg, sender, sendResponse) {
-		if (msg.type == 'fillForm') {
-			Cryptobox.form.fill(msg.data.form);
-			sendResponse({});
-		} else if (msg.type == 'getFormJson') {
-			sendResponse(Cryptobox.form.toJson());
-		} else {
-			// unknown message
-		}
-	});
-
-/* Ctrl-\ shortcut */
-window.addEventListener("keyup", function (e) {
-	if (e.ctrlKey && e.keyCode) {
-		if (e.keyCode == 220) {
-			/* TODO: we need to add our overlay with popup.html
-			 * to the current window because it's not possible
-			 * just to show browser action */
-		}
-	}
-} , false);
+}).call(this);

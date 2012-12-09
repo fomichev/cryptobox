@@ -1,6 +1,5 @@
 # Class that implements auto locking on idle functionality.
-class window.Cryptobox.Lock
-
+class Lock
   # Create a new lock with `moveCallback` that is called when move is moved
   # and `timeoutCallback` that is called when lock `timeout` expires.
   constructor: (@moveCallback, @timeout, @timeoutCallback) ->
@@ -44,3 +43,6 @@ class window.Cryptobox.Lock
     dbg this
 
     clearInterval(@timeoutId)
+
+# Export class.
+window.Cryptobox.Lock = Lock

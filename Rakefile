@@ -35,7 +35,7 @@ task :handlebars do
 
   [ 'chrome', 'desktop', 'mobile' ].each do |app|
     root = File.join 'templates', app
-    to = File.join root, 'templates.js'
+    to = File.join 'build', app, 'templates.js'
 
     result = "(function() {\n  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};"
 
@@ -90,13 +90,14 @@ task :sprockets do
 
   env = Sprockets::Environment.new
   env.append_path 'templates'
+  env.append_path 'build'
 
-  assets = %w{ desktop/index.js desktop/index.css mobile/index.js mobile/index.css bookmarklet/fill.js bookmarklet/form.js chrome/background.js chrome/content.js chrome/popup.js chrome/popup.css }
+  assets = %w{ desktop/index.js.coffee desktop/index.css mobile/index.js.coffee mobile/index.css bookmarklet/fill.js bookmarklet/form.js chrome/background.js.coffee chrome/content.js.coffee chrome/popup.js.coffee chrome/popup.css }
 
   Dir.mkdir build_dir unless Dir.exist? build_dir
 
   assets.each do |a|
-    filename = File.join(build_dir, a)
+    filename = File.join(build_dir, a).sub(/\.coffee$/, '')
     dirname = File.dirname(filename)
 
     Dir.mkdir dirname unless Dir.exist? dirname
