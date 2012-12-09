@@ -19903,176 +19903,177 @@ code.google.com/p/crypto-js/wiki/License
   };
 
 }).call(this);
-cryptobox.dropbox = {};
-cryptobox.dropbox.client = null;
-cryptobox.dropbox.callback = null;
-cryptobox.dropbox.remember = true;
+(function() {
+  var Dropbox;
 
-cryptobox.dropbox.getCredentials = function() {
-	console.log('getCredentials');
+  Dropbox = (function() {
 
-	var data = localStorage.getItem(cryptobox.dropbox.storageKey);
+    function Dropbox() {
+      this.client = null;
+      this.ready = false;
+      this.callback = null;
+    }
 
-	try {
-		return JSON.parse(data);
-	} catch (e) {
-		return null;
-	}
-}
+    Dropbox.prototype.getCredentials = function() {
+      var data;
+      p("Dropbox.getCredentials");
+      data = localStorage.getItem(this.storageKey);
+      try {
+        return JSON.parse(data);
+      } catch (e) {
+        return null;
+      }
+    };
 
-cryptobox.dropbox.setCredentials = function(data) {
-	console.log('setCredentials');
-	console.log(data);
+    Dropbox.prototype.setCredentials = function(data) {
+      p("Dropbox.setCredentials");
+      return localStorage.setItem(this.storageKey, JSON.stringify(data));
+    };
 
-	localStorage.setItem(cryptobox.dropbox.storageKey, JSON.stringify(data));
-}
+    Dropbox.prototype.clearCredentials = function() {
+      p("Dropbox.clearCredentials");
+      return localStorage.removeItem(this.storageKey);
+    };
 
-cryptobox.dropbox.clearCredentials = function() {
-	console.log('clearCredentials');
+    Dropbox.prototype.read = function(callback) {
+      var timeout;
+      timeout = 100;
+      p("Dropbox.read");
+      if (this.ready === false) {
+        if (timeout-- && this.client) {
+          setTimeout((function() {
+            return this.read(callback);
+          }), 100);
+        } else {
+          callback("Dropbox authentication error", null);
+        }
+        return;
+      }
+      return this.client.readFile("cryptobox.json", callback);
+    };
 
-	localStorage.removeItem(cryptobox.dropbox.storageKey);
-}
+    Dropbox.prototype.authenticate = function(remember) {
+      p("Dropbox.authenticate");
+      if (Cryptobox.json == null) {
+        this.remember = remember;
+        if (!remember) {
+          console.log("Dropbox.authenticate - forget");
+          this.clearCredentials();
+        }
+        if (this.callback == null) {
+          console.log("Dropbox.authenticate - callback is null");
+          return;
+        }
+        return this.callback();
+      }
+    };
 
-cryptobox.dropbox.read = function(callback) {
-	var timeout = 100;
+    Dropbox.prototype.prepare = function(token_callback, auth_callback) {
+      var _this = this;
+      if (Cryptobox.json == null) {
+        this.client = new window.Dropbox.Client({
+          key: "nEGVEjZUFiA=|o5O6VucOhZA5Fw39MGotRofoEXUIO0MjFU6dmDpYNA==",
+          sandbox: true
+        });
+        this.client.authDriver({
+          url: function() {
+            return "";
+          },
+          doAuthorize: function(authUrl, token, tokenSecret, done) {
+            console.log("doAuthorize");
+            console.log(_this.getCredentials());
+            console.log("use new");
+            token_callback(authUrl);
+            return _this.callback = function() {
+              return done();
+            };
+          },
+          onAuthStateChange: function(client, done) {
+            var AUTHORIZED, DONE, ERROR, REQUEST, RESET, SIGNED_OFF, credentials;
+            ERROR = 0;
+            RESET = 1;
+            REQUEST = 2;
+            AUTHORIZED = 3;
+            DONE = 4;
+            SIGNED_OFF = 5;
+            console.log("STATE=" + client.authState);
+            _this.storageKey = _this.client.appHash() + ":cryptobox.json";
+            _this.ready = false;
+            if (client.authState === RESET) {
+              console.log("-> RESET");
+              credentials = _this.getCredentials();
+              console.log("credentials");
+              console.log(credentials);
+              if (!credentials) {
+                return done();
+              }
+              client.setCredentials(credentials);
+              return done();
+            } else if (client.authState === REQUEST) {
+              console.log("-> REQUEST");
+              credentials = client.credentials();
+              credentials.authState = AUTHORIZED;
+              _this.setCredentials(credentials);
+              return done();
+            } else if (client.authState === DONE) {
+              console.log("-> DONE");
+              return client.getUserInfo(function(error) {
+                if (error) {
+                  client.reset();
+                  _this.clearCredentials();
+                }
+                console.log("GOT USER INFO");
+                if (_this.remember) {
+                  credentials = _this.getCredentials();
+                  credentials.authState = DONE;
+                  _this.setCredentials(credentials);
+                } else {
+                  console.log("CLEAR");
+                  _this.clearCredentials();
+                }
+                _this.ready = true;
+                return done();
+              });
+            } else if (client.authState === SIGNED_OFF) {
+              console.log("-> SIGNED_OFF");
+              _this.clearCredentials();
+              return done();
+            } else if (client.authState === ERROR) {
+              console.log("-> ERROR");
+              _this.clearCredentials();
+              _this.client = null;
+              return done();
+            } else if (client.authState === AUTHORIZED) {
+              return done();
+            } else {
+              console.log("-> ?");
+              return done();
+            }
+          }
+        });
+        return this.client.authenticate(function(error, client) {
+          return auth_callback(error);
+        });
+      }
+    };
 
-	console.log('read');
+    Dropbox.instance = function() {
+      if (Cryptobox.json != null) {
+        return null;
+      }
+      if (this.__instance == null) {
+        this.__instance = new Dropbox();
+      }
+      return this.__instance;
+    };
 
-	if (cryptobox.dropbox.ready == false) {
-		if (timeout-- && cryptobox.dropbox.client)
-			setTimeout(function() { cryptobox.dropbox.read(callback); }, 100);
-		else
-			callback('Dropbox authentication error', null);
-		return;
-	}
+    return Dropbox;
 
-	cryptobox.dropbox.client.readFile('cryptobox.json', callback);
-}
+  })();
 
-cryptobox.dropbox.prepare = function(token_callback, auth_callback) {
-	if (Cryptobox.json == null) {
-		cryptobox.dropbox.client = new Dropbox.Client({
-			key: "nEGVEjZUFiA=|o5O6VucOhZA5Fw39MGotRofoEXUIO0MjFU6dmDpYNA==", sandbox: true
-		});
+  window.Cryptobox.Dropbox = Dropbox;
 
-		cryptobox.dropbox.client.authDriver({
-			url: function() { return ""; },
-			doAuthorize: function(authUrl, token, tokenSecret, done) {
-
-				console.log('doAuthorize');
-				console.log(cryptobox.dropbox.getCredentials());
-
-				console.log('use new');
-
-				token_callback(authUrl);
-				cryptobox.dropbox.callback = function() { done(); }
-			},
-			onAuthStateChange: function(client, done) {
-				var ERROR = 0;
-				var RESET = 1;
-				var REQUEST = 2;
-				var AUTHORIZED = 3;
-				var DONE = 4;
-				var SIGNED_OFF = 5;
-
-				console.log('STATE=' + client.authState);
-
-				cryptobox.dropbox.storageKey = cryptobox.dropbox.client.appHash() + ':cryptobox.json';
-				cryptobox.dropbox.ready = false;
-
-				if (client.authState == RESET) {
-					console.log('-> RESET');
-
-					var credentials = cryptobox.dropbox.getCredentials();
-					console.log("credentials");
-					console.log(credentials);
-					if (!credentials)
-						return done();
-
-					client.setCredentials(credentials);
-
-					return done();
-				} else if (client.authState == REQUEST) {
-					console.log('-> REQUEST');
-
-					var credentials = client.credentials();
-					credentials.authState = AUTHORIZED;
-
-					cryptobox.dropbox.setCredentials(credentials);
-					done();
-				} else if (client.authState == DONE) {
-					console.log('-> DONE');
-
-					client.getUserInfo(function(error) {
-						if (error) {
-							client.reset();
-							cryptobox.dropbox.clearCredentials();
-						}
-
-						console.log("GOT USER INFO");
-
-						if (cryptobox.dropbox.remember) {
-							var credentials = cryptobox.dropbox.getCredentials();
-							credentials.authState = DONE;
-
-							cryptobox.dropbox.setCredentials(credentials);
-						} else {
-							console.log('CLEAR');
-							cryptobox.dropbox.clearCredentials();
-						}
-						cryptobox.dropbox.ready = true;
-
-						return done();
-					});
-				} else if (client.authState == SIGNED_OFF) {
-					console.log('-> SIGNED_OFF');
-					cryptobox.dropbox.clearCredentials();
-					done();
-				} else if (client.authState == ERROR) {
-					console.log('-> ERROR');
-					cryptobox.dropbox.clearCredentials();
-					cryptobox.dropbox.client = null;
-					done();
-				} else if (client.authState == AUTHORIZED) {
-					return done();
-				} else {
-					console.log('-> ?');
-					return done();
-				}
-			}
-		});
-
-		cryptobox.dropbox.client.authenticate(function(error, client) {
-			auth_callback(error);
-		});
-	}
-}
-
-cryptobox.dropbox.authenticate = function(remember) {
-	console.log('{{{');
-
-	if (Cryptobox.json == null) {
-		console.log('remember');
-		console.log(remember);
-
-		cryptobox.dropbox.remember = remember;
-		if (!cryptobox.dropbox.remember) {
-			console.log('FORGEEET');
-			cryptobox.dropbox.clearCredentials();
-		}
-
-		if (cryptobox.dropbox.callback == null) {
-			console.log('callback is null');
-			/* use save credentials */
-			return;
-		}
-
-		cryptobox.dropbox.callback();
-	}
-
-	console.log('}}}');
-}
-;
+}).call(this);
 (function() {
 
   window.Handlebars.registerHelper('stringify', function(object) {
@@ -20353,13 +20354,14 @@ function program20(depth0,data) {
     };
 
     AppDelegate.prototype.state = function(state) {
-      var _this = this;
+      var _ref,
+        _this = this;
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           this.lock.stop();
           p('try to focus input field');
           $("#input-password").focus();
-          return cryptobox.dropbox.prepare((function(url) {
+          return (_ref = Cryptobox.Dropbox.instance()) != null ? _ref.prepare((function(url) {
             return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
           }), function(error) {
             if (error) {
@@ -20367,7 +20369,7 @@ function program20(depth0,data) {
             } else {
               return this.alert(false, "Successfully restored Dropbox credentials");
             }
-          });
+          }) : void 0;
         case Cryptobox.App.prototype.STATE_UNLOCKED:
           return this.lock.start();
       }
@@ -20466,8 +20468,11 @@ function program20(depth0,data) {
         this.delegate.render('locked', this);
         this.delegate.state(this.STATE_LOCKED);
         return $("#form-unlock").live('submit', function(event) {
+          var _ref;
           event.preventDefault();
-          cryptobox.dropbox.authenticate($("#input-remember").is(':checked'));
+          if ((_ref = Cryptobox.Dropbox.instance()) != null) {
+            _ref.authenticate($("#input-remember").is(':checked'));
+          }
           _this.delegate.alert(false, null);
           _this.delegate.state(_this.STATE_LOADING);
           return Cryptobox.open($("#input-password").val(), function(json, error) {

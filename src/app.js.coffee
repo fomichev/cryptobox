@@ -24,7 +24,8 @@ class AppDelegate
         p 'try to focus input field'
         $("#input-password").focus()
 
-        cryptobox.dropbox.prepare ((url) =>
+
+        Cryptobox.Dropbox.instance()?.prepare ((url) =>
           @alert false, "Dropbox authentication required: <p><a href=\"#{url}\" target=\"_blank\">#{url}</a></p>"
         ), (error) ->
           if error
@@ -122,7 +123,7 @@ class App
       $("#form-unlock").live 'submit', (event) =>
         event.preventDefault()
 
-        cryptobox.dropbox.authenticate($("#input-remember").is(':checked'))
+        Cryptobox.Dropbox.instance()?.authenticate($("#input-remember").is(':checked'))
 
         @delegate.alert(false, null)
         @delegate.state(@STATE_LOADING)
