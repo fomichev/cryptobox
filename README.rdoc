@@ -99,7 +99,7 @@ The steps +cryptobox edit+ does are:
   <tt>include/</tt> and merges it with entry's variables (username, password, etc);
 * Merges all JSON entries into one string and encrypts it with AES;
 * Embeds this encrypted data into pre-baked HTML page (look at
-  <tt>templates/html/</tt> for more details);
+  <tt>src/html/</tt> for more details);
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
   under <tt>private/html</tt> directory (cryptobox.html - is a desktop
   version; m.cryptobox.html - is a mobile one);
@@ -380,37 +380,37 @@ and additionally:
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
 
-  templates/chrome/icon.png
+  src/chrome/icon.png
 
 === JavaScript
 
 * {CryptoJS 3.0.2}[https://code.google.com/p/crypto-js/] - New BSD License
 
-  templates/extern/CryptoJS
+  src/extern/CryptoJS
 
 * {Random Seed 2.0}[http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html] - BSD
 
-  templates/extern/seedrandom
+  src/extern/seedrandom
 
 * {jQuery 1.7.2}[http://jquery.com] - MIT
 
-  templates/extern/jquery
+  src/extern/jquery
 
 * {Twitter Bootstrap 2.2.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
 
-  templates/extern/bootstrap
+  src/extern/bootstrap
 
 * {Handlebars 1.0.rc.1}[https://github.com/wycats/handlebars.js] - MIT
 
-  templates/extern/handlebars
+  src/extern/handlebars
 
 * {jQuery Mobile 1.1.0}[http://jquerymobile.com] - MIT
 
-  templates/extern/jquery-mobile
+  src/extern/jquery-mobile
 
 * {Clippy 7329b72360}[https://github.com/mojombo/clippy] - MIT
 
-  templates/extern/clippy
+  src/extern/clippy
 
 == Decrypt data without cryptobox
 Even if you don't have cryptobox available, you may still fairly easy
@@ -553,7 +553,6 @@ TODO: describe here what libs used and where
 * fill bookmarklet: add support for 'dropbox'
 
 === Common JS
-* templates -> src
 * eliminate cryptobox.ui.init (integrate in cryptobox.open and convert
   chrome plugin to its format)
 * keep passwords in memory encrypted (with some temporary key), decrypt as soon

@@ -28,13 +28,13 @@ end
 task :handlebars do
   require 'execjs'
 
-  compiler_path = File.join 'templates', 'extern', 'handlebars', 'handlebars.js'
+  compiler_path = File.join 'src', 'extern', 'handlebars', 'handlebars.js'
   context = ExecJS.compile(File.read(compiler_path))
 
   files = [ 'locked.handlebars', 'unlocked.handlebars' ]
 
   [ 'chrome', 'desktop', 'mobile' ].each do |app|
-    root = File.join 'templates', app
+    root = File.join 'src', app
     to = File.join 'build', app, 'templates.js'
 
     result = "(function() {\n  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};"
@@ -86,10 +86,10 @@ task :sprockets do
   css = YUI::CssCompressor.new
 
   build_dir = 'build'
-  images_dirs = %w{ templates/extern/bootstrap/img templates/extern/jquery.mobile }
+  images_dirs = %w{ src/extern/bootstrap/img src/extern/jquery.mobile }
 
   env = Sprockets::Environment.new
-  env.append_path 'templates'
+  env.append_path 'src'
   env.append_path 'build'
 
   assets = %w{ desktop/index.js.coffee desktop/index.css mobile/index.js.coffee mobile/index.css bookmarklet/fill.js.coffee bookmarklet/form.js.coffee chrome/background.js.coffee chrome/content.js.coffee chrome/popup.js.coffee chrome/popup.css }
@@ -121,5 +121,5 @@ task :sprockets do
 end
 
 task :documentation do
-  `rocco lib/*.rb lib/cryptobox/*.rb templates/*.coffee -o doc`
+  `rocco lib/*.rb lib/cryptobox/*.rb src/*.coffee -o doc`
 end

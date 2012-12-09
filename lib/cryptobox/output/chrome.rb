@@ -20,14 +20,14 @@ class ChromeOutput < Output
     File.open(to, 'w') { |f| f.write("Cryptobox.json = #{File.read(from)};") }
 
     templates = [
-      File.join(@config[:path][:templates], 'chrome', 'popup.rhtml'),
-      File.join(@config[:path][:templates], 'chrome', 'manifest.json'),
+      File.join(@config[:path][:src], 'chrome', 'popup.rhtml'),
+      File.join(@config[:path][:src], 'chrome', 'manifest.json'),
       File.join(@config[:path][:build], 'chrome', 'background.js'),
       File.join(@config[:path][:build], 'chrome', 'content.js'),
       File.join(@config[:path][:build], 'chrome', 'popup.js'),
     ]
     copy = [
-      File.join(@config[:path][:templates], 'chrome', 'icon.png'),
+      File.join(@config[:path][:src], 'chrome', 'icon.png'),
     ]
 
     templates.each do |source|

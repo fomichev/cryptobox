@@ -74,7 +74,7 @@ module Cryptobox
       set_value user_config, :path, :private, File.expand_path(File.join(@config[:path][:root], 'private'))
       set_value user_config, :path, :dropbox, File.expand_path(File.join(@config[:path][:private], 'dropbox'))
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
-      set_value user_config, :path, :templates, File.expand_path(File.join(@config[:path][:root], 'templates'))
+      set_value user_config, :path, :src, File.expand_path(File.join(@config[:path][:root], 'src'))
 
       set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox.yaml'))
       set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
