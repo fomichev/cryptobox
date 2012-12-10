@@ -555,7 +555,7 @@ TODO: describe here what libs used and where
 * Check login with token
 
 === Chrome extension
-* Align locked page with desktop version (left justify)
+* Align locked page with desktop version (left justify form elements)
 * Add key binding to show popup (in overlay)
 
 === Firefox extension

@@ -16,7 +16,8 @@ module Cryptobox
         db.save
       rescue => error
         $stdout.flush
-        exit_now!(error.message, 1)
+        $stderr.puts "error: #{error.message}"
+        exit 1
       end
     end
   end
