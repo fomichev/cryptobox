@@ -19648,13 +19648,13 @@ code.google.com/p/crypto-js/wiki/License
 
   Cryptobox = {};
 
-  window.Cryptobox = Cryptobox;
+  this.Cryptobox = Cryptobox;
 
-  window.cryptobox = {};
+  this.cryptobox = {};
 
   Cryptobox.json = null;
 
-  window.p = function(s) {
+  this.p = function(s) {
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 
@@ -19773,7 +19773,7 @@ code.google.com/p/crypto-js/wiki/License
 
   })();
 
-  window.Cryptobox.Lock = Lock;
+  this.Cryptobox.Lock = Lock;
 
 }).call(this);
 (function() {
@@ -19781,7 +19781,7 @@ code.google.com/p/crypto-js/wiki/License
 
   form = {};
 
-  window.Cryptobox.form = form;
+  this.Cryptobox.form = form;
 
   form.withToken = function(form) {
     var key, value, _ref;
@@ -20071,16 +20071,16 @@ code.google.com/p/crypto-js/wiki/License
 
   })();
 
-  window.Cryptobox.Dropbox = Dropbox;
+  this.Cryptobox.Dropbox = Dropbox;
 
 }).call(this);
 (function() {
 
-  window.Handlebars.registerHelper('stringify', function(object) {
+  this.Handlebars.registerHelper('stringify', function(object) {
     return JSON.stringify(object);
   });
 
-  window.Handlebars.registerHelper("each_key_value", function(object, options) {
+  this.Handlebars.registerHelper("each_key_value", function(object, options) {
     var buffer, key, value;
     buffer = "";
     for (key in object) {
@@ -20095,7 +20095,7 @@ code.google.com/p/crypto-js/wiki/License
     return buffer;
   });
 
-  window.Handlebars.registerHelper('if_eq', function(context, options) {
+  this.Handlebars.registerHelper('if_eq', function(context, options) {
     if (context === options.hash.to) {
       return options.fn(this);
     }
@@ -20491,9 +20491,9 @@ function program20(depth0,data) {
 
   })();
 
-  window.Cryptobox.App = App;
+  this.Cryptobox.App = App;
 
-  window.Cryptobox.AppDelegate = AppDelegate;
+  this.Cryptobox.AppDelegate = AppDelegate;
 
 }).call(this);
 (function() {

@@ -1,6 +1,6 @@
 # Declare and export module namespace.
 password = {}
-window.Cryptobox.password = password
+this.Cryptobox.password = password
 
 # Return `true` if given character is vowel. Return `false` otherwise.
 isVowel = (c) ->

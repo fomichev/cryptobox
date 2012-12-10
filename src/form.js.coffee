@@ -1,6 +1,6 @@
 # Declare and export module namespace.
 form = {}
-window.Cryptobox.form = form
+this.Cryptobox.form = form
 
 # Return `true` when given `form` requires token for login.
 form.withToken = (form) ->

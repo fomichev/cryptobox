@@ -140,4 +140,4 @@ class Dropbox
     @__instance
 
 # Export class.
-window.Cryptobox.Dropbox = Dropbox
+this.Cryptobox.Dropbox = Dropbox

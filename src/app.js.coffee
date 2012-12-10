@@ -134,5 +134,5 @@ class App
             @unlock(json)
 
 # Export class.
-window.Cryptobox.App = App
-window.Cryptobox.AppDelegate = AppDelegate
+this.Cryptobox.App = App
+this.Cryptobox.AppDelegate = AppDelegate

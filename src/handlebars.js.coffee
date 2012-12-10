@@ -1,10 +1,10 @@
 # Register `stringify` handlebars helper which converts given `object` to JSON.
-window.Handlebars.registerHelper 'stringify', (object) ->
+this.Handlebars.registerHelper 'stringify', (object) ->
   JSON.stringify(object)
 
 # Register `each_key_value` handlebars helper which iterates over all `object`
 # keys.
-window.Handlebars.registerHelper "each_key_value", (object, options) ->
+this.Handlebars.registerHelper "each_key_value", (object, options) ->
   buffer = "";
 
   for key, value of object
@@ -15,6 +15,6 @@ window.Handlebars.registerHelper "each_key_value", (object, options) ->
 
 # Register `if_eq` handlebars helper which executes block only if two
 # tested variables are equal.
-window.Handlebars.registerHelper 'if_eq', (context, options) ->
+this.Handlebars.registerHelper 'if_eq', (context, options) ->
   return options.fn(this) if context == options.hash.to
   options.inverse(this)

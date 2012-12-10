@@ -3,13 +3,13 @@
 
   Cryptobox = {};
 
-  window.Cryptobox = Cryptobox;
+  this.Cryptobox = Cryptobox;
 
-  window.cryptobox = {};
+  this.cryptobox = {};
 
   Cryptobox.json = null;
 
-  window.p = function(s) {
+  this.p = function(s) {
     return typeof console !== "undefined" && console !== null ? console.log(s) : void 0;
   };
 

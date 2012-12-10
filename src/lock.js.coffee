@@ -40,4 +40,4 @@ class Lock
     @timeoutId = 0
 
 # Export class.
-window.Cryptobox.Lock = Lock
+this.Cryptobox.Lock = Lock

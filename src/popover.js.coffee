@@ -44,4 +44,4 @@ class Popover
     document.body.appendChild(@popover)
 
 # Export class.
-window.Cryptobox.Popover = Popover
+this.Cryptobox.Popover = Popover
