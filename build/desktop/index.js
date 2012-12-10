@@ -14687,13 +14687,13 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var password;
+  var isVowel, password;
 
   password = {};
 
   window.Cryptobox.password = password;
 
-  password.isVowel = function(c) {
+  isVowel = function(c) {
     c = c.toLowerCase();
     if (c === "a") {
       return true;
@@ -14710,15 +14710,11 @@ code.google.com/p/crypto-js/wiki/License
     }
   };
 
-  password.generate = function(length, withNumbers, withPunc, withUc, pronounceable) {
-    var aV, bV, ch, i, num, pass, prevCh;
+  password.generate = function(length, withNumbers, withPunc, withUc) {
+    var i, num, pass;
     Math.seedrandom();
     pass = "";
     i = 0;
-    if (pronounceable) {
-      withNumbers = false;
-      withPunc = false;
-    }
     while (i < length) {
       num = Math.random() * 1000;
       num = Math.floor(num);
@@ -14747,22 +14743,7 @@ code.google.com/p/crypto-js/wiki/License
           continue;
         }
       }
-      ch = String.fromCharCode(num);
-      if (pronounceable === true) {
-        if (pass.length >= 1) {
-          prevCh = pass.charAt(i - 1);
-          aV = isVowel(ch);
-          bV = isVowel(prevCh);
-          if (isVowel(ch) && !isVowel(prevCh)) {
-
-          } else {
-            if (!(!isVowel(ch) && isVowel(prevCh))) {
-              continue;
-            }
-          }
-        }
-      }
-      pass += ch;
+      pass += String.fromCharCode(num);
       i++;
     }
     return pass;
@@ -14908,7 +14889,7 @@ function program10(depth0,data) {
   stack1 = depth0.page;
   stack1 = helpers.each.call(depth0, stack1, {hash:{},inverse:self.noop,fn:self.program(3, program3, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div id=\"div-details\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3></h3>\n		</div>\n		<div class=\"modal-body\"></div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-generate\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_generate] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<form>\n				<label><%= @text[:generate_length] %></label>\n				<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-pronounceable\" /> <%= @text[:generate_pronounceable] %>\n				</label>\n				<label><%= @text[:generated] %></label>\n				<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n			</form>\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-token\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_token] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<input type=\"text\" id=\"input-json\" />\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-token\" href=\"#\" class=\"btn btn-success\" target=\"_blank\"><%= @text[:get_token] %></a>\n			<a id=\"button-token-login\" href=\"#\" class=\"btn btn-primary\"><%= @text[:log_in] %></a>\n		</div>\n	</div>\n</div>\n";
+  buffer += "\n				</div>\n			</div>\n		</div>\n	</div>\n\n	<div id=\"div-details\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3></h3>\n		</div>\n		<div class=\"modal-body\"></div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-generate\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_generate] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<form>\n				<label><%= @text[:generate_length] %></label>\n				<input type=\"text\" id=\"input-password-length\" value=\"<%= @config[:ui][:default_password_length] %>\" size=\"4\" />\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-num\" checked /> <%= @text[:generate_numbers] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-punc\" checked /> <%= @text[:generate_punctuation] %>\n				</label>\n				<label class=\"checkbox\">\n					<input type=\"checkbox\" id=\"input-include-uc\" checked /> <%= @text[:generate_upper_case] %>\n				</label>\n				<label><%= @text[:generated] %></label>\n				<input type=\"text\" id=\"intput-generated-password\" size=\"30\" />\n			</form>\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-generate\" href=\"#\" class=\"btn btn-primary\"><%= @text[:button_generate] %></a>\n		</div>\n	</div>\n\n	<div id=\"div-token\" class=\"modal hide fade\">\n		<div class=\"modal-header\">\n			<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n			<h3><%= @text[:title_token] %></h3>\n		</div>\n		<div class=\"modal-body\">\n			<input type=\"text\" id=\"input-json\" />\n		</div>\n		<div class=\"modal-footer\">\n			<a href=\"#\" class=\"btn\" data-dismiss=\"modal\" aria-hidden=\"true\"><%= @text[:button_close] %></a>\n			<a id=\"button-token\" href=\"#\" class=\"btn btn-success\" target=\"_blank\"><%= @text[:get_token] %></a>\n			<a id=\"button-token-login\" href=\"#\" class=\"btn btn-primary\"><%= @text[:log_in] %></a>\n		</div>\n	</div>\n</div>\n";
   return buffer;});
 })();
 (function() {
@@ -15177,7 +15158,7 @@ function program10(depth0,data) {
     };
 
     BootstrapAppDelegate.dialogGenerateSubmit = function() {
-      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
+      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked")));
     };
 
     return BootstrapAppDelegate;
@@ -15249,18 +15230,9 @@ function program10(depth0,data) {
     $("#button-generate").click(function() {
       return Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit();
     });
-    $("#div-generate").keydown(function(event) {
+    return $("#div-generate").keydown(function(event) {
       if (event.keyCode === $.ui.keyCode.ENTER) {
         return Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit();
-      }
-    });
-    return $("#input-pronounceable").click(function() {
-      if ($("#input-pronounceable").is(":checked")) {
-        $("#input-include-num").attr("disabled", true);
-        return $("#input-include-punc").attr("disabled", true);
-      } else {
-        $("#input-include-num").removeAttr("disabled");
-        return $("#input-include-punc").removeAttr("disabled");
       }
     });
   };

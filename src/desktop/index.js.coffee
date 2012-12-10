@@ -76,15 +76,6 @@ dialogGenerateInit = ->
   $("#div-generate").keydown (event) ->
     Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()  if event.keyCode is $.ui.keyCode.ENTER
 
-  $("#input-pronounceable").click ->
-    if $("#input-pronounceable").is(":checked")
-      $("#input-include-num").attr "disabled", true
-      $("#input-include-punc").attr "disabled", true
-    else
-      $("#input-include-num").removeAttr "disabled"
-      $("#input-include-punc").removeAttr "disabled"
-
-
 # Handle submit event of token login dialog.
 dialogTokenLoginSubmit = (url, name, keys, values, tokens) ->
   tokenJson = $.parseJSON($("#input-json").val())

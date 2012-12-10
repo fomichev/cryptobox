@@ -96,6 +96,5 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
       $("#input-password-length").val(),
       $("#input-include-num").is(":checked"),
       $("#input-include-punc").is(":checked"),
-      $("#input-include-uc").is(":checked"),
-      $("#input-pronounceable").is(":checked")))
+      $("#input-include-uc").is(":checked")))
 

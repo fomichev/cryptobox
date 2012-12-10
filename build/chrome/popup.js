@@ -14687,13 +14687,13 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var password;
+  var isVowel, password;
 
   password = {};
 
   window.Cryptobox.password = password;
 
-  password.isVowel = function(c) {
+  isVowel = function(c) {
     c = c.toLowerCase();
     if (c === "a") {
       return true;
@@ -14710,15 +14710,11 @@ code.google.com/p/crypto-js/wiki/License
     }
   };
 
-  password.generate = function(length, withNumbers, withPunc, withUc, pronounceable) {
-    var aV, bV, ch, i, num, pass, prevCh;
+  password.generate = function(length, withNumbers, withPunc, withUc) {
+    var i, num, pass;
     Math.seedrandom();
     pass = "";
     i = 0;
-    if (pronounceable) {
-      withNumbers = false;
-      withPunc = false;
-    }
     while (i < length) {
       num = Math.random() * 1000;
       num = Math.floor(num);
@@ -14747,22 +14743,7 @@ code.google.com/p/crypto-js/wiki/License
           continue;
         }
       }
-      ch = String.fromCharCode(num);
-      if (pronounceable === true) {
-        if (pass.length >= 1) {
-          prevCh = pass.charAt(i - 1);
-          aV = isVowel(ch);
-          bV = isVowel(prevCh);
-          if (isVowel(ch) && !isVowel(prevCh)) {
-
-          } else {
-            if (!(!isVowel(ch) && isVowel(prevCh))) {
-              continue;
-            }
-          }
-        }
-      }
-      pass += ch;
+      pass += String.fromCharCode(num);
       i++;
     }
     return pass;
@@ -15143,7 +15124,7 @@ function program5(depth0,data) {
     };
 
     BootstrapAppDelegate.dialogGenerateSubmit = function() {
-      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked"), $("#input-pronounceable").is(":checked")));
+      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked")));
     };
 
     return BootstrapAppDelegate;

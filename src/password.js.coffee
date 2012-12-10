@@ -3,7 +3,7 @@ password = {}
 window.Cryptobox.password = password
 
 # Return `true` if given character is vowel. Return `false` otherwise.
-password.isVowel = (c) ->
+isVowel = (c) ->
   c = c.toLowerCase()
   if c is "a"
     true
@@ -20,18 +20,12 @@ password.isVowel = (c) ->
 
 # Generate new password with given `length`. Other parameters specify password
 # properties, as to whether include numbers (`withNumbers`), punctuation
-# (`withPunc`), uppercase letters (`withUc`) or make password `pronounceable`.
-password.generate = (length, withNumbers, withPunc, withUc, pronounceable) ->
+# (`withPunc`) or uppercase letters (`withUc`).
+password.generate = (length, withNumbers, withPunc, withUc) ->
   Math.seedrandom()
 
   pass = ""
   i = 0
-
-  # Don't include numbers or punctuation when user requests pronounceable
-  # password.
-  if pronounceable
-    withNumbers = false
-    withPunc = false
 
   while i < length
     num = Math.random() * 1000
@@ -52,16 +46,7 @@ password.generate = (length, withNumbers, withPunc, withUc, pronounceable) ->
     if withUc is false
       continue if num >= 65 and num <= 90
 
-    ch = String.fromCharCode(num)
-    if pronounceable is true
-      if pass.length >= 1
-        prevCh = pass.charAt(i - 1)
-        aV = isVowel(ch)
-        bV = isVowel(prevCh)
-        if isVowel(ch) and not isVowel(prevCh)
-
-        else continue unless not isVowel(ch) and isVowel(prevCh)
-    pass += ch
+    pass += String.fromCharCode(num)
     i++
 
   pass
