@@ -563,6 +563,7 @@ TODO: describe here what libs used and where
 * Implement mobile Firefox plugin (only with dropbox integration)
 
 === Version with Dropbox support
+* Prepack dropbox.js instead of relying on cdn
 * Fix, test and cleanup Dropbox support
 * Try to open Dropbox authorization popup and also provide a link
 * Add documentation

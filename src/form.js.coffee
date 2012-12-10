@@ -1,9 +1,8 @@
 # Declare and export module namespace.
-form = {}
-this.Cryptobox.form = form
+Cryptobox.Form = {}
 
 # Return `true` when given `form` requires token for login.
-form.withToken = (form) ->
+Cryptobox.Form.withToken = (form) ->
   return true if form.action == '__token__'
 
   for key, value of form.fields
@@ -13,7 +12,7 @@ form.withToken = (form) ->
 
 # Login to the site using given `form` and `token`. `newWindow` flag
 # tells whether to create a new window (`true`) or not (`false`).
-form.login = (newWindow, form, token) ->
+Cryptobox.Form.login = (newWindow, form, token) ->
   return if form.broken
 
   # Merge form with token.
@@ -45,7 +44,7 @@ form.login = (newWindow, form, token) ->
   w
 
 # Fill input fields of current page using given `form`.
-form.fill = (form) ->
+Cryptobox.Form.fill = (form) ->
   for node in document.querySelectorAll("input[type=text], input[type=password]")
     value = null
 
@@ -55,11 +54,11 @@ form.fill = (form) ->
     node.value = value if value
 
 # Return just name from given `url` (strip prefix and suffix).
-form.sitename = (url) ->
+Cryptobox.Form.sitename = (url) ->
   url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '')
 
 # Find all forms on current page; convert and return them in JSON format.
-form.toJson = () ->
+Cryptobox.Form.toJson = () ->
   address = document.URL
   name = document.title
   text = ""

@@ -55,7 +55,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
       else
         $('#div-alert').addClass('alert-info')
 
-      $("#div-alert").html(text)
+      $("#div-alert").html(message)
       $("#div-alert").fadeIn()
     else
       $('#div-alert').removeClass('alert-error')
@@ -92,7 +92,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
 
   # Event handler for submit button of password dialog.
   @dialogGenerateSubmit = ->
-    $("#intput-generated-password").val(Cryptobox.password.generate(
+    $("#intput-generated-password").val(Cryptobox.Password.generate(
       $("#input-password-length").val(),
       $("#input-include-num").is(":checked"),
       $("#input-include-punc").is(":checked"),

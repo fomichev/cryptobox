@@ -19772,13 +19772,10 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var form;
 
-  form = {};
+  Cryptobox.Form = {};
 
-  this.Cryptobox.form = form;
-
-  form.withToken = function(form) {
+  Cryptobox.Form.withToken = function(form) {
     var key, value, _ref;
     if (form.action === '__token__') {
       return true;
@@ -19793,7 +19790,7 @@ code.google.com/p/crypto-js/wiki/License
     return false;
   };
 
-  form.login = function(newWindow, form, token) {
+  Cryptobox.Form.login = function(newWindow, form, token) {
     var html, key, value, w, _ref, _ref1;
     if (form.broken) {
       return;
@@ -19833,7 +19830,7 @@ code.google.com/p/crypto-js/wiki/License
     return w;
   };
 
-  form.fill = function(form) {
+  Cryptobox.Form.fill = function(form) {
     var field, node, value, _i, _len, _ref, _results;
     _ref = document.querySelectorAll("input[type=text], input[type=password]");
     _results = [];
@@ -19854,12 +19851,12 @@ code.google.com/p/crypto-js/wiki/License
     return _results;
   };
 
-  form.sitename = function(url) {
+  Cryptobox.Form.sitename = function(url) {
     return url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
   };
 
-  form.toJson = function() {
-    var address, el, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
+  Cryptobox.Form.toJson = function() {
+    var address, el, form, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
     address = document.URL;
     name = document.title;
     text = "";
@@ -20554,10 +20551,10 @@ function program20(depth0,data) {
       return $(".button-login").live("click", function() {
         var el;
         el = $.parseJSON($(_this).attr("json"));
-        if (Cryptobox.form.withToken(el.form)) {
+        if (Cryptobox.Form.withToken(el.form)) {
           return _this.alert(true, "<%= @text[:no_login_with_token] %>");
         } else {
-          return Cryptobox.form.login(true, el.form);
+          return Cryptobox.Form.login(true, el.form);
         }
       });
     };

@@ -38,11 +38,11 @@ copyToClipboard = (text) ->
 
 # Handle row header click event.
 headerClick = (el) ->
-  if Cryptobox.form.withToken(el.form)
+  if Cryptobox.Form.withToken(el.form)
     $("#button-token").attr "href", el.form.action
     $("#div-token").modal()
   else
-    Cryptobox.form.login true, el.form
+    Cryptobox.Form.login(true, el.form)
 
 # Handle row details click event.
 detailsClick = (el) ->

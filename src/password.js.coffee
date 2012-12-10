@@ -1,6 +1,5 @@
 # Declare and export module namespace.
-password = {}
-this.Cryptobox.password = password
+Cryptobox.Password = {}
 
 # Return `true` if given character is vowel. Return `false` otherwise.
 isVowel = (c) ->
@@ -21,7 +20,7 @@ isVowel = (c) ->
 # Generate new password with given `length`. Other parameters specify password
 # properties, as to whether include numbers (`withNumbers`), punctuation
 # (`withPunc`) or uppercase letters (`withUc`).
-password.generate = (length, withNumbers, withPunc, withUc) ->
+Cryptobox.Password.generate = (length, withNumbers, withPunc, withUc) ->
   Math.seedrandom()
 
   pass = ""

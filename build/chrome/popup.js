@@ -14384,13 +14384,10 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var form;
 
-  form = {};
+  Cryptobox.Form = {};
 
-  this.Cryptobox.form = form;
-
-  form.withToken = function(form) {
+  Cryptobox.Form.withToken = function(form) {
     var key, value, _ref;
     if (form.action === '__token__') {
       return true;
@@ -14405,7 +14402,7 @@ code.google.com/p/crypto-js/wiki/License
     return false;
   };
 
-  form.login = function(newWindow, form, token) {
+  Cryptobox.Form.login = function(newWindow, form, token) {
     var html, key, value, w, _ref, _ref1;
     if (form.broken) {
       return;
@@ -14445,7 +14442,7 @@ code.google.com/p/crypto-js/wiki/License
     return w;
   };
 
-  form.fill = function(form) {
+  Cryptobox.Form.fill = function(form) {
     var field, node, value, _i, _len, _ref, _results;
     _ref = document.querySelectorAll("input[type=text], input[type=password]");
     _results = [];
@@ -14466,12 +14463,12 @@ code.google.com/p/crypto-js/wiki/License
     return _results;
   };
 
-  form.sitename = function(url) {
+  Cryptobox.Form.sitename = function(url) {
     return url.replace(/[^/]+\/\/([^/]+).+/, '$1').replace(/^www./, '');
   };
 
-  form.toJson = function() {
-    var address, el, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
+  Cryptobox.Form.toJson = function() {
+    var address, el, form, form_elements, form_text, method, name, text, _i, _j, _len, _len1, _ref, _ref1;
     address = document.URL;
     name = document.title;
     text = "";
@@ -14679,11 +14676,9 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var isVowel, password;
+  var isVowel;
 
-  password = {};
-
-  this.Cryptobox.password = password;
+  Cryptobox.Password = {};
 
   isVowel = function(c) {
     c = c.toLowerCase();
@@ -14702,7 +14697,7 @@ code.google.com/p/crypto-js/wiki/License
     }
   };
 
-  password.generate = function(length, withNumbers, withPunc, withUc) {
+  Cryptobox.Password.generate = function(length, withNumbers, withPunc, withUc) {
     var i, num, pass;
     Math.seedrandom();
     pass = "";
@@ -15081,7 +15076,7 @@ function program5(depth0,data) {
         } else {
           $('#div-alert').addClass('alert-info');
         }
-        $("#div-alert").html(text);
+        $("#div-alert").html(message);
         return $("#div-alert").fadeIn();
       } else {
         $('#div-alert').removeClass('alert-error');
@@ -15111,7 +15106,7 @@ function program5(depth0,data) {
     };
 
     BootstrapAppDelegate.dialogGenerateSubmit = function() {
-      return $("#intput-generated-password").val(Cryptobox.password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked")));
+      return $("#intput-generated-password").val(Cryptobox.Password.generate($("#input-password-length").val(), $("#input-include-num").is(":checked"), $("#input-include-punc").is(":checked"), $("#input-include-uc").is(":checked")));
     };
 
     return BootstrapAppDelegate;
@@ -15277,7 +15272,7 @@ function program5(depth0,data) {
         i = 0;
         while (i < json.length) {
           if (json[i].type === "webform") {
-            if (Cryptobox.form.sitename(json[i].address) === Cryptobox.form.sitename(t.url)) {
+            if (Cryptobox.Form.sitename(json[i].address) === Cryptobox.Form.sitename(t.url)) {
               matched.push(json[i]);
             } else {
               if (json[i].visible === true) {

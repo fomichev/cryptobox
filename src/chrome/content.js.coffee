@@ -3,10 +3,10 @@
 
 chrome.extension.onMessage.addListener (msg, sender, sendResponse) ->
   if msg.type is "fillForm"
-    Cryptobox.form.fill(msg.data.form)
+    Cryptobox.Form.fill(msg.data.form)
     sendResponse({})
   else if msg.type is "getFormJson"
-    sendResponse(Cryptobox.form.toJson())
+    sendResponse(Cryptobox.Form.toJson())
   else
     # Unknown message, handle it?
     sendResponse({})

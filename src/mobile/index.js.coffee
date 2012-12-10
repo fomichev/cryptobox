@@ -78,10 +78,10 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
 
     $(".button-login").live "click", =>
       el = $.parseJSON($(this).attr("json"))
-      if Cryptobox.form.withToken(el.form)
+      if Cryptobox.Form.withToken(el.form)
         @alert true, "<%= @text[:no_login_with_token] %>"
       else
-        Cryptobox.form.login true, el.form
+        Cryptobox.Form.login(true, el.form)
 
 $ ->
   delegate = new MobileAppDelegate()

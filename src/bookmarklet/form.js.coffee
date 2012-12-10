@@ -9,7 +9,7 @@ ta.style.border = "0 none"
 ta.style.background = "#000"
 ta.style.color = "#fff"
 ta.style.resize = "none"
-ta.appendChild document.createTextNode(Cryptobox.form.toJson())
+ta.appendChild document.createTextNode(Cryptobox.Form.toJson())
 
 popover = new Cryptobox.Popover("50%", "50%")
 popover.add(ta)

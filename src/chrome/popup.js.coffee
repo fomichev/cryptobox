@@ -155,7 +155,7 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
 
       while i < json.length
         if json[i].type is "webform"
-          if Cryptobox.form.sitename(json[i].address) is Cryptobox.form.sitename(t.url)
+          if Cryptobox.Form.sitename(json[i].address) is Cryptobox.Form.sitename(t.url)
             matched.push(json[i])
           else
             unmatched.push(json[i]) if json[i].visible is true
