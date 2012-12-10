@@ -89,7 +89,6 @@ task :sprockets do
     desktop/index.css
     mobile/index.js.coffee
     mobile/index.css
-    bookmarklet/fill.js.coffee
     bookmarklet/form.js.coffee
     chrome/background.js.coffee
     chrome/content.js.coffee

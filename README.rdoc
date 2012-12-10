@@ -554,9 +554,6 @@ TODO: describe here what libs used and where
 * Check login with token
 * Fix 'make pronounceable password'
 
-=== Mobile HTML
-* Fix broken lock/unlock
-
 === Chrome extension
 * Align locked page with desktop version (left justify)
 * Add key binding to show popup (in overlay)

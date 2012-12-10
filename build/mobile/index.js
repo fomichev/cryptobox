@@ -20359,7 +20359,7 @@ function program20(depth0,data) {
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           this.lock.stop();
-          p('try to focus input field');
+          p('focus input field');
           $("#input-password").focus();
           return (_ref = Cryptobox.Dropbox.instance()) != null ? _ref.prepare((function(url) {
             return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");
@@ -20507,6 +20507,7 @@ function program20(depth0,data) {
 
     function MobileAppDelegate() {
       MobileAppDelegate.__super__.constructor.call(this);
+      this.initialized = false;
     }
 
     MobileAppDelegate.prototype.alert = function(error, message) {
@@ -20518,15 +20519,20 @@ function program20(depth0,data) {
       }
     };
 
-    MobileAppDelegate.prototype.shutdown = function(preserve) {
-      MobileAppDelegate.__super__.shutdown.call(this, preserve);
-      return $.mobile.changePage("#div-locked", "slideup");
-    };
-
     MobileAppDelegate.prototype.render = function(template, context) {
-      $("body").append(Cryptobox.render(template, context));
-      if (template === 'locked') {
-        return $.mobile.initializePage();
+      switch (template) {
+        case 'locked':
+          if (!this.initialized) {
+            $("body").append(Cryptobox.render(template, context));
+            $.mobile.initializePage();
+            return this.initialized = true;
+          } else {
+            return $.mobile.changePage("#div-locked", "slideup");
+          }
+          break;
+        case 'unlocked':
+          $("body").append(Cryptobox.render(template, context));
+          return $.mobile.changePage("#div-main");
       }
     };
 
@@ -20535,14 +20541,16 @@ function program20(depth0,data) {
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           $('#button-unlock').val('<%= @text[:button_unlock] %>');
-          return $("#button-unlock").button("refresh");
+          $("#button-unlock").button("refresh");
+          return setTimeout(function() {
+            return $("#input-password").select();
+          }, 100);
         case Cryptobox.App.prototype.STATE_LOADING:
           $('#button-unlock').val('<%= @text[:button_unlock_decrypt] %>');
           return $("#button-unlock").button("refresh");
         case Cryptobox.App.prototype.STATE_UNLOCKED:
           $('#button-unlock').val('<%= @text[:button_unlock] %>');
-          $("#button-unlock").button("refresh");
-          return $.mobile.changePage("#div-main");
+          return $("#button-unlock").button("refresh");
       }
     };
 

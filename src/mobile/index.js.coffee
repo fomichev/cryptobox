@@ -20,6 +20,10 @@
 #= require app.js.coffee
 
 class MobileAppDelegate extends Cryptobox.AppDelegate
+  constructor: ->
+    super()
+    @initialized = false
+
   alert: (error, message) ->
     if message?
       $("#div-alert").html(message)
@@ -27,17 +31,18 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
     else
       $("#div-alert").hide()
 
-  shutdown: (preserve) ->
-    # Ignore the `preserve` argument and don't preserve state.
-    super(preserve)
-
-    $.mobile.changePage "#div-locked", "slideup"
-
   render: (template, context) ->
-    $("body").append Cryptobox.render(template, context)
-
-    if template == 'locked'
-      $.mobile.initializePage()
+    switch template
+      when 'locked'
+        unless @initialized
+          $("body").append(Cryptobox.render(template, context))
+          $.mobile.initializePage()
+          @initialized = true
+        else
+          $.mobile.changePage("#div-locked", "slideup")
+      when 'unlocked'
+        $("body").append(Cryptobox.render(template, context))
+        $.mobile.changePage("#div-main")
 
   state: (state) ->
     super(state)
@@ -46,14 +51,20 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
       when Cryptobox.App::STATE_LOCKED
         $('#button-unlock').val('<%= @text[:button_unlock] %>')
         $("#button-unlock").button("refresh")
+
+        # Doing .focus() is not enough to select input field. Also,
+        # apparently there is some race between us and jQuery mobile, so
+        # use small timeout.
+        setTimeout ->
+          $("#input-password").select()
+        , 100
+
       when Cryptobox.App::STATE_LOADING
         $('#button-unlock').val('<%= @text[:button_unlock_decrypt] %>')
         $("#button-unlock").button("refresh")
       when Cryptobox.App::STATE_UNLOCKED
         $('#button-unlock').val('<%= @text[:button_unlock] %>')
         $("#button-unlock").button("refresh")
-
-        $.mobile.changePage("#div-main")
 
   prepare: ->
     super()

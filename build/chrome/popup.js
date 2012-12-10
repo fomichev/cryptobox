@@ -14903,7 +14903,7 @@ function program5(depth0,data) {
       switch (state) {
         case Cryptobox.App.prototype.STATE_LOCKED:
           this.lock.stop();
-          p('try to focus input field');
+          p('focus input field');
           $("#input-password").focus();
           return (_ref = Cryptobox.Dropbox.instance()) != null ? _ref.prepare((function(url) {
             return _this.alert(false, "Dropbox authentication required: <p><a href=\"" + url + "\" target=\"_blank\">" + url + "</a></p>");

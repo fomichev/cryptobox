@@ -21,9 +21,8 @@ class AppDelegate
       when Cryptobox.App::STATE_LOCKED
         @lock.stop()
 
-        p 'try to focus input field'
+        p 'focus input field'
         $("#input-password").focus()
-
 
         Cryptobox.Dropbox.instance()?.prepare ((url) =>
           @alert false, "Dropbox authentication required: <p><a href=\"#{url}\" target=\"_blank\">#{url}</a></p>"
@@ -117,7 +116,6 @@ class App
       @unlock(json)
     else
       @delegate.render('locked', this)
-
       @delegate.state(@STATE_LOCKED)
 
       $("#form-unlock").live 'submit', (event) =>
