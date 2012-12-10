@@ -17,13 +17,9 @@
 #= require dropbox.js.coffee
 #= require handlebars.js.coffee
 #= require mobile/templates.js
-
 #= require app.js.coffee
 
 class MobileAppDelegate extends Cryptobox.AppDelegate
-  constructor: ->
-    super()
-
   alert: (error, message) ->
     if message?
       $("#div-alert").html(message)

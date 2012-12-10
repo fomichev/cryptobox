@@ -1,3 +1,6 @@
+# `Output` class represents base class for all generated applications.
+#
+#
 class Output
   def initialize(config, to, embed)
     @to = to

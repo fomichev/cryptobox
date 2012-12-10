@@ -129,9 +129,6 @@ TODO: Describe how to get this bookmarklet; also describe login bookmarklet.
 	s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';
 	document.getElementsByTagName('head')[0].appendChild(s);})();
 
-=== Fill bookmarklet
-TODO: describe what and why
-
 === Chrome extension
 TODO: add details here
 
@@ -545,23 +542,20 @@ TODO: describe here what libs used and where
 * ssh-agent/gnome-keyring daemon so we may hook up to the existing browsers/tools
 
 === Bookmarklets
-* CONSIDER REMOVING THEM ALTOGETHER
-* TEST FORM/FILL BOOKMARKLETS! (may not work because of the latest changes)
-* cleanup fill/form bookmarklets
+* TEST FORM BOOKMARKLETS (may not work because of the latest changes)
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
-* fill bookmarklet: add support for 'dropbox'
 
 === Common JS
-* eliminate cryptobox.ui.init (integrate in cryptobox.open and convert
-  chrome plugin to its format)
 * keep passwords in memory encrypted (with some temporary key), decrypt as soon
   as user needs them; may prevent leaking when swapping or doing memory dump
 
 === Desktop HTML
 * Check login with token
-* Bring back button to get form JSON
 * Fix 'make pronounceable password'
+
+=== Mobile HTML
+* Fix broken lock/unlock
 
 === Chrome extension
 * Align locked page with desktop version (left justify)
@@ -569,12 +563,9 @@ TODO: describe here what libs used and where
 
 === Firefox extension
 * Implement desktop Firefox plugin
-* Implement mobile Firefox plugin
+* Implement mobile Firefox plugin (only with dropbox integration)
 
 === Version with Dropbox support
-* Will allow to add Firefox mobile extension (and other mobile application
-  without requiring user to have local copy of cryptobox.json on the device)
-* Implement for desktop/mobile and possibly chrome extension
-* Implement for fill bookmarklet
-* Try to open dropbox authorization popup and also provide a link
+* Fix, test and cleanup Dropbox support
+* Try to open Dropbox authorization popup and also provide a link
 * Add documentation

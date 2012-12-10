@@ -18,7 +18,6 @@
 #= require password.js.coffee
 #= require handlebars.js.coffee
 #= require desktop/templates.js
-
 #= require app.js.coffee
 #= require bootstrap.js.coffee
 

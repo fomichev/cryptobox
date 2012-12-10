@@ -1,7 +1,5 @@
 require "bundler/setup"
 
-require 'rdoc/task'
-
 require 'cucumber'
 require 'cucumber/rake/task'
 
@@ -12,18 +10,12 @@ require 'cucumber/rake/task'
 #Rake::GemPackageTask.new(spec) do |pkg
 #end
 
-Rake::RDocTask.new do |rd|
-  rd.main = "README.rdoc"
-  rd.rdoc_files.include("README.rdoc", "lib/**/*.rb", "bin/**/*")
-  rd.title = 'cryptobox'
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "features --format progress"
+#  t.cucumber_opts = "features/desktop.feature --format pretty"
+#  t.cucumber_opts = "features/cryptobox-cat.feature --format pretty"
+  t.fork = false
 end
-
-#Cucumber::Rake::Task.new(:features) do |t|
-#  t.cucumber_opts = "features --format progress"
-##  t.cucumber_opts = "features/desktop.feature --format pretty"
-##  t.cucumber_opts = "features/cryptobox-cat.feature --format pretty"
-#  t.fork = false
-#end
 
 task :handlebars do
   require 'execjs'
@@ -92,7 +84,17 @@ task :sprockets do
   env.append_path 'src'
   env.append_path 'build'
 
-  assets = %w{ desktop/index.js.coffee desktop/index.css mobile/index.js.coffee mobile/index.css bookmarklet/fill.js.coffee bookmarklet/form.js.coffee chrome/background.js.coffee chrome/content.js.coffee chrome/popup.js.coffee chrome/popup.css }
+  assets = %w{
+    desktop/index.js.coffee
+    desktop/index.css
+    mobile/index.js.coffee
+    mobile/index.css
+    bookmarklet/fill.js.coffee
+    bookmarklet/form.js.coffee
+    chrome/background.js.coffee
+    chrome/content.js.coffee
+    chrome/popup.js.coffee
+    chrome/popup.css }
 
   Dir.mkdir build_dir unless Dir.exist? build_dir
 
@@ -120,6 +122,18 @@ task :sprockets do
   end
 end
 
-task :documentation do
-  `rocco lib/*.rb lib/cryptobox/*.rb src/*.coffee -o doc`
+task :doc do
+  tool = 'rocco' # may use docco when node.js is available
+
+  `#{tool}
+     lib/*.rb
+     lib/cryptobox/*.rb
+     lib/cryptobox/command/*.rb
+     lib/cryptobox/output/*.rb
+     src/*.coffee
+     src/bookmarklet/*.coffee
+     src/chrome/*.coffee
+     src/desktop/*.coffee
+     src/mobile/*.coffee
+     -o doc`
 end

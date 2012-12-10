@@ -32,7 +32,6 @@ module Cryptobox
         DesktopHtmlOutput.new(config, config[:path][:private], true).run
         MobileHtmlOutput.new(config, config[:path][:private], true).run
 
-        FillBookmarkletOutput.new(config, config[:path][:private], true).run
         FormBookmarkletOutput.new(config, config[:path][:private], true).run
 
         ChromeOutput.new(config, config[:path][:private], true).run
@@ -43,7 +42,6 @@ module Cryptobox
         DesktopHtmlOutput.new(config, config[:path][:dropbox], false).run
         MobileHtmlOutput.new(config, config[:path][:dropbox], false).run
 
-        FillBookmarkletOutput.new(config, config[:path][:dropbox], false).run
         FormBookmarkletOutput.new(config, config[:path][:dropbox], false).run
 
         ChromeOutput.new(config, config[:path][:dropbox], false).run
