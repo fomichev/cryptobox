@@ -1,5 +1,5 @@
 # Class that is responsible for Dropbox integration.
-class Dropbox
+class Cryptobox.Dropbox
   constructor: ->
     @client = null
     @ready = false
@@ -138,6 +138,3 @@ class Dropbox
       @__instance = new Dropbox()
 
     @__instance
-
-# Export class.
-this.Cryptobox.Dropbox = Dropbox

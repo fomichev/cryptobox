@@ -1,7 +1,6 @@
 # Declare and export main namespace for cryptobox.
 Cryptobox = {}
 this.Cryptobox = Cryptobox
-this.cryptobox = {}
 
 # This variable stores encrypted cryptobox.json; it's `null` for Dropbox
 # version and `non-null` (appended somewhere later) in `embedded` version.

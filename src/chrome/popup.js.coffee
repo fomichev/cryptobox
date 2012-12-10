@@ -90,7 +90,7 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
     switch state
       when Cryptobox.App::STATE_UNLOCKED
         chrome.extension.getBackgroundPage().lock = new Cryptobox.Lock(
-          cryptobox.config.lock_timeout_minutes,
+          Cryptobox.config.lock_timeout_minutes,
           => chrome.extension.getBackgroundPage().json = null)
         chrome.extension.getBackgroundPage().lock.start()
 

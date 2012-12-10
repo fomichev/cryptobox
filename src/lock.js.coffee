@@ -1,5 +1,5 @@
 # Class that implements auto locking.
-class Lock
+class Cryptobox.Lock
   # Create a new lock with `callback` that is called when
   # lock `timeoutSec` expires.
   constructor: (@timeoutSec, @callback) ->
@@ -38,6 +38,3 @@ class Lock
 
     clearInterval(@timeoutId) if @timeoutId != 0
     @timeoutId = 0
-
-# Export class.
-this.Cryptobox.Lock = Lock

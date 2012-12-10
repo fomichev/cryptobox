@@ -97,4 +97,3 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
       $("#input-include-num").is(":checked"),
       $("#input-include-punc").is(":checked"),
       $("#input-include-uc").is(":checked")))
-

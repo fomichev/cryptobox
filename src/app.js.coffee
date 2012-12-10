@@ -1,6 +1,6 @@
 # Class that implements framework specific behavior. This basic implementation
 # includes auto-lock functionality and used as a base class for all delegates.
-class AppDelegate
+class Cryptobox.AppDelegate
   constructor: ->
 
   # Application delegate should call this method whenever it wants to shutdown
@@ -12,7 +12,7 @@ class AppDelegate
 
   # Notify delegate that it should prepare event handlers.
   prepare: ->
-    @lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes,
+    @lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes,
                                => @shutdown(true))
 
   # Notify delegate when application state is changed.
@@ -52,7 +52,7 @@ class AppDelegate
       for page_key of pages
         p =
           id: page_key
-          name: cryptobox.config.i18n.page[page_key]
+          name: Cryptobox.config.i18n.page[page_key]
           tag: []
 
         for tag_key of pages[page_key]
@@ -84,7 +84,7 @@ class AppDelegate
   alert: (error, message) ->
 
 # Class that implements main application instance.
-class App
+class Cryptobox.App
   # Application has been locked.
   STATE_LOCKED: 1
   # Application has been unlocked and will start decrypting data.
@@ -132,7 +132,3 @@ class App
             @delegate.state(@STATE_LOCKED)
           else
             @unlock(json)
-
-# Export class.
-this.Cryptobox.App = App
-this.Cryptobox.AppDelegate = AppDelegate

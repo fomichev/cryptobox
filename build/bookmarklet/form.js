@@ -5,8 +5,6 @@
 
   this.Cryptobox = Cryptobox;
 
-  this.cryptobox = {};
-
   Cryptobox.json = null;
 
   this.p = function(s) {
@@ -206,9 +204,8 @@
 
 }).call(this);
 (function() {
-  var Popover;
 
-  Popover = (function() {
+  Cryptobox.Popover = (function() {
 
     function Popover(width, height) {
       var bg, paddingDiv;
@@ -255,8 +252,6 @@
     return Popover;
 
   })();
-
-  this.Cryptobox.Popover = Popover;
 
 }).call(this);
 (function() {

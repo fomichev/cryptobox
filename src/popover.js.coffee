@@ -1,5 +1,5 @@
 # Class that implements simple popover.
-class Popover
+class Cryptobox.Popover
   # Create new popover with specified `width` and `height`.
   constructor: (width, height) ->
     @popover = document.createElement("div")
@@ -42,6 +42,3 @@ class Popover
   # Attach popover element to `body`.
   show: ->
     document.body.appendChild(@popover)
-
-# Export class.
-this.Cryptobox.Popover = Popover

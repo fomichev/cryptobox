@@ -13,7 +13,7 @@ class ChromeOutput < Output
     Dir.mkdir(target_prefix) unless Dir.exist?(target_prefix)
 
     to = File.join(target_prefix, 'cryptobox-config.js')
-    File.open(to, 'w') { |f| f.write("cryptobox.config = #{@config.to_json};") }
+    File.open(to, 'w') { |f| f.write("Cryptobox.config = #{@config.to_json};") }
 
     from = File.join(@config[:path][:private], 'cryptobox.json')
     to = File.join(target_prefix, 'cryptobox-data.js')

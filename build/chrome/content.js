@@ -5,8 +5,6 @@
 
   this.Cryptobox = Cryptobox;
 
-  this.cryptobox = {};
-
   Cryptobox.json = null;
 
   this.p = function(s) {

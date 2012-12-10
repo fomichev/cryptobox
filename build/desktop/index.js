@@ -14262,8 +14262,6 @@ code.google.com/p/crypto-js/wiki/License
 
   this.Cryptobox = Cryptobox;
 
-  this.cryptobox = {};
-
   Cryptobox.json = null;
 
   this.p = function(s) {
@@ -14336,9 +14334,8 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var Lock;
 
-  Lock = (function() {
+  Cryptobox.Lock = (function() {
 
     function Lock(timeoutSec, callback) {
       this.timeoutSec = timeoutSec;
@@ -14384,8 +14381,6 @@ code.google.com/p/crypto-js/wiki/License
     return Lock;
 
   })();
-
-  this.Cryptobox.Lock = Lock;
 
 }).call(this);
 (function() {
@@ -14516,9 +14511,8 @@ code.google.com/p/crypto-js/wiki/License
 
 }).call(this);
 (function() {
-  var Dropbox;
 
-  Dropbox = (function() {
+  Cryptobox.Dropbox = (function() {
 
     function Dropbox() {
       this.client = null;
@@ -14682,8 +14676,6 @@ code.google.com/p/crypto-js/wiki/License
     return Dropbox;
 
   })();
-
-  this.Cryptobox.Dropbox = Dropbox;
 
 }).call(this);
 (function() {
@@ -14893,9 +14885,8 @@ function program10(depth0,data) {
   return buffer;});
 })();
 (function() {
-  var App, AppDelegate;
 
-  AppDelegate = (function() {
+  Cryptobox.AppDelegate = (function() {
 
     function AppDelegate() {}
 
@@ -14907,7 +14898,7 @@ function program10(depth0,data) {
 
     AppDelegate.prototype.prepare = function() {
       var _this = this;
-      return this.lock = new Cryptobox.Lock(cryptobox.config.lock_timeout_minutes, function() {
+      return this.lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes, function() {
         return _this.shutdown(true);
       });
     };
@@ -14958,7 +14949,7 @@ function program10(depth0,data) {
         for (page_key in pages) {
           p = {
             id: page_key,
-            name: cryptobox.config.i18n.page[page_key],
+            name: Cryptobox.config.i18n.page[page_key],
             tag: []
           };
           for (tag_key in pages[page_key]) {
@@ -14993,7 +14984,7 @@ function program10(depth0,data) {
 
   })();
 
-  App = (function() {
+  Cryptobox.App = (function() {
 
     App.prototype.STATE_LOCKED = 1;
 
@@ -15049,10 +15040,6 @@ function program10(depth0,data) {
     return App;
 
   })();
-
-  this.Cryptobox.App = App;
-
-  this.Cryptobox.AppDelegate = AppDelegate;
 
 }).call(this);
 (function() {
