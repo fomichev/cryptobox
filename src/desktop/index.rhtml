@@ -27,7 +27,10 @@
 		<div id="content"></div>
 
 		<div id="div-copyright">
-			<p><a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>, <%= @text[:created_at] %> <%= @config[:cryptobox][:date] %></p>
+			<p>
+			<a href="https://github.com/fomichev/cryptobox"><%= @text[:title] %> <%= Cryptobox::VERSION %></a>,
+			<%= @text[:created_at] %> <%= @config[:cryptobox][:date] %>
+			</p>
 		</div>
 	</body>
 </html>

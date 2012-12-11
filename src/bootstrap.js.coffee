@@ -71,10 +71,11 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
   # is hidden or shown is passed via `value` and HTML snippet that contains
   # copy\paste source is passed via `copy`.
   @collapsible = (value, copy) ->
-    id = @__collapsibleId++;
+    id = @__collapsibleId++
 
     """
-    <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#collapsible-#{id}">
+    <button type="button" class="btn btn-mini"
+            data-toggle="collapse" data-target="#collapsible-#{id}">
       <%= @text[:button_hide_reveal] %>
     </button>
     &nbsp;#{copy}
@@ -83,7 +84,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
 
   # Create bootstrap details from `map` and attach it to `entry` DOM element.
   @createDetails = (entry, map) ->
-    items = $();
+    items = $()
     $.each map, (k, v) ->
       items = items.add($('<dt>').html(k))
       items = items.add($('<dd>').html(v))

@@ -13,8 +13,7 @@ require 'cucumber/rake/task'
 task :default => [:test]
 
 Cucumber::Rake::Task.new(:test) do |t|
-  t.cucumber_opts = "features --format pretty"
-#  t.cucumber_opts = "features --format progress"
+  t.cucumber_opts = "features --format progress"
   t.fork = false
 end
 
@@ -157,4 +156,9 @@ task :sample do
   Dir.chdir('sample') do
     `cat cryptobox.yaml | ../bin/cryptobox edit --stdin`
   end
+end
+
+desc "Lint sources"
+task :lint do
+  puts `coffeelint src/*.js.coffee src/desktop/*.js.coffee src/mobile/*.js.coffee src/chrome/*.js.coffee`
 end

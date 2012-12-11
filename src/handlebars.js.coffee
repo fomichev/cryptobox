@@ -5,7 +5,7 @@
 # Register `each_key_value` handlebars helper which iterates over all `object`
 # keys.
 @Handlebars.registerHelper "each_key_value", (object, options) ->
-  buffer = "";
+  buffer = ""
 
   for key, value of object
     if object.hasOwnProperty(key)

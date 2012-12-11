@@ -23,18 +23,23 @@
 
 # Create HTML snippet which uses clippy to copy `text` into clipboard.
 copyToClipboard = (text) ->
-  t = ""
-  pathToClippy = "clippy.swf"
-  t += "<object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" width=\"110\" height=\"14\">"
-  t += "<param name=\"movie\" value=\"" + pathToClippy + "\"/>"
-  t += "<param name=\"allowScriptAccess\" value=\"always\" />"
-  t += "<param name=\"quality\" value=\"high\" />"
-  t += "<param name=\"scale\" value=\"noscale\" />"
-  t += "<param name=\"FlashVars\" value=\"text=#" + text + "\">"
-  t += "<param name=\"bgcolor\" value=\"#fff\">"
-  t += "<embed src=\"" + pathToClippy + "\" width=\"110\" height=\"14\" name=\"clippy\" quality=\"high\" allowScriptAccess=\"always\" type=\"application/x-shockwave-flash\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" FlashVars=\"text=" + text + "\" bgcolor=\"#fff\" />"
-  t += "</object>"
-  t
+  path = "clippy.swf"
+  """
+  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="110"
+          height="14">
+  <param name="movie" value="#{path}/>
+  <param name="allowScriptAccess" value="always" />
+  <param name="quality" value="high" />
+  <param name="scale" value="noscale" />
+  <param name="FlashVars" value="text=##{text}">
+  <param name="bgcolor" value="#fff">
+  <embed src="#{path}" width="110" height="14" name="clippy"
+         quality="high" allowScriptAccess="always"
+         type="application/x-shockwave-flash"
+         pluginspage="http://www.macromedia.com/go/getflashplayer"
+         FlashVars="text=#{text}" bgcolor="#fff" />
+  </object>
+  """
 
 # Handle row header click event.
 headerClick = (el) ->
@@ -53,8 +58,12 @@ detailsClick = (el) ->
         target: "_blank"
         href: el.address
       ).text(el.address)
-      "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copyToClipboard(el.form.vars.user))
-      "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copyToClipboard(el.form.vars.pass))
+      "<%= @text[:username] %>:":
+        Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user,
+        copyToClipboard(el.form.vars.user))
+      "<%= @text[:password] %>:":
+        Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass,
+        copyToClipboard(el.form.vars.pass))
 
     values["<%= @text[:secret] %>"] = Cryptobox.addBr(forms.vars.secret)  if el.form.vars.secret
     values["<%= @text[:note] %>"] = Cryptobox.addBr(forms.vars.note)  if el.form.vars.note
@@ -74,7 +83,7 @@ dialogGenerateInit = ->
     Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()
 
   $("#div-generate").keydown (event) ->
-    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()  if event.keyCode is 13
+    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit() if event.keyCode is 13
 
 # Handle submit event of token login dialog.
 dialogTokenLoginSubmit = (url, name, keys, values, tokens) ->
@@ -90,7 +99,7 @@ dialogTokenLoginInit = ->
     dialogTokenLoginSubmit url, name, keys, values, tokens
 
   $("#div-token").keydown (event) ->
-    dialogTokenLoginSubmit url, name, keys, values, tokens  if event.keyCode is 13
+    dialogTokenLoginSubmit url, name, keys, values, tokens if event.keyCode is 13
 
 class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
   state: (state) ->

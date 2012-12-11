@@ -121,7 +121,8 @@ class Cryptobox.App
       $("#form-unlock").live 'submit', (event) =>
         event.preventDefault()
 
-        Cryptobox.Dropbox.instance()?.authenticate($("#input-remember").is(':checked'))
+        remember = $("#input-remember").is(':checked')
+        Cryptobox.Dropbox.instance()?.authenticate(remember)
 
         @delegate.alert(false, null)
         @delegate.state(@STATE_LOADING)

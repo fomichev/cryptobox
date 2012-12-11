@@ -55,12 +55,19 @@ show = (div) ->
 # Handle row details click event.
 detailsClick = (el) ->
   copy = (value) ->
-    "<a class=\"btn btn-mini btn-success button-copy\" href=\"#\" value=\"" + value + "\"><%= @text[:button_copy] %></a>"
+    """
+    <a class="btn btn-mini btn-success button-copy"
+       href="#" value="#{value}"><%= @text[:button_copy] %></a>
+    """
 
   $("#div-details-body").html ""
   values =
-    "<%= @text[:username] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user, copy(el.form.vars.user))
-    "<%= @text[:password] %>:": Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass, copy(el.form.vars.pass))
+    "<%= @text[:username] %>:":
+      Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.user,
+      copy(el.form.vars.user))
+    "<%= @text[:password] %>:":
+      Cryptobox.BootstrapAppDelegate.collapsible(el.form.vars.pass,
+      copy(el.form.vars.pass))
 
   Cryptobox.BootstrapAppDelegate.createDetails($("#div-details-body"), values)
   show("#div-details")
@@ -138,7 +145,7 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
       sendToContentScript
         type: "getFormJson"
       , (text) ->
-        $("#div-details-body").html "<textarea class=\"span6\" rows=\"20\">" + text + "</textarea>"
+        $("#div-details-body").html "<textarea class=\"span6\" rows=\"20\">#{text}</textarea>"
         show("#div-details")
 
 

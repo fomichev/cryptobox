@@ -31,13 +31,22 @@ Cryptobox.Form.login = (newWindow, form, token) ->
     document.close()
     document.open()
 
-  html = "<html><head></head><body><%= @text[:wait_for_login] %><form id='formid' method='#{form.method}' action='#{form.action}'>"
+  html = """
+         <html>
+           <head>
+           </head>
+           <body>
+           <%= @text[:wait_for_login] %>
+           <form id='formid' method='#{form.method}' action='#{form.action}'>
+         """
 
   for key, value of form.fields
     html += "<input type='hidden' name='#{key}' value='#{form.fields[key]}' />"
 
-  html += "</form><script type='text/javascript'>document.getElementById('formid').submit()</s"
-  # &lt;/script&gt; screws everything up after embedding, so split it into multiple lines.
+  html += "</form><script type='text/javascript'>"
+  html += "document.getElementById('formid').submit()</s"
+  # &lt;/script&gt; screws everything up after embedding,
+  # so split it into multiple lines.
   html += "cript></body></html>"
 
   w.document.write(html)
@@ -82,7 +91,7 @@ Cryptobox.Form.toJson = () ->
     if text == ""
       text += '[\n'
     else
-      text += ',\n';
+      text += ',\n'
 
     text += "{\n\t\"name\": \"#{name}\",\n\t\"address\": \"#{address}\",\n\t\"form\":\n\t{\n#{form_text}\n\t}\n}\n"
 
