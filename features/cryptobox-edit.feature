@@ -33,7 +33,7 @@ Feature: User edits database
 			"""
 
 	Scenario: Edit creates mobile and desktop HTML files
-		Given default database
+		Given empty database
 		When I run cryptobox "edit --no-edit"
 		And I enter correct password
 		Then the exit status should be 0
