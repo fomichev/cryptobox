@@ -24,14 +24,14 @@ filterInit = ->
 
 class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
   prepare: ->
-    super()
+    super
 
     $("#button-lock").live "click", (event) =>
       event.preventDefault()
       @shutdown()
 
   state: (state) ->
-    super(state)
+    super
 
     switch state
       when Cryptobox.App::STATE_LOCKED

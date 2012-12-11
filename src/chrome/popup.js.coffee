@@ -68,10 +68,10 @@ detailsClick = (el) ->
 # Class that extends application delegate for Chrome extension.
 class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
   constructor: ->
-    super()
+    super
 
   shutdown: ->
-    super()
+    super
 
     chrome.extension.getBackgroundPage().lock.stop()
     chrome.extension.getBackgroundPage().json = null unless preserve?
@@ -85,7 +85,7 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
     null
 
   state: (state) ->
-    super(state)
+    super
 
     switch state
       when Cryptobox.App::STATE_UNLOCKED
@@ -98,7 +98,7 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
         show("#div-unlocked")
 
   prepare: ->
-    super()
+    super
 
     $(".button-copy").live "click", ->
       copyToClipboard $(this).attr("value")

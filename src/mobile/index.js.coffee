@@ -21,7 +21,7 @@
 
 class MobileAppDelegate extends Cryptobox.AppDelegate
   constructor: ->
-    super()
+    super
     @initialized = false
 
   alert: (error, message) ->
@@ -45,7 +45,7 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
         $.mobile.changePage("#div-main")
 
   state: (state) ->
-    super(state)
+    super
 
     switch state
       when Cryptobox.App::STATE_LOCKED
@@ -67,7 +67,7 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
         $("#button-unlock").button("refresh")
 
   prepare: ->
-    super()
+    super
 
     $("#div-locked").live "pageshow", (event, data) ->
       $(".generated").remove()

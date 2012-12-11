@@ -144,3 +144,16 @@ task :doc do
      src/mobile/*.coffee
      -o doc`
 end
+
+desc "Run both handlebars and sprockets tasks"
+task :build do
+  Rake::Task['handlebars'].execute
+  Rake::Task['sprockets'].execute
+end
+
+desc "Update sample database"
+task :sample do
+  Dir.chdir('sample') do
+    `cat cryptobox.yml | ../bin/cryptobox edit --stdin`
+  end
+end

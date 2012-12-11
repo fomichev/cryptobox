@@ -94,7 +94,7 @@ dialogTokenLoginInit = ->
 
 class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
   state: (state) ->
-    super(state)
+    super
 
     switch state
       when Cryptobox.App::STATE_UNLOCKED
@@ -110,7 +110,7 @@ class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
         dialogGenerateInit()
 
   prepare: ->
-    super()
+    super
 
     $('.button-login').live 'click', ->
       el = $.parseJSON($(this).parent().parent().attr('json'))
@@ -121,11 +121,11 @@ class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
       detailsClick(el)
 
   shutdown: ->
-    super()
+    $("#div-token").modal("hide")
+    $("#div-details").modal("hide")
+    $("#div-generate").modal("hide")
 
-    $("#div-token").modal "hide"
-    $("#div-details").modal "hide"
-    $("#div-generate").modal "hide"
+    super
 
 $ ->
   delegate = new DesktopAppDelegate()
