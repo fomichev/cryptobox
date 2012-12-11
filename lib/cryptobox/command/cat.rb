@@ -29,15 +29,8 @@ module Cryptobox
       if key
         k = key.to_sym
 
-        if entries.size != 1
-          $stderr.puts 'error: Too many entries'
-          exit 1
-        end
-
-        if not entries[0].has_key? k # TODO: add error printout
-          $stderr.puts 'error: Key is not found'
-          exit 2
-        end
+        raise Error::TOO_MANY_ENTRIES if entries.size != 1
+        raise Error::KEY_NOT_FOUND if not entries[0].has_key? k
 
         print entries[0][k]
       else

@@ -31,7 +31,7 @@ module Cryptobox
 
     # Create empty database, ask user to confirm if it already exists
     def create(password2)
-      raise "Passwords don't match!" if @password != password2
+      raise Error::PASSWORDS_DONT_MATCH if @password != password2
 
       dirname = File.dirname @db_path
       Dir.mkdir dirname unless Dir.exist? dirname
@@ -53,7 +53,7 @@ module Cryptobox
       @aes_keylen = db['aes_keylen'].to_i
       @ciphertext = from_base64 db['ciphertext']
 
-      raise 'Unsupported format version' if db['format_version'] != FORMAT_VERSION
+      raise Error::INVALID_FORMAT if db['format_version'] != FORMAT_VERSION
 
       derive_key
 
@@ -84,7 +84,7 @@ module Cryptobox
 
     # Ask user for password and generate new encryption key
     def change_password(password, password2)
-      raise "Passwords don't match!" if password != password2
+      raise Error::PASSWORDS_DONT_MATCH if password != password2
 
       @password = password
       derive_key
@@ -97,9 +97,11 @@ module Cryptobox
       cipher.key = @key
       cipher.iv = @aes_iv
 
-      # try
-      return cipher.update(ciphertext) + cipher.final
-      # catch => Invalid password
+      begin
+        return cipher.update(ciphertext) + cipher.final
+      rescue OpenSSL::Cipher::CipherError => error
+        raise Error::INVALID_PASSWORD
+      end
     end
 
     # Encrypt given plaintext

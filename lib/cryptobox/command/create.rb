@@ -9,16 +9,11 @@ module Cryptobox
         config[:path][:backup],
         config[:cryptobox][:keep_backups],
         Cryptobox::ask_password('Password:', interactive)
-      begin
-        db.create Cryptobox::ask_password('Confirm password:', interactive)
 
-        db.plaintext = '# Lines started with # are comments'
-        db.save
-      rescue => error
-        $stdout.flush
-        $stderr.puts "error: #{error.message}"
-        exit 1
-      end
+      db.create Cryptobox::ask_password('Confirm password:', interactive)
+
+      db.plaintext = '# Lines started with # are comments'
+      db.save
     end
   end
 end

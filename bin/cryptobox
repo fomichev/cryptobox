@@ -54,17 +54,23 @@ config = Cryptobox::Config.new(global_opts[:config])
 $verbose = global_opts[:verbose]
 interactive = !global_opts[:no_interactive]
 
-case cmd
-when "cat"
-  require 'cryptobox/command/cat'
-  Cryptobox::Command.cat(config, interactive, cmd_opts[:key], ARGV)
-when "create"
-  require 'cryptobox/command/create'
-  Cryptobox::Command.create(config, interactive)
-when "edit"
-  require 'cryptobox/command/edit'
-  Cryptobox::Command.edit(config, interactive, cmd_opts[:stdout], cmd_opts[:stdin], !cmd_opts[:no_edit], !cmd_opts[:no_update], !cmd_opts[:no_pipe])
-when "passwd"
-  require 'cryptobox/command/passwd'
-  Cryptobox::Command.passwd(config, interactive)
+begin
+  case cmd
+  when "cat"
+    require 'cryptobox/command/cat'
+    Cryptobox::Command.cat(config, interactive, cmd_opts[:key], ARGV)
+  when "create"
+    require 'cryptobox/command/create'
+    Cryptobox::Command.create(config, interactive)
+  when "edit"
+    require 'cryptobox/command/edit'
+    Cryptobox::Command.edit(config, interactive, cmd_opts[:stdout], cmd_opts[:stdin], !cmd_opts[:no_edit], !cmd_opts[:no_update], !cmd_opts[:no_pipe])
+  when "passwd"
+    require 'cryptobox/command/passwd'
+    Cryptobox::Command.passwd(config, interactive)
+  end
+rescue Cryptobox::Error => error
+  $stdout.flush
+  $stderr.puts "error: #{error.message}!"
+  exit error.code
 end

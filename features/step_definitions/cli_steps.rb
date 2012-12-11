@@ -60,7 +60,7 @@ end
 Then /^the database can not be unlocked with "(.*?)"$/ do |pwd|
   Dir.chdir(TMP_DIR) do
     ret = execute('ruby ../../bin/cryptobox --no-interactive edit --no-edit --no-update', [ "#{pwd}\n" ])
-    ret.should == 1
+    ret.should == 2
   end
 end
 

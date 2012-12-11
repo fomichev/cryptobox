@@ -58,10 +58,10 @@ Feature: User can print selected entries from the database
 	Scenario: Don't print key when number of entries > 1
 		And I run cryptobox "cat -k name"
 		And I enter correct password
-		Then the exit status should be 1
+		Then the exit status should be 4
 		And the stderr should contain exactly:
 			"""
-			error: Too many entries
+			error: Too many entries!
 
 			"""
 
@@ -78,9 +78,9 @@ Feature: User can print selected entries from the database
 	Scenario: Print error when key is not found
 		And I run cryptobox "cat -k doesnt_exist type_path=webform/dropbox.com"
 		And I enter correct password
-		Then the exit status should be 2
+		Then the exit status should be 5
 		And the stderr should contain exactly:
 			"""
-			error: Key is not found
+			error: Key is not found!
 
 			"""

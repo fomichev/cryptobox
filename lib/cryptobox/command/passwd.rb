@@ -5,9 +5,12 @@ module Cryptobox
         config[:path][:backup],
         config[:cryptobox][:keep_backups],
         Cryptobox::ask_password('Password:', interactive)
+
       db.load
+
       db.change_password Cryptobox::ask_password('New password:', interactive),
         Cryptobox::ask_password('Confirm password:', interactive)
+
       db.save
     end
   end
