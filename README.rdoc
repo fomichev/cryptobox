@@ -528,13 +528,13 @@ TODO: describe here what libs used and where
 * Capybara tests
   - desktop HTML
   - mobile HTML
-  - ? chrome extension
 
 === Include
 * fix form include for appleid.apple.com
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
+* rename private to cryptobox
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)

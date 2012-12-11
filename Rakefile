@@ -10,13 +10,16 @@ require 'cucumber/rake/task'
 #Rake::GemPackageTask.new(spec) do |pkg
 #end
 
-Cucumber::Rake::Task.new(:features) do |t|
+task :default => [:test]
+
+Cucumber::Rake::Task.new(:test) do |t|
   t.cucumber_opts = "features --format progress"
 #  t.cucumber_opts = "features/desktop.feature --format pretty"
-#  t.cucumber_opts = "features/cryptobox-edit.feature --format pretty"
+#  t.cucumber_opts = "features/cryptobox-edit.feature --line 35 --format pretty"
   t.fork = false
 end
 
+desc "Preprocess Handlebars templates and generate JavaScript"
 task :handlebars do
   require 'execjs'
 
@@ -47,12 +50,12 @@ task :handlebars do
   end
 end
 
-task :sprockets do
+desc "Populate build directory with compressed and embedded JavaScript and CSS"
+task :sprockets, :compress do |t, args|
   require 'sprockets'
   require "yui/compressor"
 
-  compress = false
-#  compress = true
+  compress = args[:compress] || true
 
   def embed_images(text, dirs)
     text.gsub(/url\((?:"|')?([^#?"')]*)([^"')]*)(?:"|')?\)*/) do

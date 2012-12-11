@@ -32,5 +32,23 @@ Feature: User edits database
 
 			"""
 
+	Scenario: Edit creates mobile and desktop HTML files
+		Given default database
+		When I run cryptobox "edit --no-edit"
+		And I enter correct password
+		Then the exit status should be 0
+		And file "private/html/cryptobox.html" should be generated
+		And file "private/html/m.cryptobox.html" should be generated
+		And file "private/cryptobox.json" should be generated
+		And file "private/bookmarklet/form.js" should be generated
+
 #	Scenario: Edit invalid format version
+#		Given database with wrong format
+#		When I run cryptobox "edit --no-edit"
+#		And I enter correct password
 #		Then the exit status should be 3
+#		And the stderr should contain exactly:
+#			"""
+#			error: Invalid database format!
+#
+#			"""

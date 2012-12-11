@@ -24,3 +24,7 @@ group :documentation do
   gem 'rocco'
   gem 'bluecloth' # rocco only works with this one after patching
 end
+
+group :test do
+  gem 'rake'
+end

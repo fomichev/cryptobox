@@ -4,6 +4,7 @@ class Template
   def initialize(config, path, embed, vars = {})
     @path = path
     @config = config
+
     @text = Cryptobox::I18N_TEXT[config[:ui][:lang]]
     @vars = vars
     @embed = embed

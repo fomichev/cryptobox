@@ -1,6 +1,7 @@
-Feature: Desktop HTML
+Feature: Mobile HTML
+
 	Background:
-		Given desktop HTML
+		Given mobile HTML
 
 	Scenario: Log in with correct password
 		When I open login page

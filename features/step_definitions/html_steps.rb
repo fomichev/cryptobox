@@ -5,8 +5,33 @@ def screenshot
   page.driver.render "screenshot2.png"
 end
 
+Given /^desktop HTML$/ do
+  @desktop = true
+  @mobile = false
+
+  steps %Q{
+    And empty database
+    When I run cryptobox "edit --no-edit"
+    And I enter correct password
+    Then the exit status should be 0
+  }
+end
+
+Given /^mobile HTML$/ do
+  @desktop = false
+  @mobile = true
+
+  steps %Q{
+    And empty database
+    When I run cryptobox "edit --no-edit"
+    And I enter correct password
+    Then the exit status should be 0
+  }
+end
+
 When /^I open login page$/ do
-  visit('cryptobox.html')
+  visit('cryptobox.html') if @desktop
+  visit('m.cryptobox.html') if @mobile
 end
 
 When /^I login with correct password$/ do
@@ -19,13 +44,17 @@ When /^I login with incorrect password$/ do
   click_button 'button-unlock'
 end
 
-Then /^I should see main page$/ do
+def wait_for_load
   sleep 1
-  page.has_css?('#div-alert').should == false
+end
+
+Then /^I should see main page$/ do
+  wait_for_load
+  page.has_css?('#div-alert', :visible => true).should == false
 end
 
 Then /^I should see alert$/ do
-  sleep 1
+  wait_for_load
   page.has_css?('#div-alert').should == true
   page.should have_selector('#div-alert', visible: true)
 end

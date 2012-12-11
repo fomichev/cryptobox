@@ -40,7 +40,6 @@ module Cryptobox
 
       user_config = path ? YAML.load_file(path).symbolize_keys : {}
 
-      set_value user_config, :ui, :jquery_ui_theme, 'flick'
       set_value user_config, :ui, :default_password_length, 16
       set_value user_config, :ui, :lock_timeout_minutes, 5
 
@@ -68,14 +67,14 @@ module Cryptobox
       set_value user_config, :cryptobox, :date, DateTime.now.strftime(@config[:cryptobox][:date_format])
       set_value user_config, :cryptobox, :keep_backups, true
 
-      set_value user_config, :path, :root, Dir.pwd
+      set_value user_config, :path, :root, File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
 
       set_value user_config, :path, :build, File.expand_path(File.join(@config[:path][:root], 'build'))
-      set_value user_config, :path, :private, File.expand_path(File.join(@config[:path][:root], 'private'))
-      set_value user_config, :path, :dropbox, File.expand_path(File.join(@config[:path][:private], 'dropbox'))
       set_value user_config, :path, :include, File.expand_path(File.join(@config[:path][:root], 'include'))
       set_value user_config, :path, :src, File.expand_path(File.join(@config[:path][:root], 'src'))
 
+      set_value user_config, :path, :private, File.expand_path(File.join(Dir.pwd, 'private'))
+      set_value user_config, :path, :dropbox, File.expand_path(File.join(@config[:path][:private], 'dropbox'))
       set_value user_config, :path, :cryptobox, File.expand_path(File.join(@config[:path][:private], 'cryptobox.yaml'))
       set_value user_config, :path, :backup, File.expand_path(File.join(@config[:path][:private], 'backup'))
     end

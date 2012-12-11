@@ -8,14 +8,11 @@ Given /^no database$/ do
   Dir.exist?(DB_DIR).should be_false
 end
 
-Given /^empty database$/ do
+def create_database
   Dir.mkdir(TMP_DIR) unless Dir.exist? TMP_DIR
   Dir.chdir(TMP_DIR) do
     FileUtils.rm_rf CryptoboxWorld::DB_DIR
     File.exist?(DB_FILE).should be_false
-
-    `echo $PATH`
-    `echo $(pwd)`
 
     ret = execute('ruby ../../bin/cryptobox --no-interactive create', [ "#{CORRECT_PASS}\n", "#{CORRECT_PASS}\n" ])
     ret.should == 0
@@ -24,8 +21,18 @@ Given /^empty database$/ do
   end
 end
 
-Given /^default database$/ do
+
+Given /^empty database$/ do
+  create_database
 end
+
+#Given /^default database$/ do
+#  create_database
+#  Dir.chdir(TMP_DIR) do
+#    ret = execute('ruby ../../bin/cryptobox --no-interactive edit --no-edit', [ "#{CORRECT_PASS}\n" ])
+#    ret.should == 0
+#  end
+#end
 
 When /^I enter correct password$/ do
   type(CORRECT_PASS)
@@ -68,5 +75,11 @@ When /^I set database contents to:$/ do |data|
   Dir.chdir(TMP_DIR) do
     ret = execute('ruby ../../bin/cryptobox --no-interactive edit --stdin --no-update', [ "#{CORRECT_PASS}\n", data ])
     ret.should == 0
+  end
+end
+
+Then /^file "(.*?)" should be generated$/ do |path|
+  Dir.chdir(TMP_DIR) do
+    File.exist?(path).should == true
   end
 end
