@@ -28,7 +28,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
 
     $("#button-lock").live "click", (event) =>
       event.preventDefault()
-      @shutdown(false)
+      @shutdown()
 
   state: (state) ->
     super(state)

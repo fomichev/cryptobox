@@ -57,7 +57,7 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
         # use small timeout.
         setTimeout ->
           $("#input-password").select()
-        , 100
+        , 500
 
       when Cryptobox.App::STATE_LOADING
         $('#button-unlock').val('<%= @text[:button_unlock_decrypt] %>')
@@ -74,7 +74,7 @@ class MobileAppDelegate extends Cryptobox.AppDelegate
 
     $(".button-lock").live "click", (event) =>
       event.preventDefault()
-      @shutdown(true)
+      @shutdown()
 
     $(".button-login").live "click", =>
       el = $.parseJSON($(this).attr("json"))

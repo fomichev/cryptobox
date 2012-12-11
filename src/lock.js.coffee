@@ -15,8 +15,6 @@ class Cryptobox.Lock
 
     @timeoutNow = @timeoutSec
     @timeoutId = setInterval =>
-      dbg "Tick lock"
-
       @timeoutNow--
 
       if @timeoutNow <= 0

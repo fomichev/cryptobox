@@ -5,7 +5,7 @@ class Cryptobox.AppDelegate
 
   # Application delegate should call this method whenever it wants to shutdown
   # the application (lock it).
-  shutdown: (preserve) ->
+  shutdown: ->
     @alert(false, null)
     @render("locked", this)
     @state(Cryptobox.App::STATE_LOCKED)
@@ -13,7 +13,7 @@ class Cryptobox.AppDelegate
   # Notify delegate that it should prepare event handlers.
   prepare: ->
     @lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes,
-                               => @shutdown(true))
+                               => @shutdown())
 
   # Notify delegate when application state is changed.
   state: (state) ->

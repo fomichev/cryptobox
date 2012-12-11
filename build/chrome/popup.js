@@ -14356,7 +14356,6 @@ code.google.com/p/crypto-js/wiki/License
       }
       this.timeoutNow = this.timeoutSec;
       this.timeoutId = setInterval(function() {
-        dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
@@ -14851,7 +14850,7 @@ function program5(depth0,data) {
 
     function AppDelegate() {}
 
-    AppDelegate.prototype.shutdown = function(preserve) {
+    AppDelegate.prototype.shutdown = function() {
       this.alert(false, null);
       this.render("locked", this);
       return this.state(Cryptobox.App.prototype.STATE_LOCKED);
@@ -14860,7 +14859,7 @@ function program5(depth0,data) {
     AppDelegate.prototype.prepare = function() {
       var _this = this;
       return this.lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes, function() {
-        return _this.shutdown(true);
+        return _this.shutdown();
       });
     };
 
@@ -15046,7 +15045,7 @@ function program5(depth0,data) {
       BootstrapAppDelegate.__super__.prepare.call(this);
       return $("#button-lock").live("click", function(event) {
         event.preventDefault();
-        return _this.shutdown(false);
+        return _this.shutdown();
       });
     };
 
@@ -15181,10 +15180,10 @@ function program5(depth0,data) {
       ChromeAppDelegate.__super__.constructor.call(this);
     }
 
-    ChromeAppDelegate.prototype.shutdown = function(preserve) {
-      ChromeAppDelegate.__super__.shutdown.call(this, preserve);
+    ChromeAppDelegate.prototype.shutdown = function() {
+      ChromeAppDelegate.__super__.shutdown.call(this);
       chrome.extension.getBackgroundPage().lock.stop();
-      if (preserve == null) {
+      if (typeof preserve === "undefined" || preserve === null) {
         chrome.extension.getBackgroundPage().json = null;
       }
       cleanClipboard();

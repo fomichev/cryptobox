@@ -70,8 +70,8 @@ class ChromeAppDelegate extends Cryptobox.BootstrapAppDelegate
   constructor: ->
     super()
 
-  shutdown: (preserve) ->
-    super(preserve)
+  shutdown: ->
+    super()
 
     chrome.extension.getBackgroundPage().lock.stop()
     chrome.extension.getBackgroundPage().json = null unless preserve?

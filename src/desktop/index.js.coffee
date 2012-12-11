@@ -100,11 +100,9 @@ class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
       when Cryptobox.App::STATE_UNLOCKED
         # try to select Sites tab; otherwise select first one
         if ($('div.tab-pane[id="webform"]'))
-          p 'a'
           $('div.tab-pane[id="webform"]').addClass('in').addClass('active')
           $('#ul-nav li a[href="#webform"]').parent().addClass('active')
         else
-          p 'b'
           $('div.tab-pane:first').addClass('in').addClass('active')
           $('#ul-nav li:first').addClass('active')
 
@@ -122,9 +120,8 @@ class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
       el = $.parseJSON($(this).parent().parent().attr('json'))
       detailsClick(el)
 
-  shutdown: (preserve) ->
-    # Ignore the `preserve` argument and don't preserve state.
-    super(preserve)
+  shutdown: ->
+    super()
 
     $("#div-token").modal "hide"
     $("#div-details").modal "hide"

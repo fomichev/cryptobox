@@ -550,11 +550,13 @@ TODO: describe here what libs used and where
 === Common JS
 * keep passwords in memory encrypted (with some temporary key), decrypt as soon
   as user needs them; may prevent leaking when swapping or doing memory dump
+* rename div- to something more meaningful
 
 === Desktop HTML
 * Check login with token
 
 === Chrome extension
+* Fix autolock
 * Align locked page with desktop version (left justify form elements)
 * Add key binding to show popup (in overlay)
 

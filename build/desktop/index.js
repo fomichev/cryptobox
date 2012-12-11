@@ -14356,7 +14356,6 @@ code.google.com/p/crypto-js/wiki/License
       }
       this.timeoutNow = this.timeoutSec;
       this.timeoutId = setInterval(function() {
-        dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
@@ -14885,7 +14884,7 @@ function program10(depth0,data) {
 
     function AppDelegate() {}
 
-    AppDelegate.prototype.shutdown = function(preserve) {
+    AppDelegate.prototype.shutdown = function() {
       this.alert(false, null);
       this.render("locked", this);
       return this.state(Cryptobox.App.prototype.STATE_LOCKED);
@@ -14894,7 +14893,7 @@ function program10(depth0,data) {
     AppDelegate.prototype.prepare = function() {
       var _this = this;
       return this.lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes, function() {
-        return _this.shutdown(true);
+        return _this.shutdown();
       });
     };
 
@@ -15080,7 +15079,7 @@ function program10(depth0,data) {
       BootstrapAppDelegate.__super__.prepare.call(this);
       return $("#button-lock").live("click", function(event) {
         event.preventDefault();
-        return _this.shutdown(false);
+        return _this.shutdown();
       });
     };
 
@@ -15254,11 +15253,9 @@ function program10(depth0,data) {
       switch (state) {
         case Cryptobox.App.prototype.STATE_UNLOCKED:
           if ($('div.tab-pane[id="webform"]')) {
-            p('a');
             $('div.tab-pane[id="webform"]').addClass('in').addClass('active');
             $('#ul-nav li a[href="#webform"]').parent().addClass('active');
           } else {
-            p('b');
             $('div.tab-pane:first').addClass('in').addClass('active');
             $('#ul-nav li:first').addClass('active');
           }
@@ -15281,8 +15278,8 @@ function program10(depth0,data) {
       });
     };
 
-    DesktopAppDelegate.prototype.shutdown = function(preserve) {
-      DesktopAppDelegate.__super__.shutdown.call(this, preserve);
+    DesktopAppDelegate.prototype.shutdown = function() {
+      DesktopAppDelegate.__super__.shutdown.call(this);
       $("#div-token").modal("hide");
       $("#div-details").modal("hide");
       return $("#div-generate").modal("hide");

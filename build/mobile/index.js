@@ -19744,7 +19744,6 @@ code.google.com/p/crypto-js/wiki/License
       }
       this.timeoutNow = this.timeoutSec;
       this.timeoutId = setInterval(function() {
-        dbg("Tick lock");
         _this.timeoutNow--;
         if (_this.timeoutNow <= 0) {
           _this.stop();
@@ -20328,7 +20327,7 @@ function program20(depth0,data) {
 
     function AppDelegate() {}
 
-    AppDelegate.prototype.shutdown = function(preserve) {
+    AppDelegate.prototype.shutdown = function() {
       this.alert(false, null);
       this.render("locked", this);
       return this.state(Cryptobox.App.prototype.STATE_LOCKED);
@@ -20337,7 +20336,7 @@ function program20(depth0,data) {
     AppDelegate.prototype.prepare = function() {
       var _this = this;
       return this.lock = new Cryptobox.Lock(Cryptobox.config.lock_timeout_minutes, function() {
-        return _this.shutdown(true);
+        return _this.shutdown();
       });
     };
 
@@ -20528,7 +20527,7 @@ function program20(depth0,data) {
           $("#button-unlock").button("refresh");
           return setTimeout(function() {
             return $("#input-password").select();
-          }, 100);
+          }, 500);
         case Cryptobox.App.prototype.STATE_LOADING:
           $('#button-unlock').val('<%= @text[:button_unlock_decrypt] %>');
           return $("#button-unlock").button("refresh");
@@ -20546,7 +20545,7 @@ function program20(depth0,data) {
       });
       $(".button-lock").live("click", function(event) {
         event.preventDefault();
-        return _this.shutdown(true);
+        return _this.shutdown();
       });
       return $(".button-login").live("click", function() {
         var el;

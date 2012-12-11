@@ -1,13 +1,13 @@
 # Declare and export main namespace for cryptobox.
 Cryptobox = {}
-this.Cryptobox = Cryptobox
+@Cryptobox = Cryptobox
 
 # This variable stores encrypted cryptobox.json; it's `null` for Dropbox
 # version and `non-null` (appended somewhere later) in `embedded` version.
 Cryptobox.json = null
 
 # Simple wrapper around `console.log`; just prints `s` on console.
-this.p = (s) ->
+@p = (s) ->
   console?.log(s)
 
 # Measure execution time of given function (`fn`) and print it on console
