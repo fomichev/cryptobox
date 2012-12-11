@@ -1,9 +1,15 @@
 <%
 html_smtp = ''
-html_smtp = "<strong>SMTP:</strong>#{@vars[:smtp]}" if @vars.has_key? [:hostname]
+html_smtp = "<strong>SMTP:</strong>#{@vars[:smtp]}<br />" if @vars.has_key? :smtp
+
+html_pop3 = ''
+html_pop3 = "<strong>POP3:</strong>#{@vars[:pop3]}<br />" if @vars.has_key? :pop3
+
+html_imap = ''
+html_imap = "<strong>IMAP:</strong>#{@vars[:imap]}<br />" if @vars.has_key? :imap
 %>
 
 {
 	"name": "<%= @vars[:name] %>",
-	"text": "<strong>Hostname:</strong> <%= @vars[:hostname] %>\n<%= html_smtp %><strong>Username:</strong> <%= @vars[:user] %>\n<strong>Password:</strong> <%= @vars[:pass] %>"
+	"text": "<%= html_smtp %><%= html_pop3 %><%= html_imap %><strong>Username:</strong> <%= @vars[:user] %><br /><strong>Password:</strong> <%= @vars[:pass] %>"
 }

@@ -3,7 +3,7 @@ find_exclude 'html/*'
 find_exclude 'build/*'
 find_exclude 'src/extern/*'
 find_exclude 'tmp/*'
-find_exclude 'private*/*'
 find_exclude 'templates.js'
+find_exclude 'sample/cryptobox/*'
 
 force_grep_variant system

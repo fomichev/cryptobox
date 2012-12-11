@@ -37,10 +37,21 @@ Feature: User edits database
 		When I run cryptobox "edit --no-edit"
 		And I enter correct password
 		Then the exit status should be 0
-		And file "private/html/cryptobox.html" should be generated
-		And file "private/html/m.cryptobox.html" should be generated
-		And file "private/cryptobox.json" should be generated
-		And file "private/bookmarklet/form.js" should be generated
+		And file "cryptobox/html/cryptobox.html" should be generated
+		And file "cryptobox/html/m.cryptobox.html" should be generated
+		And file "cryptobox/cryptobox.json" should be generated
+		And file "cryptobox/bookmarklet/form.js" should be generated
+
+	Scenario: Edit non-existing database
+		Given no database
+		When I run cryptobox "edit --no-edit"
+		And I enter correct password
+		Then the exit status should be 6
+		And the stderr should contain exactly:
+			"""
+			error: Database is not found!
+
+			"""
 
 #	Scenario: Edit invalid format version
 #		Given database with wrong format

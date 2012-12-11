@@ -1,0 +1,102 @@
+webform/dropbox.com:
+  - example@dropbox.me:
+      pass: password
+
+webform/appleid.apple.com:
+  - example@gmail.com:
+      pass: password
+      # There is a possibility to use the same username/password pair to
+      # generate another form data; that is what aliases are for.
+      # You may specify several aliases separated by space.
+      alias: webform/icloud.com
+
+webform/gmail.com:
+  - example@gmail.com:
+      pass: password
+
+  # If you another accounts on given site, just add it here.
+  - example@example.org:
+      pass: password
+
+account/ftp:
+  - ftp\://example.org:
+      user: example
+      pass: password
+
+account/mail:
+  - example.org:
+      smtp: smtp.example.org
+      imap: imap.example.org
+      user: example
+      pass: password
+
+account/ssh:
+  - ssh\://example.org:
+      user: example
+      pass: password
+
+identity:
+  - John Smith:
+      firstname: John
+      lastname: Smith
+      passport: Password detail go here
+                on multiple lines.
+      country: US
+      address1: Address details
+
+  - Another residence:
+      country: UK
+      address1: Address details
+
+note:
+  - 'Cory Doctorow: Down and Out in the Magic Kingdom':
+      text: I lived long enough to see the cure for death; to see the rise of
+            the Bitchun Society, to learn ten languages; to compose three
+            symphonies; to realize my boyhood dream of taking up residence in
+            Disney World; to see the death of the workplace and of work.
+
+  - Another fragment from the same book:
+      text: Some duration into my foray, he cocked his head at me and raised a
+            sun-bleached eyebrow. “You get any closer, son, and we’re going to
+            have to get a pre-nup.”
+
+            I was apparent forty or so, and I thought about bridling at being
+            called son, but I looked into his eyes and decided that he had
+            enough realtime that he could call me son anytime he wanted.
+            I backed off a little and apologized.
+
+app:
+  - Microsoft Office:
+      key: 1234-5678-1234-5678
+  - Microsoft Windows 95:
+      key: 1234-5678-1234-5678
+
+card:
+  - Bank of America:
+      cardholder: Jonh Smith
+      number: 1234 5678 9012 3456
+      pin: 1234
+      cvv: 123
+
+  - AmericanExpress:
+      cardholder: Jonh Smith
+      number: 1234 5678 9012 3456
+      pin: 1234
+      cvv: 123
+
+  - Deutsche Bank:
+      cardholder: Jonh Smith
+      number: 1234 5678 9012 3456
+      pin: 1234
+      cvv: 123
+
+bookmark:
+  - Google:
+      url: http://google.com
+      comment: Google search
+  - Yahoo:
+      url: http://yahoo.com
+      comment: Yahoo search
+
+include:
+  webform/dropbox.com: { "name": "Dropbox", "address": "https://www.dropbox.com/", "form": { "action":"https://www.dropbox.com/login", "method": "post", "fields": { "login_email": "<%= @vars[:name] %>", "login_password": "<%= @vars[:pass] %>", "remember_me": "on", "cont": "/home" } } }

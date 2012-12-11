@@ -45,7 +45,11 @@ module Cryptobox
 
     # Load database from @db_path
     def load
-      db = YAML::load(File.read(@db_path))
+      begin
+        db = YAML::load(File.read(@db_path))
+      rescue Errno::ENOENT, Errno::EISDIR => error
+        raise Error::DATABASE_NOT_FOUND
+      end
 
       @pbkdf2_salt = from_base64 db['pbkdf2_salt']
       @pbkdf2_iter = db['pbkdf2_iter'].to_i

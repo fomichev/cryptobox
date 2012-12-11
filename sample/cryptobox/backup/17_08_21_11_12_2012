@@ -1,0 +1,9 @@
+---
+pbkdf2_salt: MGc67jNw9M4=
+pbkdf2_iter: 2000
+aes_iv: sjlkRoLyI/sOTJALBExd/Q==
+aes_keylen: 128
+format_version: 6
+version: '0.9'
+timestamp: '2012-12-11T17:08:17+04:00'
+ciphertext: bDIfFAiiREAQZGdl6KltSKrtFPSg21GhBwyxn0MZ97dOaZGNe95dZdP2sAibjbX/

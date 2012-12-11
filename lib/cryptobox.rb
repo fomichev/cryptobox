@@ -26,6 +26,7 @@ module Cryptobox
     INVALID_FORMAT = Error.new(3, "Unsupported format version")
     TOO_MANY_ENTRIES = Error.new(4, "Too many entries")
     KEY_NOT_FOUND = Error.new(5, "Key is not found")
+    DATABASE_NOT_FOUND = Error.new(6, "Database is not found")
   end
 end
 

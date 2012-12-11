@@ -15,7 +15,7 @@ class ChromeOutput < Output
     to = File.join(target_prefix, 'cryptobox-config.js')
     File.open(to, 'w') { |f| f.write("Cryptobox.config = #{@config.to_json};") }
 
-    from = File.join(@config[:path][:private], 'cryptobox.json')
+    from = File.join(@config[:path][:cryptobox], 'cryptobox.json')
     to = File.join(target_prefix, 'cryptobox-data.js')
     File.open(to, 'w') { |f| f.write("Cryptobox.json = #{File.read(from)};") }
 

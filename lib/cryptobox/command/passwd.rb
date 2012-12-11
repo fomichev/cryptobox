@@ -1,7 +1,7 @@
 module Cryptobox
   module Command
     def self.passwd(config, interactive)
-      db = Cryptobox::Db.new config[:path][:cryptobox],
+      db = Cryptobox::Db.new config[:path][:yaml],
         config[:path][:backup],
         config[:cryptobox][:keep_backups],
         Cryptobox::ask_password('Password:', interactive)

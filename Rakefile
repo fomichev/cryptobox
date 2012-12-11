@@ -13,7 +13,8 @@ require 'cucumber/rake/task'
 task :default => [:test]
 
 Cucumber::Rake::Task.new(:test) do |t|
-  t.cucumber_opts = "features --format progress"
+  t.cucumber_opts = "features --format pretty"
+#  t.cucumber_opts = "features --format progress"
   t.fork = false
 end
 
@@ -154,6 +155,6 @@ end
 desc "Update sample database"
 task :sample do
   Dir.chdir('sample') do
-    `cat cryptobox.yml | ../bin/cryptobox edit --stdin`
+    `cat cryptobox.yaml | ../bin/cryptobox edit --stdin`
   end
 end

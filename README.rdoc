@@ -8,7 +8,7 @@ License:: MIT
 
 Cryptobox is a bunch of Ruby scripts that help you manage your
 passwords and other sensitive data. The idea is simple: there is some encrypted
-file (<tt>private/cryptobox</tt>) where the sensitive information is
+file (<tt>cryptobox/cryptobox.yaml</tt>) where the sensitive information is
 stored. To edit it you use special executable (+cryptobox edit+) which will
 open editor and let you update passwords/bookmarks/notes/etc. When the editor
 is closed, +cryptobox edit+ will create beautiful and easy to navigate HTML
@@ -35,7 +35,7 @@ system use whatever package manager is installed on your system to install it.
 
 == Use
 
-* Create new database (creates empty <tt>private/cryptobox</tt>):
+* Create new database (creates empty <tt>cryptobox/cryptobox.yaml</tt>):
 
 	$ cryptobox create
 
@@ -44,13 +44,13 @@ guarantees that even two databases with the same content will be encrypted to
 different cipher text.
 
 * Edit your database (it will also update html page at
-  <tt>private/html/cryptobox.html</tt> and at
-  <tt>private/html/m.cryptobox.html</tt>):
+  <tt>cryptobox/html/cryptobox.html</tt> and at
+  <tt>cryptobox/html/m.cryptobox.html</tt>):
 
 	$ cryptobox edit
 
 Whenever you edit cryptobox database, the backup file (under
-<tt>private/backup</tt>) is created with the previous version of your database.
+<tt>cryptobox/backup</tt>) is created with the previous version of your database.
 So if some unexpected error happens, you can always restore your previous
 database contents.
 
@@ -73,7 +73,7 @@ whenever you change the password.
 * Chrome extension or browser bookmarklet to login to currently displayed page.
 
 === Guts
-All information is stored in the <tt>private/cryptobox</tt> file,
+All information is stored in the <tt>cryptobox/cryptobox.yaml</tt> file,
 encrypted via AES[http://en.wikipedia.org/wiki/Advanced_Encryption_Standard];
 key length is 128 bits (by default) and it is derived from your master password
 (recommend way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
@@ -81,7 +81,7 @@ using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
 (consult your lawyer about whether it's considered crime in your country).
 
 When +cryptobox edit+ generates HTML, it asks your password, decrypts
-<tt>private/cryptbox</tt> file and merges it with JSON
+<tt>cryptobox/cryptbox.yaml</tt> file and merges it with JSON
 patterns from <tt>include/</tt> directory (more on this later), encrypts it using
 AES and puts this information into HTML page. Later on, when you
 open it in the browser, it will ask your password and decrypt attached
@@ -94,14 +94,14 @@ The steps +cryptobox edit+ does are:
   - http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
   - cryptobox edit --no-pipe
 
-* Reads <tt>private/cryptobox</tt> and decrypts it in memory;
+* Reads <tt>cryptobox/cryptobox.yaml</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
   <tt>include/</tt> and merges it with entry's variables (username, password, etc);
 * Merges all JSON entries into one string and encrypts it with AES;
 * Embeds this encrypted data into pre-baked HTML page (look at
   <tt>src/html/</tt> for more details);
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
-  under <tt>private/html</tt> directory (cryptobox.html - is a desktop
+  under <tt>cryptobox/html</tt> directory (cryptobox.html - is a desktop
   version; m.cryptobox.html - is a mobile one);
 * TODO: describe bookmarklets and chrome extension.
 
@@ -206,14 +206,14 @@ Comments are started with # and continue till the end of the line.
 No, there is probably no easy way to automate it (taking into account the
 number of existing formats); you have to create (or use pre-created) JSON
 form layout in the <tt>include/webform</tt> directory (via provided bookmarklet)
-and then add entry with your username/password to <tt>private/cryptobox</tt>
-manually.
+and then add entry with your username/password to
+<tt>cryptobox/cryptobox.yaml</tt> manually.
 
 I'm not telling its impossible; I just see no need to implement it myself.
 
 === Is is possible to export database to other password managers?
 No, there are no reasons to switch from cryptobox :-) But if you have strong
-reasons, you can always implement <tt>private/cryptobox</tt> parser yourself;
+reasons, you can always implement <tt>cryptobox/cryptobox.yaml</tt> parser yourself;
 the format is YAML, so probably all languages have some support of it and
 +cryptobox edit+ tool have useful <tt>--stdout</tt> argument which you can use
 to pipe your plain text database to other tools safely.
@@ -476,7 +476,6 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
-* rename private to cryptobox
 * add RDoc and GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
@@ -496,6 +495,7 @@ TODO: describe here what libs used and where
 
 === Desktop HTML
 * Check login with token
+* Consider using random.org for generating passwords
 
 === Chrome extension
 * Fix autolock

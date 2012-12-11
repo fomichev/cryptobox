@@ -1,11 +1,11 @@
 module Cryptobox
   module Command
     def self.create(config, interactive)
-      if File.exist? config[:path][:cryptobox]
+      if File.exist? config[:path][:yaml]
         return unless Cryptobox::yn "Database already exists, do you want to overwrite it?"
       end
 
-      db = Cryptobox::Db.new config[:path][:cryptobox],
+      db = Cryptobox::Db.new config[:path][:yaml],
         config[:path][:backup],
         config[:cryptobox][:keep_backups],
         Cryptobox::ask_password('Password:', interactive)

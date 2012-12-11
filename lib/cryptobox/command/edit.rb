@@ -1,7 +1,7 @@
 module Cryptobox
   module Command
     def self.edit(config, interactive, stdout, stdin, edit, update, pipe)
-      db = Cryptobox::Db.new config[:path][:cryptobox],
+      db = Cryptobox::Db.new config[:path][:yaml],
         config[:path][:backup],
         config[:cryptobox][:keep_backups],
         Cryptobox::ask_password('Password:', interactive)
@@ -27,14 +27,14 @@ module Cryptobox
 
       if update
         # generate embedded versions
-        JsonOutput.new(config, config[:path][:private], true, db).run
+        JsonOutput.new(config, config[:path][:cryptobox], true, db).run
 
-        DesktopHtmlOutput.new(config, config[:path][:private], true).run
-        MobileHtmlOutput.new(config, config[:path][:private], true).run
+        DesktopHtmlOutput.new(config, config[:path][:cryptobox], true).run
+        MobileHtmlOutput.new(config, config[:path][:cryptobox], true).run
 
-        FormBookmarkletOutput.new(config, config[:path][:private], true).run
+        FormBookmarkletOutput.new(config, config[:path][:cryptobox], true).run
 
-        ChromeOutput.new(config, config[:path][:private], true).run
+        ChromeOutput.new(config, config[:path][:cryptobox], true).run
 
         # generate versions for Dropbox
         JsonOutput.new(config, config[:path][:dropbox], false, db).run

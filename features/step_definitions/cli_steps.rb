@@ -47,7 +47,7 @@ When /^I run cryptobox "([^"]*)"$/ do |cmd|
 end
 
 When /^the number of backups should be (#{NUMBER})$/ do |expected_number|
-  backup_dir = File.join(TMP_DIR, 'private', 'backup')
+  backup_dir = File.join(TMP_DIR, 'cryptobox', 'backup')
 
   Dir.exist?(backup_dir).should be_true if expected_number > 0
 

@@ -2,8 +2,8 @@ module CryptoboxWorld
   CORRECT_PASS = 'hi'
   INCORRECT_PASS = 'ih'
   TMP_DIR = File.join(Dir.getwd, 'tmp')
-  DB_DIR = File.join(TMP_DIR, 'private')
-  DB_FILE = File.join(TMP_DIR, 'private', 'cryptobox.yaml')
+  DB_DIR = File.join(TMP_DIR, 'cryptobox')
+  DB_FILE = File.join(TMP_DIR, 'cryptobox', 'cryptobox.yaml')
 
   def execute(name, input)
     i, o, e, thr = Open3.popen3(name)

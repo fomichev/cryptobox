@@ -10,7 +10,7 @@ Feature: User creates new database
 		When I run cryptobox "create"
 		And I enter correct password
 		And I enter correct password
-		Then a file named "private/cryptobox.yaml" should exist
+		Then a file named "cryptobox/cryptobox.yaml" should exist
 		And the exit status should be 0
 		And the database can be unlocked with "hi"
 		And the stdout should contain exactly:
@@ -29,7 +29,7 @@ Feature: User creates new database
 		When I run cryptobox "create"
 		And I enter correct password
 		And I enter incorrect password
-		Then a file named "private/cryptobox.yaml" should not exist
+		Then a file named "cryptobox/cryptobox.yaml" should not exist
 		And the exit status should be 1
 		And the stdout should contain exactly:
 			"""

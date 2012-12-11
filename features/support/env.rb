@@ -11,7 +11,7 @@ require 'capybara/poltergeist'
 Before do
   Capybara.default_driver = :poltergeist
 
-  Capybara.app_host = "file://#{TMP_DIR}/private/html/"
+  Capybara.app_host = "file://#{TMP_DIR}/cryptobox/html/"
 
   @dirs = [ TMP_DIR ]
 
