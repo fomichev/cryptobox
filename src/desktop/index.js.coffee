@@ -74,7 +74,7 @@ dialogGenerateInit = ->
     Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()
 
   $("#div-generate").keydown (event) ->
-    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()  if event.keyCode is $.ui.keyCode.ENTER
+    Cryptobox.BootstrapAppDelegate.dialogGenerateSubmit()  if event.keyCode is 13
 
 # Handle submit event of token login dialog.
 dialogTokenLoginSubmit = (url, name, keys, values, tokens) ->
@@ -90,7 +90,7 @@ dialogTokenLoginInit = ->
     dialogTokenLoginSubmit url, name, keys, values, tokens
 
   $("#div-token").keydown (event) ->
-    dialogTokenLoginSubmit url, name, keys, values, tokens  if event.keyCode is $.ui.keyCode.ENTER
+    dialogTokenLoginSubmit url, name, keys, values, tokens  if event.keyCode is 13
 
 class DesktopAppDelegate extends Cryptobox.BootstrapAppDelegate
   state: (state) ->

@@ -14,8 +14,11 @@ task :default => [:test]
 
 Cucumber::Rake::Task.new(:test) do |t|
   t.cucumber_opts = "features --format progress"
-#  t.cucumber_opts = "features/desktop.feature --format pretty"
-#  t.cucumber_opts = "features/cryptobox-edit.feature --line 35 --format pretty"
+  t.fork = false
+end
+
+Cucumber::Rake::Task.new(:test_html) do |t|
+  t.cucumber_opts = "features/desktop.feature features/mobile.feature --format pretty"
   t.fork = false
 end
 

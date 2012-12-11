@@ -92,7 +92,7 @@ class Cryptobox.BootstrapAppDelegate extends Cryptobox.AppDelegate
 
   # Event handler for submit button of password dialog.
   @dialogGenerateSubmit = ->
-    $("#intput-generated-password").val(Cryptobox.Password.generate(
+    $("#input-generated-password").val(Cryptobox.Password.generate(
       $("#input-password-length").val(),
       $("#input-include-num").is(":checked"),
       $("#input-include-punc").is(":checked"),

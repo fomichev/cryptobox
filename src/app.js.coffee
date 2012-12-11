@@ -38,7 +38,7 @@ class Cryptobox.AppDelegate
   # `callback` with the context afterwards.
   prepareJson: (json, callback) ->
     result = []
-    Cryptobox.measure "ui.init", ->
+    Cryptobox.measure "prepareJson", ->
       map = {}
       pages = {}
 

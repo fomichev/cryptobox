@@ -85,11 +85,11 @@
 					<input type="checkbox" id="input-include-uc" checked /> <%= @text[:generate_upper_case] %>
 				</label>
 				<label><%= @text[:generated] %></label>
-				<input type="text" id="intput-generated-password" size="30" />
+				<input type="text" id="input-generated-password" size="30" />
 			</form>
 		</div>
 		<div class="modal-footer">
-			<a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
+			<a id="button-generate-close" href="#" class="btn" data-dismiss="modal" aria-hidden="true"><%= @text[:button_close] %></a>
 			<a id="button-generate" href="#" class="btn btn-primary"><%= @text[:button_generate] %></a>
 		</div>
 	</div>
