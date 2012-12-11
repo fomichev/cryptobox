@@ -1,9 +1,8 @@
-= Cryptobox - Passwords storage solution
+= Cryptobox - Passwords storage solution {<img src="https://travis-ci.org/fomichev/cryptobox.png"/>}[http://travis-ci.org/fomichev/cryptobox]
 
 Author:: Stanislav Fomichev (mailto:s@fomichev.me)
 Copyright:: (c) 2012 by Stanislav Fomichev
 License:: MIT
-Code status:: {<img src="https://secure.travis-ci.org/fomichev/cryptobox.png"/>}[http://travis-ci.org/fomichev/cryptobox]
 
 == Overview
 
