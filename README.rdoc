@@ -3,7 +3,7 @@
 Author:: Stanislav Fomichev (mailto:s@fomichev.me)
 Copyright:: (c) 2012 by Stanislav Fomichev
 License:: MIT
-Code status:: [![Build Status](https://travis-ci.org/fomichev/cryptobox.png)](https://travis-ci.org/fomichev/cryptobox)
+Code status:: {<img src="https://secure.travis-ci.org/fomichev/cryptobox.png"/>}[http://travis-ci.org/fomichev/cryptobox]
 
 == Overview
 
