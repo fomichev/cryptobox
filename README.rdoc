@@ -328,14 +328,7 @@ Put 'include' key in your database, e.g:
 == Used components
 
 === Ruby
-On Ruby side standard bindings to OpenSSL are used to manage database,
-and additionally:
-
-* {WebSocket Ruby}[https://github.com/imanel/websocket-ruby] - MIT
-
-  Serve encrypted JSON
-
-  gem install websocket
+On Ruby side standard bindings to OpenSSL are used to manage database.
 
 ==== The following components are required only for development
 * {ExecJS}[https://github.com/sstephenson/execjs] - MIT
