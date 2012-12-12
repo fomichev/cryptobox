@@ -3,12 +3,18 @@ require "bundler/setup"
 require 'cucumber'
 require 'cucumber/rake/task'
 
-#require 'rake/package_task'
-#
-#spec = eval(File.read('cryptobox.gemspec'))
-#
-#Rake::GemPackageTask.new(spec) do |pkg
-#end
+require 'rubygems/package_task'
+require 'rdoc/task'
+
+RDoc::Task.new do |rd|
+  rd.rdoc_dir = 'doc/rdoc'
+  rd.main = 'README.rdoc'
+  rd.rdoc_files.include 'README.rdoc', 'LICENSE', "lib/**/*\.rb" , "bin/**/*\.rb"
+end
+
+spec = eval(File.read('cryptobox.gemspec'))
+Gem::PackageTask.new(spec) do |pkg|
+end
 
 task :default => [:test]
 
@@ -133,10 +139,6 @@ task :doc do
   tool = 'rocco' # may use docco when node.js is available
 
   `#{tool}
-     lib/*.rb
-     lib/cryptobox/*.rb
-     lib/cryptobox/command/*.rb
-     lib/cryptobox/output/*.rb
      src/*.coffee
      src/bookmarklet/*.coffee
      src/chrome/*.coffee

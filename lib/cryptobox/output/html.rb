@@ -1,5 +1,6 @@
 require 'fileutils'
 
+# Class that generates desktop version of HTML.
 class DesktopHtmlOutput < Output
   def initialize(config, to, embed)
     super
@@ -11,7 +12,11 @@ class DesktopHtmlOutput < Output
   def generate
     source = File.join @config[:path][:src], 'desktop', 'index.rhtml'
     target = File.join @to, 'html', 'cryptobox.html'
-    source_clippy = File.join(@config[:path][:src], 'extern', 'clippy', 'build', 'clippy.swf')
+    source_clippy = File.join(@config[:path][:src],
+                              'extern',
+                              'clippy',
+                              'build',
+                              'clippy.swf')
     target_clippy = File.join(@to, 'html', 'clippy.swf')
     t = Template.new(@config, source, @embed).generate
 
@@ -22,6 +27,7 @@ class DesktopHtmlOutput < Output
   end
 end
 
+# Class that generates mobile version of HTML.
 class MobileHtmlOutput < Output
   def initialize(config, to, embed)
     super

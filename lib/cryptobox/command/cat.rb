@@ -1,5 +1,6 @@
 module Cryptobox
   module Command
+    # `cryptobox cat` command handler.
     def self.cat(config, interactive, key, args)
       # TODO
       db = Cryptobox::Db.new config[:path][:yaml],

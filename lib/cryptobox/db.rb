@@ -7,10 +7,19 @@ require 'date'
 require 'io/console'
 
 module Cryptobox
+  # Class that abstract on-disk representation of the database. It's
+  # responsible for encryption/decryption as well as loading/storage of the
+  # cryptobox.yaml database.
   class Db
+    # Supported database format version. It's save along with the database
+    # and checked then the database is loaded (loading of databases
+    # with old/unsupported format is rejected).
     FORMAT_VERSION = 6
+    # Default length of PBKDF2 salt; applies only to new databases.
     PBKDF2_SALT_LEN = 8
+    # Default number of PBKDF2 iterations; applies only to new databases.
     PBKDF2_ITERATIONS = 2000
+    # Default length of AES key; applies only to new databases.
     AES_KEY_LEN = 128
 
     attr_accessor :plaintext
@@ -18,8 +27,8 @@ module Cryptobox
 
     public
 
-    # @db_path - path to cryptobox database
-    # @backup_path - use given path as backup directory
+    # Create new instance of database with given *path* and *password*;
+    # store backups under *backup_path* directory (when *keep_backups* is true).
     def initialize(db_path, backup_path, keep_backups, password)
       @db_path = db_path
       @backup_path = backup_path
@@ -29,10 +38,8 @@ module Cryptobox
       File.umask(0077)
     end
 
-    # Create empty database, ask user to confirm if it already exists
-    def create(password2)
-      raise Error::PASSWORDS_DONT_MATCH if @password != password2
-
+    # Create empty database.
+    def create
       dirname = File.dirname @db_path
       Dir.mkdir dirname unless Dir.exist? dirname
 
@@ -43,7 +50,7 @@ module Cryptobox
       derive_key
     end
 
-    # Load database from @db_path
+    # Load database from path specified upon instance creation.
     def load
       begin
         db = YAML::load(File.read(@db_path))
@@ -64,7 +71,7 @@ module Cryptobox
       @plaintext = decrypt @ciphertext
     end
 
-    # Save database to @db_path
+    # Save database using path specified upon instance creation.
     def save
       backup
 
@@ -86,29 +93,15 @@ module Cryptobox
       File.open(@db_path, 'w') {|f| f.write YAML.dump(db) }
     end
 
-    # Ask user for password and generate new encryption key
-    def change_password(password, password2)
-      raise Error::PASSWORDS_DONT_MATCH if password != password2
-
+    # Set new *password* for the database. Database should be explicitly saved
+    # for changes to take effect.
+    def change_password(password)
       @password = password
       derive_key
     end
 
-    # Decrypt given ciphertext
-    def decrypt(ciphertext)
-      cipher = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC)
-      cipher.decrypt
-      cipher.key = @key
-      cipher.iv = @aes_iv
-
-      begin
-        return cipher.update(ciphertext) + cipher.final
-      rescue OpenSSL::Cipher::CipherError => error
-        raise Error::INVALID_PASSWORD
-      end
-    end
-
-    # Encrypt given plaintext
+    # Encrypt given *plaintext*. It's not private (as decrypt) because it is
+    # used by the JSON output to encrypt cryptobox.json.
     def encrypt(plaintext)
       cipher = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC)
       cipher.encrypt
@@ -118,7 +111,7 @@ module Cryptobox
       return to_base64(cipher.update(plaintext) + cipher.final)
     end
 
-    # Execute block on each database entry
+    # Execute block on each database entry.
     def each
       y = YAML::load(plaintext)
       return unless y
@@ -128,7 +121,7 @@ module Cryptobox
       y.each do |type_path, entries|
         next if type_path == 'include'
 
-#        type = type_path.split(File::PATH_SEPARATOR)[0]
+        #type = type_path.split(File::PATH_SEPARATOR)[0]
         type = type_path.split("/")[0]
 
         entries.each do |entry|
@@ -145,7 +138,10 @@ module Cryptobox
           vars.merge! entry[name].symbolize_keys
 
           # FIXME: do this in runtime !!!
-          vars.each {|key, value| vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"') if vars[key].instance_of? String }
+          vars.each do |key, value|
+            next unless vars[key].instance_of? String
+            vars[key] = value.gsub(/\n/, '\n').gsub(/"/, '\"')
+          end
 
           yield vars, includes
 
@@ -160,6 +156,20 @@ module Cryptobox
     end
 
     private
+
+    # Decrypt given *ciphertext*.
+    def decrypt(ciphertext)
+      cipher = OpenSSL::Cipher::AES.new(@aes_keylen, :CBC)
+      cipher.decrypt
+      cipher.key = @key
+      cipher.iv = @aes_iv
+
+      begin
+        return cipher.update(ciphertext) + cipher.final
+      rescue OpenSSL::Cipher::CipherError => error
+        raise Error::INVALID_PASSWORD
+      end
+    end
 
     # Generate default cipher parameters (salf, iv, etc)
     def generate_cipher_params
@@ -182,12 +192,16 @@ module Cryptobox
       return unless @keep_backups
       return unless File.exist? @db_path
       Dir.mkdir @backup_path unless Dir.exist? @backup_path
-      FileUtils.cp @db_path, File.join(@backup_path, Time.now.strftime("%H_%M_%S_%d_%m_%Y"))
+      FileUtils.cp @db_path, File.join(@backup_path,
+                                       Time.now.strftime("%H_%M_%S_%d_%m_%Y"))
     end
 
     # Get encryption key from password and store it in @key
     def derive_key
-      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password, @pbkdf2_salt, @pbkdf2_iter, @aes_keylen / 8)
+      @key = OpenSSL::PKCS5::pbkdf2_hmac_sha1(@password,
+                                              @pbkdf2_salt,
+                                              @pbkdf2_iter,
+                                              @aes_keylen / 8)
     end
   end
 end

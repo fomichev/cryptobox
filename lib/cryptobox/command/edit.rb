@@ -1,5 +1,6 @@
 module Cryptobox
   module Command
+    # `cryptobox edit` command handler.
     def self.edit(config, interactive, stdout, stdin, edit, update, pipe)
       db = Cryptobox::Db.new config[:path][:yaml],
         config[:path][:backup],
@@ -16,7 +17,12 @@ module Cryptobox
         if stdin
           db.plaintext = $stdin.read
         else
-          new_plaintext = run_editor(config[:path][:home], config[:ui][:editor], db.plaintext, pipe)
+          editor = Editor.new(config[:path][:home],
+                              config[:ui][:editor],
+                              db.plaintext,
+                              pipe)
+
+          new_plaintext = editor.run
           return if new_plaintext == db.plaintext
 
           db.plaintext = new_plaintext

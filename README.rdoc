@@ -6,7 +6,7 @@ License:: MIT
 
 == Overview
 
-Cryptobox is a bunch of Ruby scripts that help you manage your
+Cryptobox is a bunch of Ruby scripts that help you manage
 passwords and other sensitive data. The idea is simple: there is some encrypted
 file (<tt>cryptobox/cryptobox.yaml</tt>) where the sensitive information is
 stored. To edit it you use special executable (+cryptobox edit+) which will
@@ -476,16 +476,13 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
-* add RDoc (or rocco)
-* add GEM support
 * add some validation for DB and include/
-* fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
 * ssh-agent/gnome-keyring daemon so we may hook up to the existing browsers/tools
 * new pbkdf2 salt and aes iv is generated whenever database is saved,
   make it configurable option
 
 === Bookmarklets
-* TEST FORM BOOKMARKLETS (may not work because of the latest changes)
+* TEST FORM BOOKMARKLET (may not work because of the latest changes)
 * add CSS to bookmarklets popover so they look the same on all sites
 * fix form bookmarklet for deviantart.com
 
@@ -501,7 +498,7 @@ TODO: describe here what libs used and where
 === Chrome extension
 * Fix autolock
 * Align locked page with desktop version (left justify form elements)
-* Add key binding to show popup (in overlay)
+* Add key binding to show popup (using popover class)
 
 === Firefox extension
 * Implement desktop Firefox plugin

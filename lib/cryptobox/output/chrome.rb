@@ -1,5 +1,6 @@
 require 'fileutils'
 
+# Class that generates Google Chrome extension.
 class ChromeOutput < Output
   def initialize(config, to, embed)
     super

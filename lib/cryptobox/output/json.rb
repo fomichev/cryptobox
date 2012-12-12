@@ -1,5 +1,6 @@
 require 'json'
 
+# Class that generates cryptobox.json.
 class JsonOutput < Output
   def initialize(config, to, embed, db)
     super config, to, embed
@@ -63,7 +64,8 @@ class JsonOutput < Output
   private
   def read_include(includes, vars, type_path)
     if includes.has_key? type_path
-      return JSON.parse(Template.new(@config, includes[type_path], @embed, vars).generate)
+      data = Template.new(@config, includes[type_path], @embed, vars).generate
+      return JSON.parse(data)
     end
 
     type = type_path.split('/')[0]
@@ -79,7 +81,10 @@ class JsonOutput < Output
 
     raise "Unknown entry #{type_path}" if path == nil and type != 'webform'
 
-    return JSON.parse(Template.new(@config, path, @embed, vars).generate) if path
-    return nil
+    if path
+      return JSON.parse(Template.new(@config, path, @embed, vars).generate)
+    else
+      return nil
+    end
   end
 end

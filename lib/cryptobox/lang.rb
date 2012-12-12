@@ -1,6 +1,8 @@
 # coding: utf-8
 
 module Cryptobox
+  # Internalization strings (mapping between short names used in templates
+  # and actual internalized text)
   I18N_TEXT = {
     en: {
     title: 'Cryptobox',
@@ -94,6 +96,8 @@ module Cryptobox
   }
   }
 
+  # Internalized page names (mapping between include type and actual
+  # internalized page name)
   I18N_PAGE = {
     en: {
     webform: 'Sites',

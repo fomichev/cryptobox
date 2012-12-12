@@ -1,3 +1,4 @@
+# Class that generates form bookmarklet.
 class FormBookmarkletOutput < Output
   def initialize(config, to, embed)
     super
