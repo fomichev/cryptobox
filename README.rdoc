@@ -41,7 +41,7 @@ You may also build gem yourself using the following command:
 
 And then install it with:
 
-  $ gem install
+  $ gem install pkg/cryptobox-*.gem
 
 Please note, that the required version of Ruby is 1.9! 1.8 will not work
 because of the threading model (and who knows what the other issues are).
@@ -51,7 +51,8 @@ system use whatever package manager is installed on your system to install it.
 
 == Use
 
-* Create new database (creates empty <tt>cryptobox/cryptobox.yaml</tt>):
+To create new database (creates empty <tt>cryptobox/cryptobox.yaml</tt>)
+execute the following command:
 
   $ cryptobox create
 
@@ -59,9 +60,9 @@ Upon database creation, PBKDB2 salt and AES IV will be generated. That
 guarantees that even two databases with the same content will be encrypted to
 different cipher text.
 
-* Edit your database (it will also update html page at
+To edit your database (it will also update html page at
   <tt>cryptobox/html/cryptobox.html</tt> and at
-  <tt>cryptobox/html/m.cryptobox.html</tt>):
+  <tt>cryptobox/html/m.cryptobox.html</tt>) use this command:
 
   $ cryptobox edit
 
@@ -70,7 +71,7 @@ Whenever you edit cryptobox database, the backup file (under
 So if some unexpected error happens, you can always restore your previous
 database contents.
 
-* Change password (every couple of months):
+In order to change password (every couple of months) execute:
 
   $ cryptobox passwd
 
@@ -141,9 +142,9 @@ to provide the form data (you may have multiple tokens within forms).
 
 TODO: Describe how to get this bookmarklet; also describe login bookmarklet.
 
-	javascript:(function(){s=document.createElement('SCRIPT');
-	s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';
-	document.getElementsByTagName('head')[0].appendChild(s);})();
+  javascript:(function(){s=document.createElement('SCRIPT');
+  s.type='text/javascript';s.src='https://<BOOKMARKLET_PATH>';
+  document.getElementsByTagName('head')[0].appendChild(s);})();
 
 === Chrome extension
 TODO: add details here
