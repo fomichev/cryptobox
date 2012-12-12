@@ -6,18 +6,26 @@ License:: MIT
 
 == Overview
 
-Cryptobox is a bunch of Ruby scripts that help you manage
-passwords and other sensitive data. The idea is simple: there is some encrypted
-file (<tt>cryptobox/cryptobox.yaml</tt>) where the sensitive information is
-stored. To edit it you use special executable (+cryptobox edit+) which will
+Cryptobox is a bunch of Ruby scripts that help you manage passwords and other
+sensitive data. The idea is simple: there is some encrypted file
+(<tt>cryptobox/cryptobox.yaml</tt>) where the sensitive information is stored.
+To edit it you use special executable (<tt>cryptobox edit</tt>) which will
 open editor and let you update passwords/bookmarks/notes/etc. When the editor
-is closed, +cryptobox edit+ will create beautiful and easy to navigate HTML
+is closed, <tt>cryptobox edit</tt> will create beautiful and easy to navigate HTML
 page with all your sensitive information (encrypted). This HTML page will also
 contain Javascript code which can decrypt attached encrypted data on the fly
 when you provide the correct password.
 
 Your sensitive information is never exposed; it's never stored on the disk
 in the plain text and exists in the HTML page only in the encrypted form.
+
+To get an idea of what the result HTML looks like, you may download and run
+either desktop[https://raw.github.com/fomichev/cryptobox/master/sample/cryptobox/html/cryptobox.html]
+or mobile[https://raw.github.com/fomichev/cryptobox/master/sample/cryptobox/html/m.cryptobox.html]
+version of the application. These applications were generated from the
+{following YAML}[https://raw.github.com/fomichev/cryptobox/master/sample/cryptobox.yaml]
+file and as an example of what it looks like when it's stored on the disk
+download {cryptobox.yaml}[https://raw.github.com/fomichev/cryptobox/master/sample/cryptobox/cryptobox.yaml].
 
 == Install
 
@@ -26,6 +34,14 @@ a git clone.
 So to install cryptobox, make a git clone of this repository and add
 <tt><path to your clone>/bin</tt> directory to the PATH environment
 variable.
+
+You may also build gem yourself using the following command:
+
+  $ rake gem
+
+And then install it with:
+
+  $ gem install
 
 Please note, that the required version of Ruby is 1.9! 1.8 will not work
 because of the threading model (and who knows what the other issues are).
@@ -37,7 +53,7 @@ system use whatever package manager is installed on your system to install it.
 
 * Create new database (creates empty <tt>cryptobox/cryptobox.yaml</tt>):
 
-	$ cryptobox create
+  $ cryptobox create
 
 Upon database creation, PBKDB2 salt and AES IV will be generated. That
 guarantees that even two databases with the same content will be encrypted to
@@ -47,7 +63,7 @@ different cipher text.
   <tt>cryptobox/html/cryptobox.html</tt> and at
   <tt>cryptobox/html/m.cryptobox.html</tt>):
 
-	$ cryptobox edit
+  $ cryptobox edit
 
 Whenever you edit cryptobox database, the backup file (under
 <tt>cryptobox/backup</tt>) is created with the previous version of your database.
@@ -56,9 +72,9 @@ database contents.
 
 * Change password (every couple of months):
 
-	$ cryptobox passwd
+  $ cryptobox passwd
 
-As in +cryptobox edit+ command, backup file will be created (or updated)
+As in <tt>cryptobox edit</tt> command, backup file will be created (or updated)
 whenever you change the password.
 
 == Features
@@ -77,18 +93,17 @@ All information is stored in the <tt>cryptobox/cryptobox.yaml</tt> file,
 encrypted via AES[http://en.wikipedia.org/wiki/Advanced_Encryption_Standard];
 key length is 128 bits (by default) and it is derived from your master password
 (recommend way to generate it - Diceware[http://world.std.com/~reinhold/diceware.html])
-using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2]
-(consult your lawyer about whether it's considered crime in your country).
+using PBKDF2[http://en.wikipedia.org/wiki/Pbkdf2].
 
-When +cryptobox edit+ generates HTML, it asks your password, decrypts
+When <tt>cryptobox edit</tt> generates HTML, it asks your password, decrypts
 <tt>cryptobox/cryptbox.yaml</tt> file and merges it with JSON
-patterns from <tt>include/</tt> directory (more on this later), encrypts it using
-AES and puts this information into HTML page. Later on, when you
+patterns from <tt>include/</tt> directory (more on this later), encrypts it
+using AES cipher and puts this information into HTML page. Later on, when you
 open it in the browser, it will ask your password and decrypt attached
 database on the fly. So, your sensitive information is never exposed in
 plain text.
 
-The steps +cryptobox edit+ does are:
+The steps <tt>cryptobox edit</tt> does are:
 
 * TODO: describe how it uses pipes to run editor and what it does instead on Windows;
   - http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
@@ -96,13 +111,14 @@ The steps +cryptobox edit+ does are:
 
 * Reads <tt>cryptobox/cryptobox.yaml</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
-  <tt>include/</tt> and merges it with entry's variables (username, password, etc);
+  <tt>include/</tt> and merges it with entry's variables (username, password,
+  etc);
 * Merges all JSON entries into one string and encrypts it with AES;
 * Embeds this encrypted data into pre-baked HTML page (look at
   <tt>src/html/</tt> for more details);
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
-  under <tt>cryptobox/html</tt> directory (cryptobox.html - is a desktop
-  version; m.cryptobox.html - is a mobile one);
+  under <tt>cryptobox/html</tt> directory (<tt>cryptobox.html</tt> - is a
+  desktop version; <tt>m.cryptobox.html</tt> - is a mobile one);
 * TODO: describe bookmarklets and chrome extension.
 
 === Form bookmarklet
@@ -142,23 +158,23 @@ other information.
 
 Entry has the following structure (fields in square brackets are optional):
 
-	<entry type>:
-	  - <entry name>:
-	      [tag: <tag>]
-	      [visible: false]
-	      <variable1>: <value1>
-	      <variableN>: <valueN>
-	      <multiline>: <line1>
+  <entry type>:
+    - <entry name>:
+        [tag: <tag>]
+        [visible: false]
+        <variable1>: <value1>
+        <variableN>: <valueN>
+        <multiline>: <line1>
 
-	                   <line2>
-	  - <another entry with different name but the same type>:
-	      [tag: <tag>]
-	      [visible: false]
-	      <variable1>: <value1>
-	      <variableN>: <valueN>
-	      <multiline>: <line1>
+                     <line2>
+    - <another entry with different name but the same type>:
+        [tag: <tag>]
+        [visible: false]
+        <variable1>: <value1>
+        <variableN>: <valueN>
+        <multiline>: <line1>
 
-	                   <line2>
+                     <line2>
 
 You don't need to quote anything (unless you have spaces or tabs at the
 beginning or at the end of your password/username); just put variable name on
@@ -210,13 +226,20 @@ and then add entry with your username/password to
 <tt>cryptobox/cryptobox.yaml</tt> manually.
 
 I'm not telling its impossible; I just see no need to implement it myself.
+The best way to import some existing data is too create a custom script (and
+contribute it back :-) ) which parses CSV (or some similar plaintext format
+which your current tool exports to), generate appropriate YAML and feed it
+directly to <tt>cryptobox edit --stdin</tt>. The only thing you lose is the
+ability to use one-click login feature of the desktop HTML because there no
+data about forms fields (but you can always add missing form data manually
+later).
 
 === Is is possible to export database to other password managers?
 No, there are no reasons to switch from cryptobox :-) But if you have strong
 reasons, you can always implement <tt>cryptobox/cryptobox.yaml</tt> parser yourself;
 the format is YAML, so probably all languages have some support of it and
-+cryptobox edit+ tool have useful <tt>--stdout</tt> argument which you can use
-to pipe your plain text database to other tools safely.
+<tt>cryptobox edit</tt> tool have useful <tt>--stdout</tt> argument which you
+can use to pipe your plain text database to other tools safely.
 
 == Extending / Adding new web form (includes)
 I think it's pretty straightforward. You can use aforesaid +form+ bookmarklet
@@ -232,7 +255,14 @@ this way, you don't need to dig into the JSON and find out were to put
 these marks, they will already be in place.
 
 == Database example
-Database example is located in `sample/cryptobox.yml` file.
+Database example is located in <tt>sample/cryptobox.yml</tt> file with
+the following sample generated data:
+
+* <tt>sample/cryptobox/bookmarklet/form.js</tt> - form bookmarklet;
+* <tt>sample/cryptobox/html/cryptobox.html</tt> - desktop HTML application;
+* <tt>sample/cryptobox/html/m.cryptobox.html</tt> - mobile HTML application;
+* <tt>sample/cryptobox/dropbox/html/*.html</tt> - desktop and mobile HTML
+  applications which can read +cryptobox.json+ from the Dropbox.
 
 TODO: make more meaningful example and comment it here or directly in the
 example
@@ -248,14 +278,14 @@ the tools via <tt>-c</tt> command line option.
 Configuration file is simple YAML file with the following
 possible variables:
 
-	path:
-	  root: <path to cryptobox database directory>
+  path:
+    root: <path to cryptobox database directory>
 
-	ui:
-	  editor: <full path to your editor>
-	  lang: <select language; currently supported are en and ru>
-	  lock_timeout_minutes: <web site lock timeout in minutes>
-	  default_password_length: <default password length in generate dialog>
+  ui:
+    editor: <full path to your editor>
+    lang: <select language; currently supported are en and ru>
+    lock_timeout_minutes: <web site lock timeout in minutes>
+    default_password_length: <default password length in generate dialog>
 
 TODO: describe all possible configuration options!
 TODO: note that when specifying editor it shout be run in foreground (don't
@@ -266,13 +296,13 @@ the <tt>lib/cryptobox/config.rb</tt> file.
 
 == Embed include into database
 
-	cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
+  cat include.json | ruby -p -e '$_.sub!(/\n/, "").strip!' > processed.json
 
 Put 'include' key in your database, e.g:
 
-	include:
-	  'webform/xyz.com': { here goes JSON }
-	  'webform/qwe.com': { here goes another JSON }
+  include:
+    'webform/xyz.com': { here goes JSON }
+    'webform/qwe.com': { here goes another JSON }
 
 == Used components
 
@@ -355,21 +385,21 @@ decrypt your data.
 
 Lets suppose, you have the following data encrypted:
 
-	webform/dropbox.com:
-	- your_username:
-	    pass: your_password
+  webform/dropbox.com:
+  - your_username:
+      pass: your_password
 
 With the following contents of +cryptobox+ file:
 
-	---
-	pbkdf2_salt: O4ERPqXt+Ro=
-	pbkdf2_iter: 2000
-	aes_iv: V6WEGmrqOG21yc0h/uLqfg==
-	aes_keylen: 128
-	format_version: 6
-	version: '0.8'
-	timestamp: '2012-10-24T13:41:00+04:00'
-	ciphertext: TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
+  ---
+  pbkdf2_salt: O4ERPqXt+Ro=
+  pbkdf2_iter: 2000
+  aes_iv: V6WEGmrqOG21yc0h/uLqfg==
+  aes_keylen: 128
+  format_version: 6
+  version: '0.8'
+  timestamp: '2012-10-24T13:41:00+04:00'
+  ciphertext: TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
 
 Now, let's try to decrypt it (instructions are provided for Linux)!
 
@@ -384,50 +414,50 @@ easily decrypted using standard tools.
 You have to take out the value of pbkdf2_salt field of config and convert
 it to hex encoding (ensure that file has UNIX line endings):
 
-	$ grep pbkdf2_salt cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps
-	3b81113ea5edf91a
+  $ grep pbkdf2_salt cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps
+  3b81113ea5edf91a
 
 Next, go and download a Perl script which implements PBKDF2 using OpenSSL:
 
-	$ wget http://www.ict.griffith.edu.au/anthony/software/pbkdf2.pl
+  $ wget http://www.ict.griffith.edu.au/anthony/software/pbkdf2.pl
 
 Store your password in +pwd+ file and execute Perl script:
 
-	$ cat pwd
-	hi
+  $ cat pwd
+  hi
 
-	$ perl pbkdf2.pl 3b81113ea5edf91a $(grep pbkdf2_iter cryptobox | cut -d: -f2) < pwd > result
+  $ perl pbkdf2.pl 3b81113ea5edf91a $(grep pbkdf2_iter cryptobox | cut -d: -f2) < pwd > result
 
-	$ cat result
-	0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937b323478b4c4a4bc8091150a12c9e8d9f
+  $ cat result
+  0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937b323478b4c4a4bc8091150a12c9e8d9f
 
 And because we are interested only if first 32 bytes (in case of AES 256),
 we need to cut the rest (the number 64 in the following command is 32 * 2
 because each byte in hex encoding is represented by two characters)
 
-	$ cat result | cut -b1-64 > secret
-	$ cat secret
-	0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937
+  $ cat result | cut -b1-64 > secret
+  $ cat secret
+  0cdfd225b34aee20877b969f38cc5f9191b7affc3d7a1d1d64dfc517d15c7937
 
 === Decrypt my data
 Now, we have a key, the only thing we need to do is to convert initialization
 vector (aes_iv) to hex, extract ciphertext from cryptobox and call openssl,
 let's do it:
 
-	$ grep aes_iv cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps > iv
-	$ cat iv
-	57a5841a6aea386db5c9cd21fee2ea7e
+  $ grep aes_iv cryptobox | cut -d: -f2 | tr -d ' ' | base64 -d | xxd -ps > iv
+  $ cat iv
+  57a5841a6aea386db5c9cd21fee2ea7e
 
-	$ grep ciphertext cryptobox | cut -d: -f2 | tr -d ' ' | tr -d "\n" > ciphertext
-	$ cat ciphertext
-	TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
+  $ grep ciphertext cryptobox | cut -d: -f2 | tr -d ' ' | tr -d "\n" > ciphertext
+  $ cat ciphertext
+  TfO1PfIJ/HTk6b71lyTgQvGARccaHeM0kRUYqlrz10Map4tx9dHP9ir9pPF/qMpnX0mkmf6urdbnfSESbB6kNA==
 
-	$ openssl enc -base64 -A -d -aes-$(grep aes_keylen cryptobox | cut -d: -f2 | tr -d ' ')-cbc -K $(cat secret) -iv $(cat iv) -in ciphertext -out plaintext
+  $ openssl enc -base64 -A -d -aes-$(grep aes_keylen cryptobox | cut -d: -f2 | tr -d ' ')-cbc -K $(cat secret) -iv $(cat iv) -in ciphertext -out plaintext
 
-	$ cat plaintext
-	webform/dropbox.com:
-	- your_username:
-	    pass: your_password
+  $ cat plaintext
+  webform/dropbox.com:
+  - your_username:
+      pass: your_password
 
 Congratulations, plaintext contains decrypted content of your cryptobox. Now,
 it's better to remove all temporary files and clean +bash+ history.
@@ -502,12 +532,12 @@ TODO: describe here what libs used and where
 * Align locked page with desktop version (left justify form elements)
 * Add key binding to show popup (using popover class)
 
-=== Firefox extension
-* Implement desktop Firefox plugin
-* Implement mobile Firefox plugin (only with dropbox integration)
-
 === Version with Dropbox support
 * Prepack dropbox.js instead of relying on cdn
 * Fix, test and cleanup Dropbox support
 * Try to open Dropbox authorization popup and also provide a link
 * Add documentation
+
+=== Firefox extension
+* Implement desktop Firefox plugin
+* Implement mobile Firefox plugin (only with dropbox integration)
