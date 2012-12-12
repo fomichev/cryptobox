@@ -70,12 +70,16 @@ task :sprockets, :compress do |t, args|
 
   def embed_images(text, dirs)
     text.gsub(/url\((?:"|')?([^#?"')]*)([^"')]*)(?:"|')?\)*/) do
+      url = $1
+
+      next if /^data:/ =~ url
+
       result = nil
       dirs.each do |dir|
-        image = File.join(dir, $1)
+        image = File.join(dir, url)
         next unless File.exist? image
 
-        puts "Embed image #{$1}"
+        puts "Embed image #{url}"
         data = File.open(image, 'rb').read
 
         result = "url(data:image/png;base64,#{Base64.encode64(data).gsub(/\n/, '')}#{$2})"
@@ -83,7 +87,7 @@ task :sprockets, :compress do |t, args|
         break
       end
 
-      raise "Image #{$1} not found!" unless result
+      raise "Image #{url} not found!" unless result
       result
     end
   end

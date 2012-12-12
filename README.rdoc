@@ -280,41 +280,40 @@ Put 'include' key in your database, e.g:
 On Ruby side standard bindings to OpenSSL are used to manage database.
 
 ==== The following components are required only for development
-* {ExecJS}[https://github.com/sstephenson/execjs] - MIT
+* {ExecJS}[https://github.com/sstephenson/execjs]
 
   Used to compile Handlebars templates to JS
 
   therubyracer gem is required for cross platform Javascript engine (V8)
 
-* {Sprockets}[https://github.com/sstephenson/sprockets] - MIT
+* {Sprockets}[https://github.com/sstephenson/sprockets]
 
   Compile CSS and JS
 
-* {Ruby-YUI Compressor}[https://github.com/sstephenson/sprockets] - MIT/BSD
+* {Ruby-YUI Compressor}[https://github.com/sstephenson/sprockets]
 
   Compress CSS and JS
 
   This GEM required Java Runtime!
 
-* {Cucumber}[TODO] - TODO
+* {Cucumber}[http://cukes.info]
 
-  TODO
+  Test Rub and JS parts
 
-* {Aruba}[TODO] - TODO
+* {Aruba}[https://github.com/cucumber/aruba]
+  Cucumber extension for console application testing
 
-  TODO
+* {Capybara}[https://github.com/cucumber/aruba]
 
-* {Capybara}[TODO] - TODO
+  Ruby browser simulator for tests
 
-  TODO
+* {Poltergeist}[https://github.com/cucumber/aruba]
 
-* {Poltergeist}[TODO] - TODO
+  PhantomJS driver for Capybara
 
-  TODO
+* {PhantomJS}[http://phantomjs.org/]
 
-* {PhantomJS}[TODO] - TODO
-
-  TODO
+  Headless WebKit with JavaScript API
 
 === Chrome extension
 * {Iconic}[https://github.com/somerandomdude/Iconic] - CC BY-SA 3.0
@@ -322,7 +321,6 @@ On Ruby side standard bindings to OpenSSL are used to manage database.
   src/chrome/icon.png
 
 === JavaScript
-
 * {CryptoJS 3.0.2}[https://code.google.com/p/crypto-js/] - New BSD License
 
   src/extern/CryptoJS
@@ -331,11 +329,11 @@ On Ruby side standard bindings to OpenSSL are used to manage database.
 
   src/extern/seedrandom
 
-* {jQuery 1.7.2}[http://jquery.com] - MIT
+* {jQuery 1.8.3}[http://jquery.com] - MIT
 
   src/extern/jquery
 
-* {Twitter Bootstrap 2.2.1}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
+* {Twitter Bootstrap 2.2.2}[https://github.com/twitter/bootstrap] - Apache License, Version 2.0
 
   src/extern/bootstrap
 
@@ -343,7 +341,7 @@ On Ruby side standard bindings to OpenSSL are used to manage database.
 
   src/extern/handlebars
 
-* {jQuery Mobile 1.1.0}[http://jquerymobile.com] - MIT
+* {jQuery Mobile 1.2.0}[http://jquerymobile.com] - MIT
 
   src/extern/jquery-mobile
 
@@ -442,8 +440,12 @@ TODO: describe here what libs used and where
 * rake handlebars
   TODO
 
-# rake sprockets
+* rake sprockets
   TODO
+
+* rake build
+  Executes both `rake handlebars` and `rake sprockets` which is usually the
+  right thing to do.
 
 == Todo
 === Documentation
