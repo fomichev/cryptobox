@@ -476,7 +476,8 @@ TODO: describe here what libs used and where
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
-* add RDoc and GEM support
+* add RDoc (or rocco)
+* add GEM support
 * add some validation for DB and include/
 * fix race in 'cryptobox edit' pipe (between 'cryptobox edit' and reader)
 * ssh-agent/gnome-keyring daemon so we may hook up to the existing browsers/tools
