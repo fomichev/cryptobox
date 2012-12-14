@@ -13,6 +13,7 @@ module Cryptobox
         '.cryptoboxrc.yml',
         File.join(ENV['HOME'], '.cryptoboxrc.yml')
       ]
+
       paths = paths.select {|f| File.exist? f }
 
       load_config(paths.first)
@@ -51,6 +52,15 @@ module Cryptobox
         text: {},
         security: {}
       }
+
+      if path
+        config_root = File.dirname(path)
+      else
+        config_root = Dir.pwd
+      end
+
+      # TODO: do we need to chdir into config_root so relative paths in
+      # the config work as expected?
 
       user_config = path ? YAML.load_file(path).symbolize_keys : {}
 
@@ -117,7 +127,7 @@ module Cryptobox
 
       set_value user_config, :path,
         :cryptobox,
-        File.expand_path(File.join(Dir.pwd, 'cryptobox'))
+        File.expand_path(File.join(config_root, 'cryptobox'))
       set_value user_config, :path,
         :dropbox,
         File.expand_path(File.join(@config[:path][:cryptobox], 'dropbox'))

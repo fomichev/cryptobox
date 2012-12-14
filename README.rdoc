@@ -61,8 +61,8 @@ guarantees that even two databases with the same content will be encrypted to
 different cipher text.
 
 To edit your database (it will also update html page at
-  <tt>cryptobox/html/cryptobox.html</tt> and at
-  <tt>cryptobox/html/m.cryptobox.html</tt>) use this command:
+<tt>cryptobox/html/cryptobox.html</tt> and at
+<tt>cryptobox/html/m.cryptobox.html</tt>) use this command:
 
   $ cryptobox edit
 
@@ -104,11 +104,7 @@ open it in the browser, it will ask your password and decrypt attached
 database on the fly. So, your sensitive information is never exposed in
 plain text.
 
-The steps <tt>cryptobox edit</tt> does are:
-
-* TODO: describe how it uses pipes to run editor and what it does instead on Windows;
-  - http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
-  - cryptobox edit --no-pipe
+The steps <tt>cryptobox edit</tt> does to generate HTML are:
 
 * Reads <tt>cryptobox/cryptobox.yaml</tt> and decrypts it in memory;
 * For each type of entry in this file, reads appropriate JSON file from
@@ -120,7 +116,12 @@ The steps <tt>cryptobox edit</tt> does are:
 * Embeds JavaScript and CSS (along with images) into HTML page and stores it
   under <tt>cryptobox/html</tt> directory (<tt>cryptobox.html</tt> - is a
   desktop version; <tt>m.cryptobox.html</tt> - is a mobile one);
-* TODO: describe bookmarklets and chrome extension.
+* Does the same embedding for chrome extension and form bookmarklet.
+
+TODO: describe how <tt>cryptobox edit</tt> uses pipes to run editor and what it
+does instead on Windows:
+- http://www.cs.auckland.ac.nz/~pgut001/pubs/secure_del.html
+- cryptobox edit --no-pipe
 
 === Form bookmarklet
 Some sites use authenticity token which they place into the HTML you get;
@@ -279,21 +280,45 @@ the tools via <tt>-c</tt> command line option.
 Configuration file is simple YAML file with the following
 possible variables:
 
+* <tt>path.root</tt>: root path to the installed cryptobox application
+(default should work for anybody);
+* <tt>path.home</tt>: path to the home directory of the user where (defaults
+to actual user home, e.g. $HOME);
+<tt>cryptobox edit</tt> will create its temporary files for communication
+with editor;
+* <tt>path.cryptobox</tt>: path to the root database directory (default
+<current directory>/cryptobox);
+* <tt>path.dropbox</tt>: where to store applications that support dropbox
+(default <path.cryptobox>/dropbox);
+* <tt>path.yml</tt>: where to store cryptobox.yaml (default
+<path.cryptobox>/cryptobox.json);
+* <tt>path.json</tt>: where to store cryptobox.json (default
+<path.cryptobox/cryptobox.json) ;
+* <tt>path.back</tt>: where to store backups (default <path.cryptobox>/backup);
+
+* <tt>ui.editor</tt>: full path to your editor of choice; please note that this
+command needs to start editor in the foreground; for example, for +vim+ it is
+-f option (default depends on the platform);
+* <tt>ui.lang</tt>: selected language; currently supported are en and ru
+default en);
+* <tt>ui.lock_timeout_minutes</tt>: HTML application auto lock timeout in
+minutes (default 5);
+* <tt>ui.default_password_length</tt>: default password length in 'generate
+password' dialog (default 16);
+
+* <tt>cryptobox.date_format</tt>: date format that is used to generate date
+in the HTML application (default %H:%M %d.%m.%Y);
+* <tt>cryptobox.keep_backups</tt>: whether to keep (indefinite) backups or
+not (default true);
+
+All options are optional. Here's probably a good example <tt>.cryptoboxrc</tt>
+to put in your home directory:
+
   path:
-    root: <path to cryptobox database directory>
+    cryptobox: ~/cryptobox
 
-  ui:
-    editor: <full path to your editor>
-    lang: <select language; currently supported are en and ru>
-    lock_timeout_minutes: <web site lock timeout in minutes>
-    default_password_length: <default password length in generate dialog>
-
-TODO: describe all possible configuration options!
-TODO: note that when specifying editor it shout be run in foreground (don't
-fork), like vim -f
-
-All the options are optional. You can dig the default values in
-the <tt>lib/cryptobox/config.rb</tt> file.
+This way you can run +cryptobox+ command from any directory and it will still
+be able to find the database.
 
 == Embed include into database
 
@@ -494,21 +519,12 @@ TODO: describe here what libs used and where
 * add comments to include/ JSON
 * new pbkdf2 salt and aes iv is generated whenever database is saved
 
-=== Tests
-* Aruba tests
-  - cryptobox cat
-  - cryptobox create
-  - cryptobox edit
-  - cryptobox passwd
-* Capybara tests
-  - desktop HTML
-  - mobile HTML
-
 === Include
 * fix form include for appleid.apple.com
 * mark habrahabr.com as broken (requires captcha)
 
 === Ruby
+* use different default editors on different platforms
 * add some validation for DB and include/
 * ssh-agent/gnome-keyring daemon so we may hook up to the existing browsers/tools
 * new pbkdf2 salt and aes iv is generated whenever database is saved,
@@ -520,6 +536,7 @@ TODO: describe here what libs used and where
 * fix form bookmarklet for deviantart.com
 
 === Common JS
+* add format_version check (useful for dropbox)
 * keep passwords in memory encrypted (with some temporary key), decrypt as soon
   as user needs them; may prevent leaking when swapping or doing memory dump
 * rename div- to something more meaningful
